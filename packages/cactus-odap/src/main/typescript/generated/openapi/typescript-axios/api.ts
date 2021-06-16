@@ -103,6 +103,202 @@ export interface AssetProfile {
 /**
  * 
  * @export
+ * @interface CommitFinalMessage
+ */
+export interface CommitFinalMessage {
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitFinalMessage
+     */
+    MessageType?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitFinalMessage
+     */
+    ClientIdentityPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitFinalMessage
+     */
+    ServerIdentityKey?: string;
+    /**
+     * 
+     * @type {CommitFinalResponseMessage}
+     * @memberof CommitFinalMessage
+     */
+    CommitFinalClaim?: CommitFinalResponseMessage;
+    /**
+     * 
+     * @type {object}
+     * @memberof CommitFinalMessage
+     */
+    CommitFinalClaimFormat?: object;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitFinalMessage
+     */
+    HashCommitPrepareAck?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CommitFinalMessage
+     */
+    ClientTransferNumber?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitFinalMessage
+     */
+    ClientSignature?: string;
+}
+/**
+ * 
+ * @export
+ * @interface CommitFinalResponseMessage
+ */
+export interface CommitFinalResponseMessage {
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitFinalResponseMessage
+     */
+    MessageType?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitFinalResponseMessage
+     */
+    ClientIdentityPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitFinalResponseMessage
+     */
+    ServerIdentityPubkey?: string;
+    /**
+     * 
+     * @type {object}
+     * @memberof CommitFinalResponseMessage
+     */
+    CommitAcknowledgementClaim?: object;
+    /**
+     * 
+     * @type {object}
+     * @memberof CommitFinalResponseMessage
+     */
+    CommitAcknowledgementClaimFormat?: object;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitFinalResponseMessage
+     */
+    HashCommitFinal?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CommitFinalResponseMessage
+     */
+    ServerTransferNumber?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitFinalResponseMessage
+     */
+    ServerSignature?: string;
+}
+/**
+ * 
+ * @export
+ * @interface CommitPreparationMessage
+ */
+export interface CommitPreparationMessage {
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitPreparationMessage
+     */
+    MessageType?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitPreparationMessage
+     */
+    ClientIdentityPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitPreparationMessage
+     */
+    ServerIdentityPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitPreparationMessage
+     */
+    HashLockEvidenceAck?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CommitPreparationMessage
+     */
+    ClientTransferNumber?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitPreparationMessage
+     */
+    ClientSignature?: string;
+}
+/**
+ * 
+ * @export
+ * @interface CommitPreparationResponse
+ */
+export interface CommitPreparationResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitPreparationResponse
+     */
+    MessageType?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitPreparationResponse
+     */
+    ClientIdentityPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitPreparationResponse
+     */
+    ServerIdentityPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitPreparationResponse
+     */
+    HashCommitPrep?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitPreparationResponse
+     */
+    ServerTransferNumber?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitPreparationResponse
+     */
+    ServerSignature?: string;
+}
+/**
+ * 
+ * @export
  * @interface History
  */
 export interface History {
@@ -354,6 +550,122 @@ export enum InitializationRequestMessageEscrowTypeEnum {
 /**
  * 
  * @export
+ * @interface LockEvidenceMessage
+ */
+export interface LockEvidenceMessage {
+    /**
+     * 
+     * @type {string}
+     * @memberof LockEvidenceMessage
+     */
+    ClientIdentityPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LockEvidenceMessage
+     */
+    ServerIdentityPubkey?: string;
+    /**
+     * 
+     * @type {object}
+     * @memberof LockEvidenceMessage
+     */
+    LockEvidenceClaim?: object;
+    /**
+     * 
+     * @type {object}
+     * @memberof LockEvidenceMessage
+     */
+    LockEvidenceFormat?: object;
+    /**
+     * 
+     * @type {string}
+     * @memberof LockEvidenceMessage
+     */
+    LockEvidenceExpirarion?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LockEvidenceMessage
+     */
+    HashCommenceAckRequest?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof LockEvidenceMessage
+     */
+    ClientTransferNumber?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof LockEvidenceMessage
+     */
+    ClientSignatureRequest?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LockEvidenceMessage
+     */
+    MessageType?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LockEvidenceMessage
+     */
+    MessageHash?: string;
+}
+/**
+ * 
+ * @export
+ * @interface LockEvidenceResponseMessage
+ */
+export interface LockEvidenceResponseMessage {
+    /**
+     * 
+     * @type {string}
+     * @memberof LockEvidenceResponseMessage
+     */
+    ClientIdentityPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LockEvidenceResponseMessage
+     */
+    ServerIdentityPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LockEvidenceResponseMessage
+     */
+    HashLockEvidenceRequest?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof LockEvidenceResponseMessage
+     */
+    ServerTransferNumber?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof LockEvidenceResponseMessage
+     */
+    ServerSignature?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LockEvidenceResponseMessage
+     */
+    MessageType?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LockEvidenceResponseMessage
+     */
+    MessageHash?: string;
+}
+/**
+ * 
+ * @export
  * @interface OdapMessage
  */
 export interface OdapMessage {
@@ -428,7 +740,7 @@ export interface OdapMessage {
      * @type {string}
      * @memberof OdapMessage
      */
-    MessageSinature?: string;
+    MessageSignature?: string;
 }
 
 /**
@@ -479,6 +791,190 @@ export enum OdapMessageActionResponseResponseCodeEnum {
     RESOURCE_NOT_FOUND = '404'
 }
 
+/**
+ * 
+ * @export
+ * @interface TransferCommenceMessage
+ */
+export interface TransferCommenceMessage {
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCommenceMessage
+     */
+    MessageType?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCommenceMessage
+     */
+    OriginatorPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCommenceMessage
+     */
+    BefeficiaryPubkey?: string;
+    /**
+     * 
+     * @type {object}
+     * @memberof TransferCommenceMessage
+     */
+    SenderDltSystem?: object;
+    /**
+     * 
+     * @type {object}
+     * @memberof TransferCommenceMessage
+     */
+    RecipientDltSystem?: object;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCommenceMessage
+     */
+    ClientIdentityPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCommenceMessage
+     */
+    ServerIdentityPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCommenceMessage
+     */
+    HashAssetProfile?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TransferCommenceMessage
+     */
+    AssetUnit?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCommenceMessage
+     */
+    HashPrevMessage?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TransferCommenceMessage
+     */
+    ClientTransferNumber?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCommenceMessage
+     */
+    ClientSignature?: string;
+}
+/**
+ * 
+ * @export
+ * @interface TransferCommenceResponseMessage
+ */
+export interface TransferCommenceResponseMessage {
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCommenceResponseMessage
+     */
+    ClientIdentityPubKey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCommenceResponseMessage
+     */
+    ServerIdentityPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCommenceResponseMessage
+     */
+    HashCommenceRequest?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TransferCommenceResponseMessage
+     */
+    ServerTransferNumber?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCommenceResponseMessage
+     */
+    ServerSignature?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCommenceResponseMessage
+     */
+    MessageType?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCommenceResponseMessage
+     */
+    MessageHash?: string;
+}
+/**
+ * 
+ * @export
+ * @interface TransferCompletMessageResponse
+ */
+export interface TransferCompletMessageResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCompletMessageResponse
+     */
+    OK?: string;
+}
+/**
+ * 
+ * @export
+ * @interface TransferCompleteMessage
+ */
+export interface TransferCompleteMessage {
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCompleteMessage
+     */
+    MessageType?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCompleteMessage
+     */
+    ClientIdentityPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCompleteMessage
+     */
+    ServerIdentityPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCompleteMessage
+     */
+    HashCommitFinalAck?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TransferCompleteMessage
+     */
+    ClientTransferNumber?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCompleteMessage
+     */
+    ClientSignature?: string;
+}
 
 /**
  * DefaultApi - axios parameter creator
@@ -492,8 +988,173 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiV1TransferinitiationGet: async (initializationRequestMessage?: InitializationRequestMessage, options: any = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/v1/transferinitiation`;
+        apiV2Phase1TransferinitiationPost: async (initializationRequestMessage?: InitializationRequestMessage, options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v2/phase1/transferinitiation`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(initializationRequestMessage, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {LockEvidenceMessage} [lockEvidenceMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiV2Phase2LockevidencePost: async (lockEvidenceMessage?: LockEvidenceMessage, options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v2/phase2/lockevidence`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(lockEvidenceMessage, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {TransferCommenceMessage} [transferCommenceMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiV2Phase2TransfercommencePost: async (transferCommenceMessage?: TransferCommenceMessage, options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v2/phase2/transfercommence`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(transferCommenceMessage, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {CommitFinalMessage} [commitFinalMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiV2Phase3CommitfinalPost: async (commitFinalMessage?: CommitFinalMessage, options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v2/phase3/commitfinal`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(commitFinalMessage, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {CommitPreparationMessage} [commitPreparationMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiV2Phase3CommitprepararionPost: async (commitPreparationMessage?: CommitPreparationMessage, options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v2/phase3/commitprepararion`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(commitPreparationMessage, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {TransferCompleteMessage} [transferCompleteMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiV2Phase3TransfercompleteGet: async (transferCompleteMessage?: TransferCompleteMessage, options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v2/phase3/transfercomplete`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -512,7 +1173,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(initializationRequestMessage, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(transferCompleteMessage, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -535,8 +1196,58 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiV1TransferinitiationGet(initializationRequestMessage?: InitializationRequestMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InitialMessageAck>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV1TransferinitiationGet(initializationRequestMessage, options);
+        async apiV2Phase1TransferinitiationPost(initializationRequestMessage?: InitializationRequestMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InitialMessageAck>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV2Phase1TransferinitiationPost(initializationRequestMessage, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {LockEvidenceMessage} [lockEvidenceMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiV2Phase2LockevidencePost(lockEvidenceMessage?: LockEvidenceMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LockEvidenceResponseMessage>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV2Phase2LockevidencePost(lockEvidenceMessage, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {TransferCommenceMessage} [transferCommenceMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiV2Phase2TransfercommencePost(transferCommenceMessage?: TransferCommenceMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TransferCommenceResponseMessage>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV2Phase2TransfercommencePost(transferCommenceMessage, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {CommitFinalMessage} [commitFinalMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiV2Phase3CommitfinalPost(commitFinalMessage?: CommitFinalMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommitFinalResponseMessage>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV2Phase3CommitfinalPost(commitFinalMessage, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {CommitPreparationMessage} [commitPreparationMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiV2Phase3CommitprepararionPost(commitPreparationMessage?: CommitPreparationMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommitPreparationResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV2Phase3CommitprepararionPost(commitPreparationMessage, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {TransferCompleteMessage} [transferCompleteMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiV2Phase3TransfercompleteGet(transferCompleteMessage?: TransferCompleteMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV2Phase3TransfercompleteGet(transferCompleteMessage, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -555,8 +1266,53 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiV1TransferinitiationGet(initializationRequestMessage?: InitializationRequestMessage, options?: any): AxiosPromise<InitialMessageAck> {
-            return localVarFp.apiV1TransferinitiationGet(initializationRequestMessage, options).then((request) => request(axios, basePath));
+        apiV2Phase1TransferinitiationPost(initializationRequestMessage?: InitializationRequestMessage, options?: any): AxiosPromise<InitialMessageAck> {
+            return localVarFp.apiV2Phase1TransferinitiationPost(initializationRequestMessage, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {LockEvidenceMessage} [lockEvidenceMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiV2Phase2LockevidencePost(lockEvidenceMessage?: LockEvidenceMessage, options?: any): AxiosPromise<LockEvidenceResponseMessage> {
+            return localVarFp.apiV2Phase2LockevidencePost(lockEvidenceMessage, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {TransferCommenceMessage} [transferCommenceMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiV2Phase2TransfercommencePost(transferCommenceMessage?: TransferCommenceMessage, options?: any): AxiosPromise<TransferCommenceResponseMessage> {
+            return localVarFp.apiV2Phase2TransfercommencePost(transferCommenceMessage, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {CommitFinalMessage} [commitFinalMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiV2Phase3CommitfinalPost(commitFinalMessage?: CommitFinalMessage, options?: any): AxiosPromise<CommitFinalResponseMessage> {
+            return localVarFp.apiV2Phase3CommitfinalPost(commitFinalMessage, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {CommitPreparationMessage} [commitPreparationMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiV2Phase3CommitprepararionPost(commitPreparationMessage?: CommitPreparationMessage, options?: any): AxiosPromise<CommitPreparationResponse> {
+            return localVarFp.apiV2Phase3CommitprepararionPost(commitPreparationMessage, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {TransferCompleteMessage} [transferCompleteMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiV2Phase3TransfercompleteGet(transferCompleteMessage?: TransferCompleteMessage, options?: any): AxiosPromise<any> {
+            return localVarFp.apiV2Phase3TransfercompleteGet(transferCompleteMessage, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -575,8 +1331,63 @@ export class DefaultApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public apiV1TransferinitiationGet(initializationRequestMessage?: InitializationRequestMessage, options?: any) {
-        return DefaultApiFp(this.configuration).apiV1TransferinitiationGet(initializationRequestMessage, options).then((request) => request(this.axios, this.basePath));
+    public apiV2Phase1TransferinitiationPost(initializationRequestMessage?: InitializationRequestMessage, options?: any) {
+        return DefaultApiFp(this.configuration).apiV2Phase1TransferinitiationPost(initializationRequestMessage, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {LockEvidenceMessage} [lockEvidenceMessage] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public apiV2Phase2LockevidencePost(lockEvidenceMessage?: LockEvidenceMessage, options?: any) {
+        return DefaultApiFp(this.configuration).apiV2Phase2LockevidencePost(lockEvidenceMessage, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {TransferCommenceMessage} [transferCommenceMessage] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public apiV2Phase2TransfercommencePost(transferCommenceMessage?: TransferCommenceMessage, options?: any) {
+        return DefaultApiFp(this.configuration).apiV2Phase2TransfercommencePost(transferCommenceMessage, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {CommitFinalMessage} [commitFinalMessage] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public apiV2Phase3CommitfinalPost(commitFinalMessage?: CommitFinalMessage, options?: any) {
+        return DefaultApiFp(this.configuration).apiV2Phase3CommitfinalPost(commitFinalMessage, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {CommitPreparationMessage} [commitPreparationMessage] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public apiV2Phase3CommitprepararionPost(commitPreparationMessage?: CommitPreparationMessage, options?: any) {
+        return DefaultApiFp(this.configuration).apiV2Phase3CommitprepararionPost(commitPreparationMessage, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {TransferCompleteMessage} [transferCompleteMessage] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public apiV2Phase3TransfercompleteGet(transferCompleteMessage?: TransferCompleteMessage, options?: any) {
+        return DefaultApiFp(this.configuration).apiV2Phase3TransfercompleteGet(transferCompleteMessage, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

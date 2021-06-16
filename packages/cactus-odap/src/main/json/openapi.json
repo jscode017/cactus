@@ -123,6 +123,31 @@
                     }
                 }
             },
+            "SenderDltSystem":{
+                "type":"object"
+            },
+            "RecipientDltSystem":{
+                "type":"object"
+            },
+
+            "LockEvidenceClaim":{
+                "type":"object"
+            },
+            "LockClaimFormat":{
+                "type":"object"
+            },
+            "CommitFinalClaim":{
+                "type":"object"
+            },
+            "CommitFinalClaimFormat":{
+                "type":"object"
+            },
+            "CommitAcknowledgementClaim":{
+                "type":"object"
+            },
+            "CommitAcknowledgementClaimFormat":{
+                "type":"object"
+            },
             "InitializationRequestMessage":{
                 "type":"object",
                 "properties":{
@@ -305,19 +330,292 @@
                     "PayloadHash":{
                         "type":"string"
                     },
-                    "MessageSinature":{
+                    "MessageSignature":{
                         "type":"string"
                     }
                 }
-            }    
+            },
+            "TransferCommenceMessage":{
+                "type":"object",
+                "properties": {
+                    "MessageType":{
+                        "type":"string"
+                    },
+                    "OriginatorPubkey":{
+                        "type":"string"
+                    },
+                    "BefeficiaryPubkey":{
+                        "type":"string"
+                    },
+                    "SenderDltSystem":{
+                        "$ref":"#/components/schemas/SenderDltSystem"
+                    },
+                    "RecipientDltSystem":{
+                        "$ref":"#/components/schemas/RecipientDltSystem"
+                    },
+                    "ClientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "ServerIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "HashAssetProfile":{
+                        "type":"string"
+                    },
+                    "AssetUnit":{
+                        "type":"integer",
+                        "nullable":true
+                    },
+                    "HashPrevMessage":{
+                        "type":"string"
+                    },
+                    "ClientTransferNumber":{
+                        "type":"integer",
+                        "nullable": true
+                    },
+                    "ClientSignature":{
+                        "type":"string"
+                    }
+                }
+            },
+            "TransferCommenceResponseMessage":{
+                "type":"object",
+                "properties": {
+                    "ClientIdentityPubKey":{
+                        "type":"string"
+                    },
+                    "ServerIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "HashCommenceRequest":{
+                        "type":"string"
+                    },
+                    "ServerTransferNumber":{
+                        "type":"integer",
+                        "nullable":true
+                    },
+                    "ServerSignature":{
+                        "type":"string"
+                    },
+                    "MessageType":{
+                        "type":"string"
+                    },
+                    "MessageHash":{
+                        "type":"string"
+                    }
+                }
+            },
+            "LockEvidenceMessage":{
+                "type":"object",
+                "properties": {
+                    "ClientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "ServerIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "LockEvidenceClaim":{
+                        "$ref":"#/components/schemas/LockEvidenceClaim"
+                    },
+                    "LockEvidenceFormat":{
+                        "$ref":"#/components/schemas/LockClaimFormat",
+                        "nullable":true
+                    },
+                    "LockEvidenceExpirarion":{
+                        "type":"string"
+                    },
+                    "HashCommenceAckRequest":{
+                        "type":"string"
+                    },
+                    "ClientTransferNumber":{
+                        "type":"integer",
+                        "nullable":true
+                    },
+                    "ClientSignatureRequest":{
+                        "type":"string"
+                    },
+                    "MessageType":{
+                        "type":"string"
+                    },
+                    "MessageHash":{
+                        "type":"string"
+                    }
+                }
+            },
+            "LockEvidenceResponseMessage":{
+                "type":"object",
+                "properties": {
+                    "ClientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "ServerIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "HashLockEvidenceRequest":{
+                        "type":"string"
+                    },
+                    "ServerTransferNumber":{
+                        "type":"integer",
+                        "nullable":true
+                    },
+                    "ServerSignature":{
+                        "type":"string"
+                    },
+                    "MessageType":{
+                        "type":"string"
+                    },
+                    "MessageHash":{
+                        "type":"string"
+                    }
+                }
+            },
+            "CommitPreparationMessage":{
+                "type":"object",
+                "properties": {
+                    "MessageType":{
+                        "type":"string"
+                    },
+                    "ClientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "ServerIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "HashLockEvidenceAck":{
+                        "type":"string"
+                    },
+                    "ClientTransferNumber":{
+                        "type":"integer",
+                        "nullable":true
+                    },
+                    "ClientSignature":{
+                        "type":"string"
+                    }
+                }
+            },
+            "CommitPreparationResponse":{
+                "type":"object",
+                "properties": {
+                    "MessageType":{
+                        "type":"string"
+                    },
+                    "ClientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "ServerIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "HashCommitPrep":{
+                        "type":"string"
+                    },
+                    "ServerTransferNumber":{
+                        "type":"string"
+                    },
+                    "ServerSignature":{
+                        "type":"string"
+                    }
+                }
+            },
+            "CommitFinalMessage":{
+                "type":"object",
+                "properties": {
+                    "MessageType":{
+                        "type":"string"
+                    },
+                    "ClientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "ServerIdentityKey":{
+                        "type":"string"
+                    },
+                    "CommitFinalClaim":{
+                        "$ref":"#/components/schemas/CommitFinalResponseMessage"
+                    },
+                    "CommitFinalClaimFormat":{
+                        "$ref":"#/components/schemas/CommitFinalClaimFormat"
+                    },
+                    "HashCommitPrepareAck":{
+                        "type":"string"
+                    },
+                    "ClientTransferNumber":{
+                        "type":"integer",
+                        "nullable": true
+                    },
+                    "ClientSignature":{
+                        "type":"string"
+                    }
+                }
+            },
+            "CommitFinalResponseMessage":{
+                "type":"object",
+                "properties": {
+                    "MessageType":{
+                        "type":"string"
+                    },
+                    "ClientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "ServerIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "CommitAcknowledgementClaim":{
+                        "$ref":"#/components/schemas/CommitAcknowledgementClaim"
+                    },
+                    "CommitAcknowledgementClaimFormat":{
+                        "$ref":"#/components/schemas/CommitAcknowledgementClaimFormat"
+                    },
+                    "HashCommitFinal":{
+                        "type":"string"
+                    },
+                    "ServerTransferNumber":{
+                        "type":"integer",
+                        "nullable": true
+                    },
+                    "ServerSignature":{
+                        "type":"string"
+                    }
+                }
+            },
+            "TransferCompleteMessage":{
+                "type":"object",
+                "properties": {
+                    "MessageType":{
+                        "type":"string"
+                    },
+                    "ClientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "ServerIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "HashCommitFinalAck":{
+                        "type":"string"
+                    },
+                    "ClientTransferNumber":{
+                        "type":"integer",
+                        "nullable":true
+                    },
+                    "ClientSignature":{
+                        "type":"string"
+                    }   
+                }
+            },
+            "TransferCompletMessageResponse":{
+                "type":"object",
+                "properties": {
+                    "OK":{
+                        "type":"string"
+                    }
+                }
+            }
         }
     },
     "paths": {
-        "/api/v1/transferinitiation":{
-            "get":{
+        "/api/v2/phase1/transferinitiation":{
+            "post":{
                 "x-hyperledger-cactus": {
                     "http": {
-                        "verbLowerCase": "get",
+                        "verbLowerCase": "post",
                         "path": "/api/v1/transferinitiation"
                     }
                 },
@@ -332,12 +630,171 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "OK",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/InitialMessageAck"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/phase2/transfercommence":{
+            "post":{
+                "x-hyperledger-cactus": {
+                    "http": {
+                        "verbLowerCase": "post",
+                        "path": "/api/v2/phase2/transfercommence"
+                    }
+                },
+                "description":"",
+                "requestBody":{
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TransferCommenceMessage"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TransferCommenceResponseMessage"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/phase2/lockevidence":{
+            "post":{
+                "x-hyperledger-cactus": {
+                    "http": {
+                        "verbLowerCase": "post",
+                        "path": "/api/v2/phase2/lockevidence"
+                    }
+                },
+                "description":"",
+                "requestBody":{
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LockEvidenceMessage"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LockEvidenceResponseMessage"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/phase3/commitprepararion":{
+            "post":{
+                "x-hyperledger-cactus": {
+                    "http": {
+                        "verbLowerCase": "post",
+                        "path": "/api/v2/phase3/commitpreparation"
+                    }
+                },
+                "description":"",
+                "requestBody":{
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CommitPreparationMessage"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CommitPreparationResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/phase3/commitfinal":{
+            "post":{
+                "x-hyperledger-cactus": {
+                    "http": {
+                        "verbLowerCase": "post",
+                        "path": "/api/v2/phase3/commitfinal"
+                    }
+                },
+                "description":"",
+                "requestBody":{
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref":  "#/components/schemas/CommitFinalMessage"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CommitFinalResponseMessage"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/phase3/transfercomplete":{
+            "get":{
+                "x-hyperledger-cactus": {
+                    "http": {
+                        "verbLowerCase": "get",
+                        "path": "/api/v2/phase3/transfercomplete"
+                    }
+                },
+                "description":"",
+                "requestBody":{
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TransferCompleteMessage"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                                 }
                             }
                         }

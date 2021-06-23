@@ -48,7 +48,9 @@ export class OdapGateWayCactusPlugin
   public get className(): string {
     return OdapGateWayCactusPlugin.CLASS_NAME;
   }
-
+  /*public getAspect(): PluginAspect {
+    return PluginAspect.WEB_SERVICE;
+  }*/
   constructor(public readonly options: IOdapGateWayCactusPluginOptions) {
     const fnTag = `${this.className}#constructor()`;
 
@@ -76,7 +78,9 @@ export class OdapGateWayCactusPlugin
     if (Array.isArray(this.endpoints)) {
       return this.endpoints;
     }
-    const odapGateWay = new OdapGateway("cactus-plugin#odapGateway");
+    const odapGateWay = new OdapGateway("cactus-plugin#odapGateway", [
+      "dummy array",
+    ]);
     const transferinitiation = new TransferInitiationEndpoint({
       gateway: odapGateWay,
     });

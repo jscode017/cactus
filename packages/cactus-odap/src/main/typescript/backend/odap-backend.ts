@@ -1,19 +1,11 @@
 import { AddressInfo } from "net";
 import { Server } from "http";
 
-import { JWK } from "jose";
-import { v4 as uuidv4 } from "uuid";
+//import { JWK } from "jose";
+//import { v4 as uuidv4 } from "uuid";
 import exitHook, { IAsyncExitHookDoneCallback } from "async-exit-hook";
 
-import {
-  CactusNode,
-  Consortium,
-  ConsortiumDatabase,
-  ConsortiumMember,
-  IPluginKeychain,
-  Ledger,
-  LedgerType,
-} from "@hyperledger/cactus-core-api";
+import { IPluginKeychain } from "@hyperledger/cactus-core-api";
 
 import { PluginRegistry } from "@hyperledger/cactus-core";
 
@@ -108,7 +100,7 @@ export class OdapGateWayNode {
     return {
       apiServerA,
       OdapGateWayApiClientA: new OdapApi(
-        new Configuration({ basePath: nodeApiHostA })
+        new Configuration({ basePath: nodeApiHostA }),
       ),
     };
   }

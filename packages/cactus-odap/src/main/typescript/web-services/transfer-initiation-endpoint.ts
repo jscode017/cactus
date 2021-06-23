@@ -87,7 +87,7 @@ export class TransferInitiationEndpoint implements IWebServiceEndpoint {
     this.log.debug(reqTag);
     const reqBody: InitializationRequestMessage = req.body;
     try {
-      const resBody = await this.options.gateway.InitiateTransfer(reqBody);
+      const resBody = await this.options.gateway.initiateTransfer(reqBody);
       res.json(resBody);
     } catch (ex) {
       this.log.error(`Crash while serving ${reqTag}`, ex);

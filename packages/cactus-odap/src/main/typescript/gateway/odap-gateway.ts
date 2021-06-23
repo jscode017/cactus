@@ -12,31 +12,43 @@ import {
   TransferCompleteMessage,
   TransferCompletMessageResponse,
 } from "../generated/openapi/typescript-axios";
+import { v4 as uuidV4 } from "uuid";
+import { time } from "console";
+import { SHA256 } from "crypto-js";
+import secp256k1 from "secp256k1";
+
 export class OdapGateway {
   name: string;
-  public constructor(name: string) {
+  //map[]object, object refer to a state
+  //of a specific comminications
+  private supportedDltIDs: string[];
+  //TODO: use one object as only parameter of constructor
+  public constructor(name: string, dltIDs: string[]) {
     this.name = name;
+    this.supportedDltIDs = dltIDs;
   }
-  public async InitiateTransfer(
+  public async initiateTransfer(
     req: InitializationRequestMessage,
   ): Promise<InitialMessageAck> {
-    const validInitializationRequest = await this.CheckValidInitializationRequest(
-      req,
-    );
-    if (!validInitializationRequest) {
-      throw new Error(`InitiateTransfer error, InitializationRequest Invalid`);
-    }
-    return { SessionID: "would filled out this later" };
+    const recvTimestamp: string = time.toString();
+    const InitializationRequestMessageHash = SHA256(
+      JSON.stringify(req),
+    ).toString();
+    this.checkValidInitializationRequest(req);
+
+    const processedTimestamp: string = time.toString();
+    return {
+      sessionID: uuidV4(),
+      initialRequestMessageHash: InitializationRequestMessageHash,
+      timeStamp: recvTimestamp,
+      processedTimeStamp: processedTimestamp,
+    };
   }
   public async LockEvidenceTransferCommence(
     req: TransferCommenceMessage,
   ): Promise<TransferCommenceResponseMessage> {
-    const validTransferCommenceRequest = await this.CheckValidtransferCommenceRequest(
-      req,
-    );
-    if (!validTransferCommenceRequest) {
-      throw new Error(`transfer commence message type not match`);
-    }
+    this.checkValidtransferCommenceRequest(req);
+
     return { MessageType: "urn:ietf:odap:msgtype:transfer-commence-msg" };
   }
   public async LockEvidence(
@@ -86,6 +98,89 @@ export class OdapGateway {
     return {};
   }
 
+  public checkValidInitializationRequest(
+    req: InitializationRequestMessage,
+  ): void {
+    const fntag = "${this.className}#checkValidInitializationRequest()";
+
+    const uintSourceGatewayPubkey = Uint8Array.from(
+      Buffer.from(req.sourceGatewayPubkey, "hex"),
+    );
+    if (!secp256k1.privateKeyVerify(uintSourceGatewayPubkey)) {
+      throw new Error(`${fntag} invalid format of source gateway pubkey`);
+    }
+
+    const uintRecipientGatewayPubkey = Uint8Array.from(
+      Buffer.from(req.recipientGateWayPubkey, "hex"),
+    );
+    if (!secp256k1.privateKeyVerify(uintRecipientGatewayPubkey)) {
+      throw new Error(`${fntag}, invalid format of recipient gateway pubkey`);
+    }
+
+    if (!(req.sourceGateWayDltSystem in this.supportedDltIDs)) {
+      throw new Error(
+        `${fntag}, source gate way dlt system is not supported in this gateway`,
+      );
+    }
+
+    if (!(req.sourceGateWayDltSystem in this.supportedDltIDs)) {
+      throw new Error(
+        `${fntag}, source gate way dlt system is not supported in this gateway`,
+      );
+    }
+
+    if (!(req.recipientGateWayDltSystem in this.supportedDltIDs)) {
+      throw new Error(
+        `${fntag}, recipient gate way dlt system is not supported in this gateway`,
+      );
+    }
+  }
+  public checkValidtransferCommenceRequest(req: TransferCommenceMessage): void {
+    const fntag = "${this.className}#checkValidtransferCommenceRequest()";
+    if (req.messageType != "urn:ietf:odap:msgtype:transfer-commence-msg") {
+      throw new Error(`${fntag}, wrong message type for transfer commence`);
+    }
+
+    const uintOriginatorPubkey = Uint8Array.from(
+      Buffer.from(req.originatorPubkey, "hex"),
+    );
+    if (!secp256k1.privateKeyVerify(uintOriginatorPubkey)) {
+      throw new Error(`${fntag} invalid format of originator pubkey`);
+    }
+
+    const uintBeneficiaryPubkey = Uint8Array.from(
+      Buffer.from(req.originatorPubkey, "hex"),
+    );
+    if (!secp256k1.privateKeyVerify(uintBeneficiaryPubkey)) {
+      throw new Error(`${fntag} invalid format of beneficiary pubkey`);
+    }
+
+    if (!(req.senderDltSystem in this.supportedDltIDs)) {
+      throw new Error(
+        `${fntag}, sender dlt system is not supported in this gateway`,
+      );
+    }
+
+    if (!(req.recipientDltSystem in this.supportedDltIDs)) {
+      throw new Error(
+        `${fntag}, recipient dlt system is not supported in this gateway`,
+      );
+    }
+
+    const uintClientIdentityPubkey = Uint8Array.from(
+      Buffer.from(req.clientIdentityPubkey, "hex"),
+    );
+    if (!secp256k1.privateKeyVerify(uintClientIdentityPubkey)) {
+      throw new Error(`${fntag} invalid format of client identity pubkey`);
+    }
+
+    const uintServerIdentityPubkey = Uint8Array.from(
+      Buffer.from(req.serverIdentityPubkey, "hex"),
+    );
+    if (!secp256k1.privateKeyVerify(uintServerIdentityPubkey)) {
+      throw new Error(`${fntag} invalid format of server identity pubkey`);
+    }
+  }
   public async CheckValidTransferCompleteRequest(
     req: TransferCompleteMessage,
   ): Promise<boolean> {
@@ -107,15 +202,5 @@ export class OdapGateway {
     req: LockEvidenceMessage,
   ): Promise<boolean> {
     return req.MessageType == "urn:ietf:odap:msgtype:lock-evidence-req-msg";
-  }
-  public async CheckValidtransferCommenceRequest(
-    req: TransferCommenceMessage,
-  ): Promise<boolean> {
-    return req.MessageType == "urn:ietf:odap:msgtype:transfer-commence-msg";
-  }
-  public async CheckValidInitializationRequest(
-    req: InitializationRequestMessage,
-  ): Promise<boolean> {
-    return req.Version == "0.0.0";
   }
 }

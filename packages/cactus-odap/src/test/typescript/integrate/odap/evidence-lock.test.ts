@@ -10,7 +10,11 @@ test("dummy test for lock evidence transfer commence method", async (t: Test) =>
     send initiation flow
     recv initiation ack
     */
-  const odapGateWay = new OdapGateway("dummy", ["a", "b"]);
+  const odapConstructor = {
+    name: "cactus-plugin#odapGateway",
+    dltIDs: ["dummy"],
+  };
+  const odapGateWay = new OdapGateway(odapConstructor);
   const transferCommenceMessage = {
     messageType: "",
     originatorPubkey: "",

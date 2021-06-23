@@ -278,7 +278,8 @@
                 "required": [
                     "initialRequestMessageHash",
                     "timeStamp",
-                    "processedTimeStamp"
+                    "processedTimeStamp",
+                    "sessionID"
                 ]
             },
             "TransferCommenceMessage":{

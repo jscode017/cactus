@@ -23,8 +23,8 @@ test("dummy test for transfer initiation flow", async (t: Test) => {
 
   const initializationRequestMessage = {
     version: "0.0.0",
-    loggingProfile: {},
-    accessControlProfile: {},
+    loggingProfile: ["dummy"],
+    accessControlProfile: ["dummy"],
     initializationRequestMessageSignature:
       "TODO: modify this later, now just let test run", //secp256k1.ecdsaSign(Buffer.from("0x000", `hex`),dummyPrivKeyBytes),
     sourceGatewayPubkey: dummyPubKeyBytes,

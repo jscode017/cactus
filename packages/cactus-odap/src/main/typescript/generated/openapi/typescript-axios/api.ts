@@ -454,16 +454,16 @@ export interface InitializationRequestMessage {
     applicationProfile?: AssetProfile;
     /**
      * 
-     * @type {object}
+     * @type {Array<string>}
      * @memberof InitializationRequestMessage
      */
-    loggingProfile: object;
+    loggingProfile: Array<string>;
     /**
      * 
-     * @type {AssetProfile}
+     * @type {Array<string>}
      * @memberof InitializationRequestMessage
      */
-    accessControlProfile: AssetProfile;
+    accessControlProfile: Array<string>;
     /**
      * 
      * @type {string}
@@ -898,43 +898,43 @@ export interface TransferCommenceResponseMessage {
      * @type {string}
      * @memberof TransferCommenceResponseMessage
      */
-    ClientIdentityPubKey?: string;
+    clientIdentityPubkey?: string;
     /**
      * 
      * @type {string}
      * @memberof TransferCommenceResponseMessage
      */
-    ServerIdentityPubkey?: string;
+    serverIdentityPubkey?: string;
     /**
      * 
      * @type {string}
      * @memberof TransferCommenceResponseMessage
      */
-    HashCommenceRequest?: string;
+    hashCommenceRequest?: string;
     /**
      * 
      * @type {number}
      * @memberof TransferCommenceResponseMessage
      */
-    ServerTransferNumber?: number | null;
+    serverTransferNumber?: number | null;
     /**
      * 
      * @type {string}
      * @memberof TransferCommenceResponseMessage
      */
-    ServerSignature?: string;
+    serverSignature?: string;
     /**
      * 
      * @type {string}
      * @memberof TransferCommenceResponseMessage
      */
-    MessageType?: string;
+    messageType?: string;
     /**
      * 
      * @type {string}
      * @memberof TransferCommenceResponseMessage
      */
-    MessageHash?: string;
+    messageHash?: string;
 }
 /**
  * 

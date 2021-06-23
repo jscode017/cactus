@@ -85,10 +85,16 @@
                 }
             },
             "LoggingProfile":{
-                "type":"object"
+                "type":"array",
+                "items": {
+                    "type":"string"
+                }
             },
             "AccessControlProfile":{
-                "type":"object"
+                "type":"array",
+                "items": {
+                    "type":"string"
+                }
             },
             "Permissions":{
                 "type":"object"
@@ -178,7 +184,7 @@
                         "$ref":"#/components/schemas/LoggingProfile"
                     },
                     "accessControlProfile":{
-                        "$ref":"#/components/schemas/AssetProfile"
+                        "$ref":"#/components/schemas/AccessControlProfile"
                     },
                     "initializationRequestMessageSignature":{
                         "type":"string"
@@ -340,26 +346,26 @@
             "TransferCommenceResponseMessage":{
                 "type":"object",
                 "properties": {
-                    "ClientIdentityPubKey":{
+                    "clientIdentityPubkey":{
                         "type":"string"
                     },
-                    "ServerIdentityPubkey":{
+                    "serverIdentityPubkey":{
                         "type":"string"
                     },
-                    "HashCommenceRequest":{
+                    "hashCommenceRequest":{
                         "type":"string"
                     },
-                    "ServerTransferNumber":{
+                    "serverTransferNumber":{
                         "type":"integer",
                         "nullable":true
                     },
-                    "ServerSignature":{
+                    "serverSignature":{
                         "type":"string"
                     },
-                    "MessageType":{
+                    "messageType":{
                         "type":"string"
                     },
-                    "MessageHash":{
+                    "messageHash":{
                         "type":"string"
                     }
                 }

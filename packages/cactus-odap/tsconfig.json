@@ -4,11 +4,12 @@
     "outDir": "./dist/lib/", /* Redirect output structure to the directory. */
     "declarationDir": "dist/types",
     "resolveJsonModule": true,
+    "allowJs": false,
+  },
+  "ts-node": {
+    "files": true
   },
   "include": [
     "./src"
-  ],
-  "exclude": [
-    "./node_modules", 
   ]
 }

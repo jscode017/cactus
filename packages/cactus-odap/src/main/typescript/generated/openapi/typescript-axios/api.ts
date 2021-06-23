@@ -299,6 +299,17 @@ export interface CommitPreparationResponse {
 /**
  * 
  * @export
+ * @enum {string}
+ */
+export enum CredentialProfile {
+    Saml = 'SAML',
+    Oauth = 'OAUTH',
+    X509 = 'X509'
+}
+
+/**
+ * 
+ * @export
  * @interface History
  */
 export interface History {
@@ -356,43 +367,43 @@ export interface InitialMessageAck {
      * @type {string}
      * @memberof InitialMessageAck
      */
-    SessionID?: string;
+    sessionID?: string;
     /**
      * 
      * @type {number}
      * @memberof InitialMessageAck
      */
-    SequenceNumber?: number;
+    sequenceNumber?: number;
     /**
      * 
      * @type {string}
      * @memberof InitialMessageAck
      */
-    OdapPhase?: InitialMessageAckOdapPhaseEnum;
+    odapPhase?: InitialMessageAckOdapPhaseEnum;
     /**
      * 
      * @type {string}
      * @memberof InitialMessageAck
      */
-    InitialRequestMessageHash?: string;
+    initialRequestMessageHash: string;
     /**
      * 
      * @type {string}
      * @memberof InitialMessageAck
      */
-    Destination?: string;
+    destination?: string;
     /**
      * 
      * @type {string}
      * @memberof InitialMessageAck
      */
-    TimeStamp?: string;
+    timeStamp: string;
     /**
      * 
      * @type {string}
      * @memberof InitialMessageAck
      */
-    ProcessedTimeStamp?: string;
+    processedTimeStamp: string;
 }
 
 /**
@@ -416,121 +427,127 @@ export interface InitializationRequestMessage {
      * @type {string}
      * @memberof InitializationRequestMessage
      */
-    Version?: string;
+    version?: string;
     /**
      * 
      * @type {string}
      * @memberof InitializationRequestMessage
      */
-    DeveloperURN?: string;
+    developerURN?: string;
+    /**
+     * 
+     * @type {CredentialProfile}
+     * @memberof InitializationRequestMessage
+     */
+    credentialProfile?: CredentialProfile;
     /**
      * 
      * @type {object}
      * @memberof InitializationRequestMessage
      */
-    PayloadProfile?: object;
+    payloadProfile?: object;
     /**
      * 
      * @type {AssetProfile}
      * @memberof InitializationRequestMessage
      */
-    ApplicationProfile?: AssetProfile;
+    applicationProfile?: AssetProfile;
     /**
      * 
      * @type {object}
      * @memberof InitializationRequestMessage
      */
-    LoggingProfile?: object;
+    loggingProfile: object;
     /**
      * 
      * @type {AssetProfile}
      * @memberof InitializationRequestMessage
      */
-    AccessControlProfile?: AssetProfile;
+    accessControlProfile: AssetProfile;
     /**
      * 
      * @type {string}
      * @memberof InitializationRequestMessage
      */
-    InitializationRequestMessageSignature?: string;
+    initializationRequestMessageSignature: string;
     /**
      * 
      * @type {string}
      * @memberof InitializationRequestMessage
      */
-    SourceGatewayPubkey?: string;
+    sourceGatewayPubkey: string;
     /**
      * 
      * @type {string}
      * @memberof InitializationRequestMessage
      */
-    SourceGateWayDltSystem?: string;
+    sourceGateWayDltSystem: string;
     /**
      * 
      * @type {string}
      * @memberof InitializationRequestMessage
      */
-    RecipentGateWayPubkey?: string;
+    recipientGateWayPubkey: string;
     /**
      * 
      * @type {string}
      * @memberof InitializationRequestMessage
      */
-    RecipentGateWayDltSystem?: string;
+    recipientGateWayDltSystem: string;
     /**
      * 
      * @type {string}
      * @memberof InitializationRequestMessage
      */
-    EscrowType?: InitializationRequestMessageEscrowTypeEnum;
+    escrowType?: InitializationRequestMessageEscrowTypeEnum;
     /**
      * 
      * @type {string}
      * @memberof InitializationRequestMessage
      */
-    ExpiryTime?: string;
+    expiryTime?: string;
     /**
      * 
      * @type {boolean}
      * @memberof InitializationRequestMessage
      */
-    MultipleClaimsAllowed?: boolean;
+    multipleClaimsAllowed?: boolean;
     /**
      * 
      * @type {boolean}
      * @memberof InitializationRequestMessage
      */
-    MultipleCancelsAllowed?: boolean;
+    multipleCancelsAllowed?: boolean;
     /**
      * 
      * @type {object}
      * @memberof InitializationRequestMessage
      */
-    Permissions?: object;
+    permissions?: object;
     /**
      * 
      * @type {string}
      * @memberof InitializationRequestMessage
      */
-    Origin?: string;
+    origin?: string;
     /**
      * 
      * @type {string}
      * @memberof InitializationRequestMessage
      */
-    Destination?: string;
+    destination?: string;
     /**
      * 
      * @type {object}
      * @memberof InitializationRequestMessage
      */
-    SubsequentCalls?: object;
+    subsequentCalls?: object;
     /**
      * 
      * @type {Array<History>}
      * @memberof InitializationRequestMessage
      */
-    Histories?: Array<History>;
+    histories?: Array<History>;
 }
 
 /**
@@ -802,73 +819,73 @@ export interface TransferCommenceMessage {
      * @type {string}
      * @memberof TransferCommenceMessage
      */
-    MessageType?: string;
+    messageType: string;
     /**
      * 
      * @type {string}
      * @memberof TransferCommenceMessage
      */
-    OriginatorPubkey?: string;
+    originatorPubkey: string;
     /**
      * 
      * @type {string}
      * @memberof TransferCommenceMessage
      */
-    BefeficiaryPubkey?: string;
-    /**
-     * 
-     * @type {object}
-     * @memberof TransferCommenceMessage
-     */
-    SenderDltSystem?: object;
-    /**
-     * 
-     * @type {object}
-     * @memberof TransferCommenceMessage
-     */
-    RecipientDltSystem?: object;
+    beneficiaryPubkey: string;
     /**
      * 
      * @type {string}
      * @memberof TransferCommenceMessage
      */
-    ClientIdentityPubkey?: string;
+    senderDltSystem: string;
     /**
      * 
      * @type {string}
      * @memberof TransferCommenceMessage
      */
-    ServerIdentityPubkey?: string;
+    recipientDltSystem: string;
     /**
      * 
      * @type {string}
      * @memberof TransferCommenceMessage
      */
-    HashAssetProfile?: string;
+    clientIdentityPubkey: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCommenceMessage
+     */
+    serverIdentityPubkey: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCommenceMessage
+     */
+    hashAssetProfile: string;
     /**
      * 
      * @type {number}
      * @memberof TransferCommenceMessage
      */
-    AssetUnit?: number | null;
+    assetUnit?: number | null;
     /**
      * 
      * @type {string}
      * @memberof TransferCommenceMessage
      */
-    HashPrevMessage?: string;
+    hashPrevMessage: string;
     /**
      * 
      * @type {number}
      * @memberof TransferCommenceMessage
      */
-    ClientTransferNumber?: number | null;
+    clientTransferNumber?: number | null;
     /**
      * 
      * @type {string}
      * @memberof TransferCommenceMessage
      */
-    ClientSignature?: string;
+    clientSignature: string;
 }
 /**
  * 

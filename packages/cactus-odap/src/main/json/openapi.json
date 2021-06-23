@@ -22,6 +22,14 @@
     ],
     "components": {
         "schemas": {
+            "CredentialProfile":{
+                "type":"string",
+                "enum": [
+                    "SAML",
+                    "OAUTH",
+                    "X509"
+                ]
+            },  
             "PayloadProfile":{
                 "type":"object"
             },
@@ -151,47 +159,43 @@
             "InitializationRequestMessage":{
                 "type":"object",
                 "properties":{
-                    "Version":{
+                    "version":{
                         "type":"string"
                     },
-                    "DeveloperURN":{
+                    "developerURN":{
                         "type":"string"
                     },
-                    "PayloadProfile":{
+                    "credentialProfile":{
+                        "$ref":"#/components/schemas/CredentialProfile"
+                    },
+                    "payloadProfile":{
                         "$ref":"#/components/schemas/PayloadProfile"
                     },
-                    "ApplicationProfile":{
+                    "applicationProfile":{
                         "$ref":"#/components/schemas/AssetProfile"
                     },
-                    "LoggingProfile":{
-                        "$ref":"#/components/schemas/LoggingProfile",
-                        "nullable":false
+                    "loggingProfile":{
+                        "$ref":"#/components/schemas/LoggingProfile"
                     },
-                    "AccessControlProfile":{
-                        "$ref":"#/components/schemas/AssetProfile",
-                        "nullable":false
+                    "accessControlProfile":{
+                        "$ref":"#/components/schemas/AssetProfile"
                     },
-                    "InitializationRequestMessageSignature":{
-                        "type":"string",
-                        "nullable":false
+                    "initializationRequestMessageSignature":{
+                        "type":"string"
                     },
-                    "SourceGatewayPubkey":{
-                        "type":"string",
-                        "nullable":false
+                    "sourceGatewayPubkey":{
+                        "type":"string"
                     },
-                    "SourceGateWayDltSystem":{
-                        "type":"string",
-                        "nullable":false
+                    "sourceGateWayDltSystem":{
+                        "type":"string"
                     },
-                    "RecipentGateWayPubkey":{
-                        "type":"string",
-                        "nullable":false
+                    "recipientGateWayPubkey":{
+                        "type":"string"
                     },
-                    "RecipentGateWayDltSystem":{
-                        "type":"string",
-                        "nullable":false
+                    "recipientGateWayDltSystem":{
+                        "type":"string"
                     },
-                    "EscrowType":{
+                    "escrowType":{
                         "type":"string",
                         "enum":[
                             "FAUCET",
@@ -203,45 +207,54 @@
                             "BURN"
                         ]
                     },
-                    "ExpiryTime":{
+                    "expiryTime":{
                         "type":"string"
                     },
-                    "MultipleClaimsAllowed":{
+                    "multipleClaimsAllowed":{
                         "type":"boolean"
                     },
-                    "MultipleCancelsAllowed":{
+                    "multipleCancelsAllowed":{
                         "type":"boolean"
                     },
-                    "Permissions":{
+                    "permissions":{
                         "$ref":"#/components/schemas/Permissions"
                     },
-                    "Origin":{
+                    "origin":{
                         "type":"string"
                     },
-                    "Destination":{
+                    "destination":{
                         "type":"string"
                     },
-                    "SubsequentCalls":{
+                    "subsequentCalls":{
                         "type":"object"
                     },
-                    "Histories":{
+                    "histories":{
                         "type":"array",
                         "items":{
                             "$ref":"#/components/schemas/History"
                         }
                     }
-                }
+                },
+                "required": [
+                    "loggingProfile",
+                    "accessControlProfile",
+                    "initializationRequestMessageSignature",
+                    "sourceGatewayPubkey",
+                    "sourceGateWayDltSystem",
+                    "recipientGateWayPubkey",
+                    "recipientGateWayDltSystem"
+                ]
             },
             "InitialMessageAck":{
                 "type":"object",
                 "properties": {
-                    "SessionID":{
+                    "sessionID":{
                         "type":"string"
                     },
-                    "SequenceNumber":{
+                    "sequenceNumber":{
                         "type":"number"
                     },
-                    "OdapPhase":{
+                    "odapPhase":{
                         "type":"string",
                         "enum":[
                             "TransferInitialization",
@@ -249,134 +262,79 @@
                             "CommitmentEstablishment"
                         ]
                     },
-                    "InitialRequestMessageHash":{
-                        "type":"string",
-                        "nullable":false
-                    },
-                    "Destination":{
+                    "initialRequestMessageHash":{
                         "type":"string"
                     },
-                    "TimeStamp":{
-                        "type":"string",
-                        "nullable": false
-                    },
-                    "ProcessedTimeStamp":{
-                        "type":"string",
-                        "nullable": false
-                    }
-                }
-            },
-            "OdapMessage":{
-                "type":"object",
-                "properties": {
-                    "SequenceNumber":{
-                        "type":"number"
-                    },
-                    "Phase":{
-                        "type":"string",
-                        "enum":[
-                            "TransferInitialization",
-                            "LockEvidenceVerification",
-                            "CommitmentEstablishment"
-                        ]
-                    },
-                    "ResourceURL":{
+                    "destination":{
                         "type":"string"
                     },
-                    "DeveloperURN":{
+                    "timeStamp":{
                         "type":"string"
                     },
-                    "ActionResponse":{
-                        "type":"object",
-                        "properties": {
-                            "ResponseCode":{
-                                "type":"string",
-                                "enum":[
-                                    "200",
-                                    "404"
-                                ],
-                                "x-enum-varnames":[
-                                    "OK",
-                                    "RESOURCE_NOT_FOUND"
-                                ]
-                            },
-                            "Arguments":{
-                                "type":"array",
-                                "items":{}
-                            }
-                        }
-                    },
-                    "CredentialProfile":{
-                        "type":"string",
-                        "enum":[
-                            "SAML",
-                            "OAuth",
-                            "X509"
-                        ]
-                    },
-                    "CredentialBlock":{
-                        "type":"array",
-                        "items":{}
-                    },
-                    "CredentialsProfile":{
-                        "$ref":"#/components/schemas/PayloadProfile"
-                    },
-                    "ApplicationProfile":{
-                        "$ref":"#/components/schemas/ApplicationProfile"
-                    },
-                    "Payload":{
-                        "$ref":"#/components/schemas/Payload"
-                    },
-                    "PayloadHash":{
-                        "type":"string"
-                    },
-                    "MessageSignature":{
+                    "processedTimeStamp":{
                         "type":"string"
                     }
-                }
+                },
+                "required": [
+                    "initialRequestMessageHash",
+                    "timeStamp",
+                    "processedTimeStamp"
+                ]
             },
             "TransferCommenceMessage":{
                 "type":"object",
                 "properties": {
-                    "MessageType":{
+                    "messageType":{
                         "type":"string"
                     },
-                    "OriginatorPubkey":{
+                    "originatorPubkey":{
                         "type":"string"
                     },
-                    "BefeficiaryPubkey":{
+                    "beneficiaryPubkey":{
                         "type":"string"
                     },
-                    "SenderDltSystem":{
-                        "$ref":"#/components/schemas/SenderDltSystem"
+                    "senderDltSystem":{
+                        "type": "string"
                     },
-                    "RecipientDltSystem":{
-                        "$ref":"#/components/schemas/RecipientDltSystem"
+                    "recipientDltSystem":{
+                        "type": "string"
                     },
-                    "ClientIdentityPubkey":{
+                    "clientIdentityPubkey":{
                         "type":"string"
                     },
-                    "ServerIdentityPubkey":{
+                    "serverIdentityPubkey":{
                         "type":"string"
                     },
-                    "HashAssetProfile":{
+                    "hashAssetProfile":{
                         "type":"string"
                     },
-                    "AssetUnit":{
+                    "assetUnit":{
                         "type":"integer",
                         "nullable":true
                     },
-                    "HashPrevMessage":{
+                    "hashPrevMessage":{
                         "type":"string"
                     },
-                    "ClientTransferNumber":{
+                    "clientTransferNumber":{
                         "type":"integer",
                         "nullable": true
                     },
-                    "ClientSignature":{
+                    "clientSignature":{
                         "type":"string"
                     }
-                }
+                },
+                "required": [
+                    "messageType",
+                    "originatorPubkey",
+                    "beneficiaryPubkey",
+                    "senderDltSystem",
+                    "recipientDltSystem",
+                    "clientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "hashAssetProfile",
+                    "hashPrevMessage",
+                    "clientSignature"
+                ]
             },
             "TransferCommenceResponseMessage":{
                 "type":"object",
@@ -604,6 +562,75 @@
                 "type":"object",
                 "properties": {
                     "OK":{
+                        "type":"string"
+                    }
+                }
+            },
+            "OdapMessage":{
+                "type":"object",
+                "properties": {
+                    "SequenceNumber":{
+                        "type":"number"
+                    },
+                    "Phase":{
+                        "type":"string",
+                        "enum":[
+                            "TransferInitialization",
+                            "LockEvidenceVerification",
+                            "CommitmentEstablishment"
+                        ]
+                    },
+                    "ResourceURL":{
+                        "type":"string"
+                    },
+                    "DeveloperURN":{
+                        "type":"string"
+                    },
+                    "ActionResponse":{
+                        "type":"object",
+                        "properties": {
+                            "ResponseCode":{
+                                "type":"string",
+                                "enum":[
+                                    "200",
+                                    "404"
+                                ],
+                                "x-enum-varnames":[
+                                    "OK",
+                                    "RESOURCE_NOT_FOUND"
+                                ]
+                            },
+                            "Arguments":{
+                                "type":"array",
+                                "items":{}
+                            }
+                        }
+                    },
+                    "CredentialProfile":{
+                        "type":"string",
+                        "enum":[
+                            "SAML",
+                            "OAuth",
+                            "X509"
+                        ]
+                    },
+                    "CredentialBlock":{
+                        "type":"array",
+                        "items":{}
+                    },
+                    "CredentialsProfile":{
+                        "$ref":"#/components/schemas/PayloadProfile"
+                    },
+                    "ApplicationProfile":{
+                        "$ref":"#/components/schemas/ApplicationProfile"
+                    },
+                    "Payload":{
+                        "$ref":"#/components/schemas/Payload"
+                    },
+                    "PayloadHash":{
+                        "type":"string"
+                    },
+                    "MessageSignature":{
                         "type":"string"
                     }
                 }

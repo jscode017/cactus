@@ -16,16 +16,24 @@ import { v4 as uuidV4 } from "uuid";
 import { time } from "console";
 import { SHA256 } from "crypto-js";
 import secp256k1 from "secp256k1";
-
+interface Session {
+  messageHashes?: string[];
+}
+export interface OdapGateWayConstructorOptions {
+  name: string;
+  dltIDs: string[];
+}
 export class OdapGateway {
   name: string;
+  sessions: Map<string, Session>;
   //map[]object, object refer to a state
   //of a specific comminications
   private supportedDltIDs: string[];
   //TODO: use one object as only parameter of constructor
-  public constructor(name: string, dltIDs: string[]) {
-    this.name = name;
-    this.supportedDltIDs = dltIDs;
+  public constructor(options: OdapGateWayConstructorOptions) {
+    this.name = options.name;
+    this.supportedDltIDs = options.dltIDs;
+    this.sessions = new Map();
   }
   public async initiateTransfer(
     req: InitializationRequestMessage,
@@ -37,8 +45,9 @@ export class OdapGateway {
     this.checkValidInitializationRequest(req);
 
     const processedTimestamp: string = time.toString();
+    const sessionID = uuidV4();
     return {
-      sessionID: uuidV4(),
+      sessionID: sessionID,
       initialRequestMessageHash: InitializationRequestMessageHash,
       timeStamp: recvTimestamp,
       processedTimeStamp: processedTimestamp,

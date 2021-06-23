@@ -78,9 +78,12 @@ export class OdapGateWayCactusPlugin
     if (Array.isArray(this.endpoints)) {
       return this.endpoints;
     }
-    const odapGateWay = new OdapGateway("cactus-plugin#odapGateway", [
-      "dummy array",
-    ]);
+
+    const odapConstructor = {
+      name: "cactus-plugin#odapGateway",
+      dltIDs: ["dummy"],
+    };
+    const odapGateWay = new OdapGateway(odapConstructor);
     const transferinitiation = new TransferInitiationEndpoint({
       gateway: odapGateWay,
     });

@@ -367,7 +367,7 @@ export interface InitialMessageAck {
      * @type {string}
      * @memberof InitialMessageAck
      */
-    sessionID?: string;
+    sessionID: string;
     /**
      * 
      * @type {number}

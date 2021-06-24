@@ -16,6 +16,7 @@ import { v4 as uuidV4 } from "uuid";
 import { time } from "console";
 import { SHA256 } from "crypto-js";
 import secp256k1 from "secp256k1";
+import { Secp256k1Keys } from "@hyperledger/cactus-common";
 interface SessionData {
   initializationMsgHash?: string;
   //loggingProfile?: void;
@@ -40,21 +41,36 @@ interface SessionData {
   clientSignatureForLockEvidence?: string;
   serverSignatureForLockEvidence?: string;
 }
-export interface OdapGateWayConstructorOptions {
+export interface OdapGatewayConstructorOptions {
   name: string;
   dltIDs: string[];
+}
+export interface OdapGatewayKeyPairs {
+  publicKey: Uint8Array;
+  privateKey: Uint8Array;
 }
 export class OdapGateway {
   name: string;
   sessions: Map<string, SessionData>;
+  pubKey: string;
+  privKey: string;
   //map[]object, object refer to a state
   //of a specific comminications
   private supportedDltIDs: string[];
-  //TODO: use one object as only parameter of constructor
-  public constructor(options: OdapGateWayConstructorOptions) {
+  public constructor(options: OdapGatewayConstructorOptions) {
     this.name = options.name;
     this.supportedDltIDs = options.dltIDs;
     this.sessions = new Map();
+    const keyPairs: OdapGatewayKeyPairs = Secp256k1Keys.generateKeyPairsBuffer();
+    this.pubKey = keyPairs.publicKey.toString();
+    this.privKey = keyPairs.privateKey.toString();
+  }
+  public async sign(msg: string): Promise<string> {
+    const signObj = secp256k1.ecdsaSign(
+      Buffer.from(SHA256(msg).toString(), `hex`),
+      Buffer.from(this.privKey, `hex`),
+    );
+    return signObj.signature.toString();
   }
   public async initiateTransfer(
     req: InitializationRequestMessage,
@@ -84,16 +100,16 @@ export class OdapGateway {
     this.checkValidtransferCommenceRequest(req, "");
 
     const commenceReqHash = SHA256(JSON.stringify(req)).toString();
-    //TODO: figure this out, maybe after generating priv key for odap gateway
-    const serverSignature = "";
+
     const ack: TransferCommenceResponseMessage = {
       messageType: "urn:ietf:odap:msgtype:transfer-commence-msg",
       clientIdentityPubkey: req.clientIdentityPubkey,
       serverIdentityPubkey: req.serverIdentityPubkey,
       hashCommenceRequest: commenceReqHash,
-      serverSignature: serverSignature,
+      serverSignature: "",
     };
-
+    const serverSignature = await this.sign(JSON.stringify(ack));
+    ack.serverSignature = serverSignature;
     //TODO: pass a real sessionID
     await this.storeDataAfterTransferCommence(req, ack, "");
     return ack;
@@ -113,10 +129,10 @@ export class OdapGateway {
       clientIdentityPubkey: req.clientIdentityPubkey,
       serverIdentityPubkey: req.serverIdentityPubkey,
       hashLockEvidenceRequest: lockEvidenceReqHash,
-      //TODO: sign this after odap key defined
       serverSignature: "",
     };
-
+    const serverSignature = await this.sign(JSON.stringify(ack));
+    ack.serverSignature = serverSignature;
     //TODO: pass in a real sessionID
     await this.storeDataAfterLockEvidenceRequest(req, ack, "");
     return ack;

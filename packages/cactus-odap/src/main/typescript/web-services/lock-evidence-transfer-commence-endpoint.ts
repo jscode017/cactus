@@ -87,7 +87,7 @@ export class LockEvidencePrepareEndpoint implements IWebServiceEndpoint {
     this.log.debug(reqTag);
     const reqBody: TransferCommenceMessage = req.body;
     try {
-      const resBody = await this.options.gateway.LockEvidenceTransferCommence(
+      const resBody = await this.options.gateway.lockEvidenceTransferCommence(
         reqBody,
       );
       res.json(resBody);

@@ -33,7 +33,12 @@ interface SessionData {
   clientIdentityPubkey?: string;
   serverIdentityPubkey?: string;
   commenceReqHash?: string;
-  serverSignature?: string;
+  commenceAckHash?: string;
+  serverSignatureForCommenceAck?: string;
+
+  lockEvidenceClaim?: string;
+  clientSignatureForLockEvidence?: string;
+  serverSignatureForLockEvidence?: string;
 }
 export interface OdapGateWayConstructorOptions {
   name: string;
@@ -72,7 +77,7 @@ export class OdapGateway {
     await this.storeDataAfterInitializationRequest(req, ack, sessionID);
     return ack;
   }
-  public async LockEvidenceTransferCommence(
+  public async lockEvidenceTransferCommence(
     req: TransferCommenceMessage,
   ): Promise<TransferCommenceResponseMessage> {
     //TODO  pass a sessionID
@@ -93,16 +98,28 @@ export class OdapGateway {
     await this.storeDataAfterTransferCommence(req, ack, "");
     return ack;
   }
-  public async LockEvidence(
+  public async lockEvidence(
     req: LockEvidenceMessage,
   ): Promise<LockEvidenceResponseMessage> {
-    const validLockEvidenceRequest = await this.CheckValidLockEvidenceRequest(
+    await this.checkValidLockEvidenceRequest(
       req,
+      "dummy sessionID, fix this later",
     );
-    if (!validLockEvidenceRequest) {
-      throw new Error(`transfer commence message type not match`);
-    }
-    return { MessageType: "urn:ietf:odap:msgtype:lock-evidence-req-msg" };
+
+    const lockEvidenceReqHash = SHA256(JSON.stringify(req)).toString();
+
+    const ack: LockEvidenceResponseMessage = {
+      messageType: "urn:ietf:odap:msgtype:lock-evidence-req-msg",
+      clientIdentityPubkey: req.clientIdentityPubkey,
+      serverIdentityPubkey: req.serverIdentityPubkey,
+      hashLockEvidenceRequest: lockEvidenceReqHash,
+      //TODO: sign this after odap key defined
+      serverSignature: "",
+    };
+
+    //TODO: pass in a real sessionID
+    await this.storeDataAfterLockEvidenceRequest(req, ack, "");
+    return ack;
   }
   public async CommitPrepare(
     req: CommitPreparationMessage,
@@ -171,10 +188,16 @@ export class OdapGateway {
     const sourcePubkey = Uint8Array.from(
       Buffer.from(req.sourceGatewayPubkey, "hex"),
     );
+
+    const reqForSourceSignatureVerification = req;
+    reqForSourceSignatureVerification.initializationRequestMessageSignature = "";
     if (
       !secp256k1.ecdsaVerify(
         sourceSignature,
-        Buffer.from(SHA256(JSON.stringify(req)).toString(), `hex`),
+        Buffer.from(
+          SHA256(JSON.stringify(reqForSourceSignatureVerification)).toString(),
+          `hex`,
+        ),
         sourcePubkey,
       )
     ) {
@@ -311,6 +334,96 @@ export class OdapGateway {
     sessionData.clientIdentityPubkey = msg.clientIdentityPubkey;
 
     sessionData.commenceReqHash = ack.hashCommenceRequest;
+    sessionData.commenceAckHash = SHA256(JSON.stringify(ack)).toString();
+
+    this.sessions.set(sessionID, sessionData);
+  }
+  public async checkValidLockEvidenceRequest(
+    req: LockEvidenceMessage,
+    sessionID: string,
+  ): Promise<void> {
+    const fntag = "${this.className}#checkValidLockEvidenceRequest()";
+
+    if (req.messageType != "urn:ietf:odap:msgtype:lock-evidence-req-msg") {
+      throw new Error(`${fntag}, wrong message type for lock evidence`);
+    }
+
+    const uintClientIdentityPubkey = Uint8Array.from(
+      Buffer.from(req.clientIdentityPubkey, "hex"),
+    );
+    if (!secp256k1.privateKeyVerify(uintClientIdentityPubkey)) {
+      throw new Error(`${fntag} invalid format of client identity pubkey`);
+    }
+
+    const uintServerIdentityPubkey = Uint8Array.from(
+      Buffer.from(req.serverIdentityPubkey, "hex"),
+    );
+    if (!secp256k1.privateKeyVerify(uintServerIdentityPubkey)) {
+      throw new Error(`${fntag} invalid format of server identity pubkey`);
+    }
+
+    const clientSignature = Uint8Array.from(
+      Buffer.from(req.clientSignature, "hex"),
+    );
+    const clientPubkey = Uint8Array.from(
+      Buffer.from(req.clientIdentityPubkey, "hex"),
+    );
+
+    const reqForClientSignatureVerification = req;
+    reqForClientSignatureVerification.clientSignature = "";
+    if (
+      !secp256k1.ecdsaVerify(
+        clientPubkey,
+        Buffer.from(
+          SHA256(JSON.stringify(reqForClientSignatureVerification)).toString(),
+          `hex`,
+        ),
+        clientSignature,
+      )
+    ) {
+      throw new Error(`${fntag}, signature verify failed`);
+    }
+
+    const isLockEvidenceClaimValid = await this.checkValidLockEvidenceClaim(req.lockEvidenceClaim);
+    if (!isLockEvidenceClaimValid) {
+      throw new Error(`${fntag} invalid of server identity pubkey`);
+    }
+    const sessionData = this.sessions.get(sessionID);
+    if (sessionData === undefined) {
+      throw new Error(`${fntag}, sessionID non exist`);
+    }
+
+    const isPrevAckHash: boolean =
+      sessionData.commenceAckHash !== undefined &&
+      sessionData.commenceAckHash == req.hashCommenceAckRequest;
+    if (!isPrevAckHash) {
+      throw new Error(`${fntag}, previous ack hash not match`);
+    }
+  }
+
+  public async checkValidLockEvidenceClaim(
+    lockEvidenceClaim: string,
+  ): Promise<boolean> {
+    return lockEvidenceClaim !== undefined;
+  }
+  public async storeDataAfterLockEvidenceRequest(
+    req: LockEvidenceMessage,
+    ack: LockEvidenceResponseMessage,
+    sessionID: string,
+  ): Promise<void> {
+    const fntag = "${this.className}#()storeDataAfterTransferCommence";
+    if (!this.sessions.has(sessionID)) {
+      throw new Error(`${fntag}, sessionID not exist`);
+    }
+
+    const sessionData = this.sessions.get(sessionID);
+    if (sessionData === undefined) {
+      throw new Error(`${fntag}, session data undefined`);
+    }
+
+    sessionData.lockEvidenceClaim = req.lockEvidenceClaim;
+    sessionData.clientSignatureForLockEvidence = req.clientSignature;
+    sessionData.serverSignatureForLockEvidence = ack.serverSignature;
 
     this.sessions.set(sessionID, sessionData);
   }
@@ -330,10 +443,5 @@ export class OdapGateway {
     req: CommitPreparationMessage,
   ): Promise<boolean> {
     return req.MessageType == "urn:ietf:odap:msgtype:commit-prepare-ack-msg";
-  }
-  public async CheckValidLockEvidenceRequest(
-    req: LockEvidenceMessage,
-  ): Promise<boolean> {
-    return req.MessageType == "urn:ietf:odap:msgtype:lock-evidence-req-msg";
   }
 }

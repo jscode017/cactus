@@ -87,7 +87,7 @@ export class LockEvidenceEndpoint implements IWebServiceEndpoint {
     this.log.debug(reqTag);
     const reqBody: LockEvidenceMessage = req.body;
     try {
-      const resBody = await this.options.gateway.LockEvidence(reqBody);
+      const resBody = await this.options.gateway.lockEvidence(reqBody);
       res.json(resBody);
     } catch (ex) {
       this.log.error(`Crash while serving ${reqTag}`, ex);

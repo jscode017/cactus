@@ -575,61 +575,61 @@ export interface LockEvidenceMessage {
      * @type {string}
      * @memberof LockEvidenceMessage
      */
-    ClientIdentityPubkey?: string;
+    clientIdentityPubkey: string;
     /**
      * 
      * @type {string}
      * @memberof LockEvidenceMessage
      */
-    ServerIdentityPubkey?: string;
+    serverIdentityPubkey: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LockEvidenceMessage
+     */
+    lockEvidenceClaim: string;
     /**
      * 
      * @type {object}
      * @memberof LockEvidenceMessage
      */
-    LockEvidenceClaim?: object;
-    /**
-     * 
-     * @type {object}
-     * @memberof LockEvidenceMessage
-     */
-    LockEvidenceFormat?: object;
+    lockEvidenceFormat?: object;
     /**
      * 
      * @type {string}
      * @memberof LockEvidenceMessage
      */
-    LockEvidenceExpirarion?: string;
+    lockEvidenceExpiration: string;
     /**
      * 
      * @type {string}
      * @memberof LockEvidenceMessage
      */
-    HashCommenceAckRequest?: string;
+    hashCommenceAckRequest: string;
     /**
      * 
      * @type {number}
      * @memberof LockEvidenceMessage
      */
-    ClientTransferNumber?: number | null;
+    clientTransferNumber?: number | null;
     /**
      * 
      * @type {string}
      * @memberof LockEvidenceMessage
      */
-    ClientSignatureRequest?: string;
+    clientSignature: string;
     /**
      * 
      * @type {string}
      * @memberof LockEvidenceMessage
      */
-    MessageType?: string;
+    messageType: string;
     /**
      * 
      * @type {string}
      * @memberof LockEvidenceMessage
      */
-    MessageHash?: string;
+    messageHash?: string;
 }
 /**
  * 
@@ -642,43 +642,37 @@ export interface LockEvidenceResponseMessage {
      * @type {string}
      * @memberof LockEvidenceResponseMessage
      */
-    ClientIdentityPubkey?: string;
+    clientIdentityPubkey: string;
     /**
      * 
      * @type {string}
      * @memberof LockEvidenceResponseMessage
      */
-    ServerIdentityPubkey?: string;
+    serverIdentityPubkey: string;
     /**
      * 
      * @type {string}
      * @memberof LockEvidenceResponseMessage
      */
-    HashLockEvidenceRequest?: string;
+    hashLockEvidenceRequest: string;
     /**
      * 
      * @type {number}
      * @memberof LockEvidenceResponseMessage
      */
-    ServerTransferNumber?: number | null;
+    serverTransferNumber?: number | null;
     /**
      * 
      * @type {string}
      * @memberof LockEvidenceResponseMessage
      */
-    ServerSignature?: string;
+    serverSignature: string;
     /**
      * 
      * @type {string}
      * @memberof LockEvidenceResponseMessage
      */
-    MessageType?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof LockEvidenceResponseMessage
-     */
-    MessageHash?: string;
+    messageType: string;
 }
 /**
  * 

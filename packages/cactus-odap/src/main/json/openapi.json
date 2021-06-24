@@ -373,66 +373,79 @@
             "LockEvidenceMessage":{
                 "type":"object",
                 "properties": {
-                    "ClientIdentityPubkey":{
+                    "clientIdentityPubkey":{
                         "type":"string"
                     },
-                    "ServerIdentityPubkey":{
+                    "serverIdentityPubkey":{
                         "type":"string"
                     },
-                    "LockEvidenceClaim":{
-                        "$ref":"#/components/schemas/LockEvidenceClaim"
+                    "lockEvidenceClaim":{
+                        "type":"string"
                     },
-                    "LockEvidenceFormat":{
+                    "lockEvidenceFormat":{
                         "$ref":"#/components/schemas/LockClaimFormat",
                         "nullable":true
                     },
-                    "LockEvidenceExpirarion":{
+                    "lockEvidenceExpiration":{
                         "type":"string"
                     },
-                    "HashCommenceAckRequest":{
+                    "hashCommenceAckRequest":{
                         "type":"string"
                     },
-                    "ClientTransferNumber":{
+                    "clientTransferNumber":{
                         "type":"integer",
                         "nullable":true
                     },
-                    "ClientSignatureRequest":{
+                    "clientSignature":{
                         "type":"string"
                     },
-                    "MessageType":{
+                    "messageType":{
                         "type":"string"
                     },
-                    "MessageHash":{
+                    "messageHash":{
                         "type":"string"
                     }
-                }
+                },
+                "required": [
+                    "messageType",
+                    "clientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "lockEvidenceClaim",
+                    "lockEvidenceExpiration",
+                    "hashCommenceAckRequest",
+                    "clientSignature"
+                ]
             },
             "LockEvidenceResponseMessage":{
                 "type":"object",
                 "properties": {
-                    "ClientIdentityPubkey":{
+                    "clientIdentityPubkey":{
                         "type":"string"
                     },
-                    "ServerIdentityPubkey":{
+                    "serverIdentityPubkey":{
                         "type":"string"
                     },
-                    "HashLockEvidenceRequest":{
+                    "hashLockEvidenceRequest":{
                         "type":"string"
                     },
-                    "ServerTransferNumber":{
+                    "serverTransferNumber":{
                         "type":"integer",
                         "nullable":true
                     },
-                    "ServerSignature":{
+                    "serverSignature":{
                         "type":"string"
                     },
-                    "MessageType":{
-                        "type":"string"
-                    },
-                    "MessageHash":{
+                    "messageType":{
                         "type":"string"
                     }
-                }
+                },
+                "required": [
+                    "messageType",
+                    "clientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "hashLockEvidenceRequest",
+                    "serverSignature"
+                ]
             },
             "CommitPreparationMessage":{
                 "type":"object",

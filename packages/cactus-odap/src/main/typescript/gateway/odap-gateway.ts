@@ -250,44 +250,16 @@ export class OdapGateway {
       throw new Error(`${fntag}, wrong message type for transfer commence`);
     }
 
-    const uintOriginatorPubkey = Uint8Array.from(
-      Buffer.from(req.originatorPubkey, "hex"),
-    );
-    if (!secp256k1.privateKeyVerify(uintOriginatorPubkey)) {
-      throw new Error(`${fntag} invalid format of originator pubkey`);
-    }
-
-    const uintBeneficiaryPubkey = Uint8Array.from(
-      Buffer.from(req.originatorPubkey, "hex"),
-    );
-    if (!secp256k1.privateKeyVerify(uintBeneficiaryPubkey)) {
-      throw new Error(`${fntag} invalid format of beneficiary pubkey`);
-    }
-
-    if (!(req.senderDltSystem in this.supportedDltIDs)) {
+    if (!this.supportedDltIDs.includes(req.senderDltSystem)) {
       throw new Error(
         `${fntag}, sender dlt system is not supported in this gateway`,
       );
     }
 
-    if (!(req.recipientDltSystem in this.supportedDltIDs)) {
+    if (!this.supportedDltIDs.includes(req.recipientDltSystem)) {
       throw new Error(
         `${fntag}, recipient dlt system is not supported in this gateway`,
       );
-    }
-
-    const uintClientIdentityPubkey = Uint8Array.from(
-      Buffer.from(req.clientIdentityPubkey, "hex"),
-    );
-    if (!secp256k1.privateKeyVerify(uintClientIdentityPubkey)) {
-      throw new Error(`${fntag} invalid format of client identity pubkey`);
-    }
-
-    const uintServerIdentityPubkey = Uint8Array.from(
-      Buffer.from(req.serverIdentityPubkey, "hex"),
-    );
-    if (!secp256k1.privateKeyVerify(uintServerIdentityPubkey)) {
-      throw new Error(`${fntag}, invalid format of server identity pubkey`);
     }
 
     const sessionData = this.sessions.get(sessionID);
@@ -354,24 +326,11 @@ export class OdapGateway {
       throw new Error(`${fntag}, wrong message type for lock evidence`);
     }
 
-    const uintClientIdentityPubkey = Uint8Array.from(
-      Buffer.from(req.clientIdentityPubkey, "hex"),
-    );
-    if (!secp256k1.privateKeyVerify(uintClientIdentityPubkey)) {
-      throw new Error(`${fntag} invalid format of client identity pubkey`);
-    }
-
-    const uintServerIdentityPubkey = Uint8Array.from(
-      Buffer.from(req.serverIdentityPubkey, "hex"),
-    );
-    if (!secp256k1.privateKeyVerify(uintServerIdentityPubkey)) {
-      throw new Error(`${fntag} invalid format of server identity pubkey`);
-    }
-
-    const clientSignature = Uint8Array.from(
+    const clientSignature = new Uint8Array(
       Buffer.from(req.clientSignature, "hex"),
     );
-    const clientPubkey = Uint8Array.from(
+
+    const clientPubkey = new Uint8Array(
       Buffer.from(req.clientIdentityPubkey, "hex"),
     );
 

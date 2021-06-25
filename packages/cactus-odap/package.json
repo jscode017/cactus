@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "proof of concept of odap",
   "main": "dist/lib/main/typescript/index.js",
-  "type": "module",
   "module": "dist/lib/main/typescript/index.js",
   "types": "dist/types/main/typescript/index.d.ts",
   "files": [

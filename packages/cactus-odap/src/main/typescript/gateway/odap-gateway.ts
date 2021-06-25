@@ -62,15 +62,25 @@ export class OdapGateway {
     this.supportedDltIDs = options.dltIDs;
     this.sessions = new Map();
     const keyPairs: OdapGatewayKeyPairs = Secp256k1Keys.generateKeyPairsBuffer();
-    this.pubKey = keyPairs.publicKey.toString();
-    this.privKey = keyPairs.privateKey.toString();
+    this.pubKey = this.bufArray2HexStr(keyPairs.publicKey);
+    this.privKey = this.bufArray2HexStr(keyPairs.privateKey);
   }
-  public async sign(msg: string): Promise<string> {
+  public async odapGatewaySign(msg: string): Promise<string> {
     const signObj = secp256k1.ecdsaSign(
       Buffer.from(SHA256(msg).toString(), `hex`),
       Buffer.from(this.privKey, `hex`),
     );
     return signObj.signature.toString();
+  }
+  public async sign(msg: string, privKey: string): Promise<string> {
+    const signature = secp256k1.ecdsaSign(
+      new Uint8Array(Buffer.from(SHA256(msg).toString(), `hex`)),
+      Buffer.from(privKey, `hex`),
+    ).signature;
+    return this.bufArray2HexStr(signature);
+  }
+  public bufArray2HexStr(array: Uint8Array): string {
+    return Buffer.from(array).toString("hex");
   }
   public async initiateTransfer(
     req: InitializationRequestMessage,
@@ -108,7 +118,7 @@ export class OdapGateway {
       hashCommenceRequest: commenceReqHash,
       serverSignature: "",
     };
-    const serverSignature = await this.sign(JSON.stringify(ack));
+    const serverSignature = await this.odapGatewaySign(JSON.stringify(ack));
     ack.serverSignature = serverSignature;
     //TODO: pass a real sessionID
     await this.storeDataAfterTransferCommence(req, ack, "");
@@ -131,7 +141,7 @@ export class OdapGateway {
       hashLockEvidenceRequest: lockEvidenceReqHash,
       serverSignature: "",
     };
-    const serverSignature = await this.sign(JSON.stringify(ack));
+    const serverSignature = await this.odapGatewaySign(JSON.stringify(ack));
     ack.serverSignature = serverSignature;
     //TODO: pass in a real sessionID
     await this.storeDataAfterLockEvidenceRequest(req, ack, "");
@@ -177,42 +187,22 @@ export class OdapGateway {
     req: InitializationRequestMessage,
   ): void {
     const fntag = "${this.className}#checkValidInitializationRequest()";
-
-    const uintSourceGatewayPubkey = Uint8Array.from(
-      Buffer.from(req.sourceGatewayPubkey, "hex"),
-    );
-    if (!secp256k1.privateKeyVerify(uintSourceGatewayPubkey)) {
-      throw new Error(`${fntag} invalid format of source gateway pubkey`);
-    }
-
-    const uintRecipientGatewayPubkey = Uint8Array.from(
-      Buffer.from(req.recipientGateWayPubkey, "hex"),
-    );
-    if (!secp256k1.privateKeyVerify(uintRecipientGatewayPubkey)) {
-      throw new Error(`${fntag}, invalid format of recipient gateway pubkey`);
-    }
-
-    if (!(req.sourceGateWayDltSystem in this.supportedDltIDs)) {
-      throw new Error(
-        `${fntag}, source gate way dlt system is not supported in this gateway`,
-      );
-    }
-
-    const sourceSignature = Uint8Array.from(
+    const sourceSignature = new Uint8Array(
       Buffer.from(req.initializationRequestMessageSignature, "hex"),
     );
-    const sourcePubkey = Uint8Array.from(
+    const sourcePubkey = new Uint8Array(
       Buffer.from(req.sourceGatewayPubkey, "hex"),
     );
 
     const reqForSourceSignatureVerification = req;
-    reqForSourceSignatureVerification.initializationRequestMessageSignature = "";
+    reqForSourceSignatureVerification.initializationRequestMessageSignature =
+      "";
     if (
       !secp256k1.ecdsaVerify(
         sourceSignature,
         Buffer.from(
           SHA256(JSON.stringify(reqForSourceSignatureVerification)).toString(),
-          `hex`,
+          "hex",
         ),
         sourcePubkey,
       )
@@ -220,13 +210,13 @@ export class OdapGateway {
       throw new Error(`${fntag}, signature verify failed`);
     }
 
-    if (!(req.sourceGateWayDltSystem in this.supportedDltIDs)) {
+    if (!this.supportedDltIDs.includes(req.sourceGateWayDltSystem)) {
       throw new Error(
         `${fntag}, source gate way dlt system is not supported in this gateway`,
       );
     }
 
-    if (!(req.recipientGateWayDltSystem in this.supportedDltIDs)) {
+    if (!this.supportedDltIDs.includes(req.recipientGateWayDltSystem)) {
       throw new Error(
         `${fntag}, recipient gate way dlt system is not supported in this gateway`,
       );

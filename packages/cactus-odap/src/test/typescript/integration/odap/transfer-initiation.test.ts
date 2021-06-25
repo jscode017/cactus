@@ -1,6 +1,5 @@
 import test, { Test } from "tape";
 import { randomBytes } from "crypto";
-import { SHA256 } from "crypto-js";
 import secp256k1 from "secp256k1";
 /*import {
 

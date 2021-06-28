@@ -373,6 +373,9 @@
             "LockEvidenceMessage":{
                 "type":"object",
                 "properties": {
+                    "sessionID":{
+                        "type":"string"
+                    },
                     "clientIdentityPubkey":{
                         "type":"string"
                     },
@@ -407,6 +410,7 @@
                     }
                 },
                 "required": [
+                    "sessionID",
                     "messageType",
                     "clientIdentityPubkey",
                     "serverIdentityPubkey",

@@ -127,10 +127,7 @@ export class OdapGateway {
   public async lockEvidence(
     req: LockEvidenceMessage,
   ): Promise<LockEvidenceResponseMessage> {
-    await this.checkValidLockEvidenceRequest(
-      req,
-      "dummy sessionID, fix this later",
-    );
+    await this.checkValidLockEvidenceRequest(req, req.sessionID);
 
     const lockEvidenceReqHash = SHA256(JSON.stringify(req)).toString();
 
@@ -144,7 +141,7 @@ export class OdapGateway {
     const serverSignature = await this.odapGatewaySign(JSON.stringify(ack));
     ack.serverSignature = serverSignature;
     //TODO: pass in a real sessionID
-    await this.storeDataAfterLockEvidenceRequest(req, ack, "");
+    await this.storeDataAfterLockEvidenceRequest(req, ack, req.sessionID);
     return ack;
   }
   public async CommitPrepare(
@@ -186,7 +183,7 @@ export class OdapGateway {
   public checkValidInitializationRequest(
     req: InitializationRequestMessage,
   ): void {
-    const fntag = "${this.className}#checkValidInitializationRequest()";
+    const fntag = "${this.className()}#checkValidInitializationRequest()";
     const sourceSignature = new Uint8Array(
       Buffer.from(req.initializationRequestMessageSignature, "hex"),
     );
@@ -320,7 +317,7 @@ export class OdapGateway {
     req: LockEvidenceMessage,
     sessionID: string,
   ): Promise<void> {
-    const fntag = "${this.className}#checkValidLockEvidenceRequest()";
+    const fntag = "${this.className()}#checkValidLockEvidenceRequest()";
 
     if (req.messageType != "urn:ietf:odap:msgtype:lock-evidence-req-msg") {
       throw new Error(`${fntag}, wrong message type for lock evidence`);
@@ -338,12 +335,12 @@ export class OdapGateway {
     reqForClientSignatureVerification.clientSignature = "";
     if (
       !secp256k1.ecdsaVerify(
-        clientPubkey,
+        clientSignature,
         Buffer.from(
           SHA256(JSON.stringify(reqForClientSignatureVerification)).toString(),
           `hex`,
         ),
-        clientSignature,
+        clientPubkey,
       )
     ) {
       throw new Error(`${fntag}, signature verify failed`);
@@ -354,6 +351,7 @@ export class OdapGateway {
       throw new Error(`${fntag} invalid of server identity pubkey`);
     }
     const sessionData = this.sessions.get(sessionID);
+    console.log(this.sessions.has(sessionID));
     if (sessionData === undefined) {
       throw new Error(`${fntag}, sessionID non exist`);
     }
@@ -376,7 +374,7 @@ export class OdapGateway {
     ack: LockEvidenceResponseMessage,
     sessionID: string,
   ): Promise<void> {
-    const fntag = "${this.className}#()storeDataAfterTransferCommence";
+    const fntag = "${this.className}#()storeDataAfterLockEvidenceRequest";
     if (!this.sessions.has(sessionID)) {
       throw new Error(`${fntag}, sessionID not exist`);
     }

@@ -575,6 +575,12 @@ export interface LockEvidenceMessage {
      * @type {string}
      * @memberof LockEvidenceMessage
      */
+    sessionID: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LockEvidenceMessage
+     */
     clientIdentityPubkey: string;
     /**
      * 

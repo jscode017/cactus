@@ -111,49 +111,55 @@ export interface CommitFinalMessage {
      * @type {string}
      * @memberof CommitFinalMessage
      */
-    MessageType?: string;
+    sessionID: string;
     /**
      * 
      * @type {string}
      * @memberof CommitFinalMessage
      */
-    ClientIdentityPubkey?: string;
+    messageType: string;
     /**
      * 
      * @type {string}
      * @memberof CommitFinalMessage
      */
-    ServerIdentityKey?: string;
+    clientIdentityPubkey: string;
     /**
      * 
-     * @type {CommitFinalResponseMessage}
+     * @type {string}
      * @memberof CommitFinalMessage
      */
-    CommitFinalClaim?: CommitFinalResponseMessage;
+    serverIdentityPubkey: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitFinalMessage
+     */
+    commitFinalClaim: string;
     /**
      * 
      * @type {object}
      * @memberof CommitFinalMessage
      */
-    CommitFinalClaimFormat?: object;
+    commitFinalClaimFormat?: object;
     /**
      * 
      * @type {string}
      * @memberof CommitFinalMessage
      */
-    HashCommitPrepareAck?: string;
+    hashCommitPrepareAck: string;
     /**
      * 
      * @type {number}
      * @memberof CommitFinalMessage
      */
-    ClientTransferNumber?: number | null;
+    clientTransferNumber?: number | null;
     /**
      * 
      * @type {string}
      * @memberof CommitFinalMessage
      */
-    ClientSignature?: string;
+    clientSignature: string;
 }
 /**
  * 
@@ -166,49 +172,49 @@ export interface CommitFinalResponseMessage {
      * @type {string}
      * @memberof CommitFinalResponseMessage
      */
-    MessageType?: string;
+    messageType: string;
     /**
      * 
      * @type {string}
      * @memberof CommitFinalResponseMessage
      */
-    ClientIdentityPubkey?: string;
+    clientIdentityPubkey?: string;
     /**
      * 
      * @type {string}
      * @memberof CommitFinalResponseMessage
      */
-    ServerIdentityPubkey?: string;
+    serverIdentityPubkey: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitFinalResponseMessage
+     */
+    commitAcknowledgementClaim: string;
     /**
      * 
      * @type {object}
      * @memberof CommitFinalResponseMessage
      */
-    CommitAcknowledgementClaim?: object;
-    /**
-     * 
-     * @type {object}
-     * @memberof CommitFinalResponseMessage
-     */
-    CommitAcknowledgementClaimFormat?: object;
+    commitAcknowledgementClaimFormat?: object;
     /**
      * 
      * @type {string}
      * @memberof CommitFinalResponseMessage
      */
-    HashCommitFinal?: string;
+    hashCommitFinal: string;
     /**
      * 
      * @type {number}
      * @memberof CommitFinalResponseMessage
      */
-    ServerTransferNumber?: number | null;
+    serverTransferNumber?: number;
     /**
      * 
      * @type {string}
      * @memberof CommitFinalResponseMessage
      */
-    ServerSignature?: string;
+    serverSignature: string;
 }
 /**
  * 
@@ -221,37 +227,43 @@ export interface CommitPreparationMessage {
      * @type {string}
      * @memberof CommitPreparationMessage
      */
-    MessageType?: string;
+    sessionID: string;
     /**
      * 
      * @type {string}
      * @memberof CommitPreparationMessage
      */
-    ClientIdentityPubkey?: string;
+    messageType: string;
     /**
      * 
      * @type {string}
      * @memberof CommitPreparationMessage
      */
-    ServerIdentityPubkey?: string;
+    clientIdentityPubkey: string;
     /**
      * 
      * @type {string}
      * @memberof CommitPreparationMessage
      */
-    HashLockEvidenceAck?: string;
+    serverIdentityPubkey: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommitPreparationMessage
+     */
+    hashLockEvidenceAck: string;
     /**
      * 
      * @type {number}
      * @memberof CommitPreparationMessage
      */
-    ClientTransferNumber?: number | null;
+    clientTransferNumber?: number;
     /**
      * 
      * @type {string}
      * @memberof CommitPreparationMessage
      */
-    ClientSignature?: string;
+    clientSignature: string;
 }
 /**
  * 
@@ -264,37 +276,37 @@ export interface CommitPreparationResponse {
      * @type {string}
      * @memberof CommitPreparationResponse
      */
-    MessageType?: string;
+    messageType: string;
     /**
      * 
      * @type {string}
      * @memberof CommitPreparationResponse
      */
-    ClientIdentityPubkey?: string;
+    clientIdentityPubkey: string;
     /**
      * 
      * @type {string}
      * @memberof CommitPreparationResponse
      */
-    ServerIdentityPubkey?: string;
+    serverIdentityPubkey: string;
     /**
      * 
      * @type {string}
      * @memberof CommitPreparationResponse
      */
-    HashCommitPrep?: string;
+    hashCommitPrep: string;
     /**
      * 
      * @type {string}
      * @memberof CommitPreparationResponse
      */
-    ServerTransferNumber?: string;
+    serverTransferNumber?: string;
     /**
      * 
      * @type {string}
      * @memberof CommitPreparationResponse
      */
-    ServerSignature?: string;
+    serverSignature: string;
 }
 /**
  * 
@@ -947,7 +959,7 @@ export interface TransferCompletMessageResponse {
      * @type {string}
      * @memberof TransferCompletMessageResponse
      */
-    OK?: string;
+    ok: string;
 }
 /**
  * 
@@ -960,37 +972,49 @@ export interface TransferCompleteMessage {
      * @type {string}
      * @memberof TransferCompleteMessage
      */
-    MessageType?: string;
+    sessionID: string;
     /**
      * 
      * @type {string}
      * @memberof TransferCompleteMessage
      */
-    ClientIdentityPubkey?: string;
+    messageType: string;
     /**
      * 
      * @type {string}
      * @memberof TransferCompleteMessage
      */
-    ServerIdentityPubkey?: string;
+    clientIdentityPubkey: string;
     /**
      * 
      * @type {string}
      * @memberof TransferCompleteMessage
      */
-    HashCommitFinalAck?: string;
+    serverIdentityPubkey: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCompleteMessage
+     */
+    hashCommitFinalAck: string;
     /**
      * 
      * @type {number}
      * @memberof TransferCompleteMessage
      */
-    ClientTransferNumber?: number | null;
+    clientTransferNumber?: number | null;
     /**
      * 
      * @type {string}
      * @memberof TransferCompleteMessage
      */
-    ClientSignature?: string;
+    clientSignature: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCompleteMessage
+     */
+    hashTransferCommence: string;
 }
 
 /**

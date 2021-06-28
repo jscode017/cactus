@@ -2,11 +2,11 @@ import test, { Test } from "tape";
 import { randomBytes } from "crypto";
 import secp256k1 from "secp256k1";
 import { OdapGateway } from "../../../../main/typescript/gateway/odap-gateway";
-import { LockEvidenceMessage } from "../../../../main/typescript/generated/openapi/typescript-axios/api";
+import { CommitFinalMessage, LockEvidenceMessage } from "../../../../main/typescript/generated/openapi/typescript-axios/api";
 import { v4 as uuidV4 } from "uuid";
 import { SHA256 } from "crypto-js";
 
-test("dummy test for lock evidence flow", async (t: Test) => {
+test("dummy test for commit final flow", async (t: Test) => {
   const odapConstructor = {
     name: "cactus-plugin#odapGateway",
     dltIDs: ["dummy"],
@@ -20,31 +20,30 @@ test("dummy test for lock evidence flow", async (t: Test) => {
   const dummyPrivKeyStr = odapGateWay.bufArray2HexStr(dummyPrivKeyBytes);
   const dummyPubKeyBytes = secp256k1.publicKeyCreate(dummyPrivKeyBytes);
   const dummyPubKey = odapGateWay.bufArray2HexStr(dummyPubKeyBytes);
-  const dummyCommenceAckHash = SHA256("dummyack").toString();
+  const dummyCommitPrepareHash = SHA256("dummyprepare").toString();
   const sessionData = {
     clientIdentityPubkey: dummyPubKey,
     serverIdentityPubkey: dummyPubKey,
-    commenceAckHash: dummyCommenceAckHash,
+    commitPrepareAckHash: dummyCommitPrepareHash,
   };
   const sessionID = uuidV4();
 
   odapGateWay.sessions.set(sessionID, sessionData);
-  const lockEvidenceReq: LockEvidenceMessage = {
+  const commitFinalReq: CommitFinalMessage = {
     sessionID: sessionID,
-    messageType: "urn:ietf:odap:msgtype:lock-evidence-req-msg",
+    messageType: "urn:ietf:odap:msgtype:commit-final-msg",
     clientIdentityPubkey: dummyPubKey,
     serverIdentityPubkey: dummyPubKey,
     clientSignature: "",
-    hashCommenceAckRequest: dummyCommenceAckHash,
-    lockEvidenceClaim: " ",
-    lockEvidenceExpiration: " ",
+    hashCommitPrepareAck: dummyCommitPrepareHash,
+    commitFinalClaim: "",
   };
-  lockEvidenceReq.clientSignature = await odapGateWay.sign(
-    JSON.stringify(lockEvidenceReq),
+  commitFinalReq.clientSignature = await odapGateWay.sign(
+    JSON.stringify(commitFinalReq),
     dummyPrivKeyStr,
   );
   t.doesNotThrow(
-    async () => await odapGateWay.lockEvidence(lockEvidenceReq),
+    async () => await odapGateWay.CommitFinal(commitFinalReq),
     "does not throw if lock evidence proccessed",
   );
 });

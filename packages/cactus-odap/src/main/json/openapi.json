@@ -454,141 +454,195 @@
             "CommitPreparationMessage":{
                 "type":"object",
                 "properties": {
-                    "MessageType":{
+                    "sessionID":{
                         "type":"string"
                     },
-                    "ClientIdentityPubkey":{
+                    "messageType":{
                         "type":"string"
                     },
-                    "ServerIdentityPubkey":{
+                    "clientIdentityPubkey":{
                         "type":"string"
                     },
-                    "HashLockEvidenceAck":{
+                    "serverIdentityPubkey":{
                         "type":"string"
                     },
-                    "ClientTransferNumber":{
-                        "type":"integer",
-                        "nullable":true
+                    "hashLockEvidenceAck":{
+                        "type":"string"
                     },
-                    "ClientSignature":{
+                    "clientTransferNumber":{
+                        "type":"integer"
+                    },
+                    "clientSignature":{
                         "type":"string"
                     }
-                }
+                },
+                "required": [
+                    "sessionID",
+                    "messageType",
+                    "clientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "hashLockEvidenceAck",
+                    "clientSignature"
+                ]
             },
             "CommitPreparationResponse":{
                 "type":"object",
                 "properties": {
-                    "MessageType":{
+                    "messageType":{
                         "type":"string"
                     },
-                    "ClientIdentityPubkey":{
+                    "clientIdentityPubkey":{
                         "type":"string"
                     },
-                    "ServerIdentityPubkey":{
+                    "serverIdentityPubkey":{
                         "type":"string"
                     },
-                    "HashCommitPrep":{
+                    "hashCommitPrep":{
                         "type":"string"
                     },
-                    "ServerTransferNumber":{
+                    "serverTransferNumber":{
                         "type":"string"
                     },
-                    "ServerSignature":{
+                    "serverSignature":{
                         "type":"string"
                     }
-                }
+                },
+                "required": [
+                    "messageType",
+                    "clientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "hashCommitPrep",
+                    "serverSignature"
+                ]
             },
             "CommitFinalMessage":{
                 "type":"object",
                 "properties": {
-                    "MessageType":{
+                    "sessionID":{
                         "type":"string"
                     },
-                    "ClientIdentityPubkey":{
+                    "messageType":{
                         "type":"string"
                     },
-                    "ServerIdentityKey":{
+                    "clientIdentityPubkey":{
                         "type":"string"
                     },
-                    "CommitFinalClaim":{
-                        "$ref":"#/components/schemas/CommitFinalResponseMessage"
+                    "serverIdentityPubkey":{
+                        "type":"string"
                     },
-                    "CommitFinalClaimFormat":{
+                    "commitFinalClaim":{
+                        "type":"string"
+                    },
+                    "commitFinalClaimFormat":{
                         "$ref":"#/components/schemas/CommitFinalClaimFormat"
                     },
-                    "HashCommitPrepareAck":{
+                    "hashCommitPrepareAck":{
                         "type":"string"
                     },
-                    "ClientTransferNumber":{
+                    "clientTransferNumber":{
                         "type":"integer",
                         "nullable": true
                     },
-                    "ClientSignature":{
+                    "clientSignature":{
                         "type":"string"
                     }
-                }
+                },
+                "required": [
+                    "sessionID",
+                    "messageType",
+                    "clientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "commitFinalClaim",
+                    "hashCommitPrepareAck",
+                    "clientSignature"
+                ]
             },
             "CommitFinalResponseMessage":{
                 "type":"object",
                 "properties": {
-                    "MessageType":{
+                    "messageType":{
                         "type":"string"
                     },
-                    "ClientIdentityPubkey":{
+                    "clientIdentityPubkey":{
                         "type":"string"
                     },
-                    "ServerIdentityPubkey":{
+                    "serverIdentityPubkey":{
                         "type":"string"
                     },
-                    "CommitAcknowledgementClaim":{
-                        "$ref":"#/components/schemas/CommitAcknowledgementClaim"
+                    "commitAcknowledgementClaim":{
+                        "type": "string"
                     },
-                    "CommitAcknowledgementClaimFormat":{
+                    "commitAcknowledgementClaimFormat":{
                         "$ref":"#/components/schemas/CommitAcknowledgementClaimFormat"
                     },
-                    "HashCommitFinal":{
+                    "hashCommitFinal":{
                         "type":"string"
                     },
-                    "ServerTransferNumber":{
-                        "type":"integer",
-                        "nullable": true
+                    "serverTransferNumber":{
+                        "type":"integer"
                     },
-                    "ServerSignature":{
+                    "serverSignature":{
                         "type":"string"
                     }
-                }
+                },
+                "required": [
+                    "messageType",
+                    "ClientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "commitAcknowledgementClaim",
+                    "hashCommitFinal",
+                    "serverSignature"
+                ]
             },
             "TransferCompleteMessage":{
                 "type":"object",
                 "properties": {
-                    "MessageType":{
+                    "sessionID":{
                         "type":"string"
                     },
-                    "ClientIdentityPubkey":{
+                    "messageType":{
                         "type":"string"
                     },
-                    "ServerIdentityPubkey":{
+                    "clientIdentityPubkey":{
                         "type":"string"
                     },
-                    "HashCommitFinalAck":{
+                    "serverIdentityPubkey":{
                         "type":"string"
                     },
-                    "ClientTransferNumber":{
+                    "hashCommitFinalAck":{
+                        "type":"string"
+                    },
+                    "clientTransferNumber":{
                         "type":"integer",
                         "nullable":true
                     },
-                    "ClientSignature":{
+                    "clientSignature":{
                         "type":"string"
+                    },
+                    "hashTransferCommence":{
+                        "type": "string"
                     }   
-                }
+                },
+                "required": [
+                    "sessionID",
+                    "messageType",
+                    "clientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "hashCommitFinalAck",
+                    "clientSignature",
+                    "hashTransferCommence"
+                ]
             },
             "TransferCompletMessageResponse":{
                 "type":"object",
                 "properties": {
-                    "OK":{
+                    "ok":{
                         "type":"string"
                     }
-                }
+                },
+                "required": [
+                    "ok"
+                ]
             },
             "OdapMessage":{
                 "type":"object",

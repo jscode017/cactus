@@ -40,6 +40,20 @@ interface SessionData {
   lockEvidenceClaim?: string;
   clientSignatureForLockEvidence?: string;
   serverSignatureForLockEvidence?: string;
+
+  lockEvidenceAckHash?: string;
+
+  clientSignatureForCommitPreparation?: string;
+  commitPrepareReqHash?: string;
+  commitPrepareAckHash?: string;
+  serverSignatureForCommitPreparation?: string;
+
+  commitFinalClaim?: string;
+  clientSignatureForCommitFinal?: string;
+  commitAckClaim?: string;
+  serverSignatureForCommitFinal?: string;
+  commitFinalReqHash?: string;
+  commitFinalAckHash?: string;
 }
 export interface OdapGatewayConstructorOptions {
   name: string;
@@ -147,37 +161,46 @@ export class OdapGateway {
   public async CommitPrepare(
     req: CommitPreparationMessage,
   ): Promise<CommitPreparationResponse> {
-    const validCommitPreparationRequest = await this.CheckValidCommitPreparationRequest(
-      req,
-    );
-    if (!validCommitPreparationRequest) {
-      throw new Error(`commit preparation message type not match`);
-    }
-    return { MessageType: "urn:ietf:odap:msgtype:commit-prepare-ack-msg" };
+    await this.checkValidCommitPreparationRequest(req, req.sessionID);
+
+    const hashCommitPrepare = SHA256(JSON.stringify(req)).toString();
+    const ack: CommitPreparationResponse = {
+      messageType: "urn:ietf:odap:msgtype:commit-prepare-ack-msg",
+      clientIdentityPubkey: req.clientIdentityPubkey,
+      serverIdentityPubkey: req.serverIdentityPubkey,
+      hashCommitPrep: hashCommitPrepare,
+      serverSignature: "",
+    };
+    ack.serverSignature = await this.sign(JSON.stringify(ack), this.privKey);
+    this.storeDataAfterCommitPreparationRequest(req, ack, req.sessionID);
+    return ack;
   }
 
   public async CommitFinal(
     req: CommitFinalMessage,
   ): Promise<CommitFinalResponseMessage> {
-    const validCommitFinalRequest = await this.CheckValidCommitPreparationRequest(
-      req,
-    );
-    if (!validCommitFinalRequest) {
-      throw new Error(`commit final message type not match`);
-    }
-    return { MessageType: "urn:ietf:odap:msgtype:commit-final-msg" };
+    await this.checkValidCommitFinalRequest(req, req.sessionID);
+
+    const hashCommitFinal = SHA256(JSON.stringify(req)).toString();
+    const ack: CommitFinalResponseMessage = {
+      messageType: "urn:ietf:odap:msgtype:commit-final-msg",
+      serverIdentityPubkey: req.serverIdentityPubkey,
+      commitAcknowledgementClaim: "",
+      hashCommitFinal: hashCommitFinal,
+      serverSignature: "",
+    };
+
+    ack.serverSignature = await this.sign(JSON.stringify(ack), this.privKey);
+    this.storeDataAfterCommitFinalRequest(req, ack, req.sessionID);
+    return ack;
   }
 
   public async TransferComplete(
     req: TransferCompleteMessage,
   ): Promise<TransferCompletMessageResponse> {
-    const validTransferCompleteRequest = await this.CheckValidTransferCompleteRequest(
-      req,
-    );
-    if (!validTransferCompleteRequest) {
-      throw new Error(`transfer complete message type not match`);
-    }
-    return {};
+    await this.CheckValidTransferCompleteRequest(req, req.sessionID);
+
+    return { ok: "true" };
   }
 
   public checkValidInitializationRequest(
@@ -351,7 +374,6 @@ export class OdapGateway {
       throw new Error(`${fntag} invalid of server identity pubkey`);
     }
     const sessionData = this.sessions.get(sessionID);
-    console.log(this.sessions.has(sessionID));
     if (sessionData === undefined) {
       throw new Error(`${fntag}, sessionID non exist`);
     }
@@ -390,21 +412,191 @@ export class OdapGateway {
 
     this.sessions.set(sessionID, sessionData);
   }
+  public async checkValidCommitPreparationRequest(
+    req: CommitPreparationMessage,
+    sessionID: string,
+  ): Promise<void> {
+    const fntag = "${this.className()}#checkValidCommitPreparationRequest()";
+
+    if (req.messageType != "urn:ietf:odap:msgtype:commit-prepare-msg") {
+      throw new Error(`${fntag}, wrong message type for commit prepare`);
+    }
+
+    const clientSignature = new Uint8Array(
+      Buffer.from(req.clientSignature, "hex"),
+    );
+
+    const clientPubkey = new Uint8Array(
+      Buffer.from(req.clientIdentityPubkey, "hex"),
+    );
+
+    const reqForClientSignatureVerification = req;
+    reqForClientSignatureVerification.clientSignature = "";
+    if (
+      !secp256k1.ecdsaVerify(
+        clientSignature,
+        Buffer.from(
+          SHA256(JSON.stringify(reqForClientSignatureVerification)).toString(),
+          `hex`,
+        ),
+        clientPubkey,
+      )
+    ) {
+      throw new Error(`${fntag}, signature verify failed`);
+    }
+
+    const sessionData = this.sessions.get(sessionID);
+    if (sessionData === undefined) {
+      throw new Error(`${fntag}, sessionID non exist`);
+    }
+
+    const isPrevAckHash: boolean =
+      sessionData.lockEvidenceAckHash !== undefined &&
+      sessionData.lockEvidenceAckHash == req.hashLockEvidenceAck;
+    if (!isPrevAckHash) {
+      throw new Error(`${fntag}, previous ack hash not match`);
+    }
+  }
+  public async storeDataAfterCommitPreparationRequest(
+    req: CommitPreparationMessage,
+    ack: CommitPreparationResponse,
+    sessionID: string,
+  ): Promise<void> {
+    const fntag = "${this.className}#()storeDataAfterCommitPreparationRequest";
+    if (!this.sessions.has(sessionID)) {
+      throw new Error(`${fntag}, sessionID not exist`);
+    }
+
+    const sessionData = this.sessions.get(sessionID);
+    if (sessionData === undefined) {
+      throw new Error(`${fntag}, session data undefined`);
+    }
+
+    sessionData.commitPrepareReqHash = ack.hashCommitPrep;
+    sessionData.commitPrepareAckHash = JSON.stringify(ack);
+    sessionData.clientSignatureForCommitPreparation = req.clientSignature;
+    sessionData.serverSignatureForCommitPreparation = ack.serverSignature;
+    this.sessions.set(sessionID, sessionData);
+  }
+  public async checkValidCommitFinalRequest(
+    req: CommitFinalMessage,
+    sessionID: string,
+  ): Promise<void> {
+    const fntag = "${this.className()}#checkValidCommitFinalRequest()";
+
+    if (req.messageType != "urn:ietf:odap:msgtype:commit-final-msg") {
+      throw new Error(`${fntag}, wrong message type for commit final`);
+    }
+
+    const clientSignature = new Uint8Array(
+      Buffer.from(req.clientSignature, "hex"),
+    );
+
+    const clientPubkey = new Uint8Array(
+      Buffer.from(req.clientIdentityPubkey, "hex"),
+    );
+
+    const reqForClientSignatureVerification = req;
+    reqForClientSignatureVerification.clientSignature = "";
+    if (
+      !secp256k1.ecdsaVerify(
+        clientSignature,
+        Buffer.from(
+          SHA256(JSON.stringify(reqForClientSignatureVerification)).toString(),
+          `hex`,
+        ),
+        clientPubkey,
+      )
+    ) {
+      throw new Error(`${fntag}, signature verify failed`);
+    }
+
+    const sessionData = this.sessions.get(sessionID);
+    if (sessionData === undefined) {
+      throw new Error(`${fntag}, sessionID non exist`);
+    }
+
+    const isPrevAckHash: boolean =
+      sessionData.commitPrepareAckHash !== undefined &&
+      sessionData.commitPrepareAckHash == req.hashCommitPrepareAck;
+    if (!isPrevAckHash) {
+      throw new Error(`${fntag}, previous ack hash not match`);
+    }
+  }
+  public async storeDataAfterCommitFinalRequest(
+    req: CommitFinalMessage,
+    ack: CommitFinalResponseMessage,
+    sessionID: string,
+  ): Promise<void> {
+    const fntag = "${this.className}#()storeDataAfterCommitFinalRequest";
+    if (!this.sessions.has(sessionID)) {
+      throw new Error(`${fntag}, sessionID not exist`);
+    }
+
+    const sessionData = this.sessions.get(sessionID);
+    if (sessionData === undefined) {
+      throw new Error(`${fntag}, session data undefined`);
+    }
+    sessionData.commitFinalClaim = req.commitFinalClaim;
+    sessionData.commitAckClaim = ack.commitAcknowledgementClaim;
+    sessionData.clientSignatureForCommitFinal = req.clientSignature;
+    sessionData.serverSignatureForCommitFinal = ack.serverSignature;
+    sessionData.commitFinalReqHash = ack.hashCommitFinal;
+    sessionData.commitPrepareAckHash = JSON.stringify(ack);
+    this.sessions.set(sessionID, sessionData);
+  }
   public async CheckValidTransferCompleteRequest(
     req: TransferCompleteMessage,
-  ): Promise<boolean> {
-    return (
-      req.MessageType == "urn:ietf:odap:msgtype:commit-transfer-complete-msg"
+    sessionID: string,
+  ): Promise<void> {
+    const fntag = "${this.className()}#checkValidTransferCompleteRequest()";
+
+    if (
+      req.messageType != "urn:ietf:odap:msgtype:commit-transfer-complete-msg"
+    ) {
+      throw new Error(`${fntag}, wrong message type for transfer complete`);
+    }
+
+    const clientSignature = new Uint8Array(
+      Buffer.from(req.clientSignature, "hex"),
     );
-  }
-  public async CheckValidCommitFinalRequest(
-    req: CommitFinalMessage,
-  ): Promise<boolean> {
-    return req.MessageType == "urn:ietf:odap:msgtype:commit-final-msg";
-  }
-  public async CheckValidCommitPreparationRequest(
-    req: CommitPreparationMessage,
-  ): Promise<boolean> {
-    return req.MessageType == "urn:ietf:odap:msgtype:commit-prepare-ack-msg";
+
+    const clientPubkey = new Uint8Array(
+      Buffer.from(req.clientIdentityPubkey, "hex"),
+    );
+
+    const reqForClientSignatureVerification = req;
+    reqForClientSignatureVerification.clientSignature = "";
+    if (
+      !secp256k1.ecdsaVerify(
+        clientSignature,
+        Buffer.from(
+          SHA256(JSON.stringify(reqForClientSignatureVerification)).toString(),
+          `hex`,
+        ),
+        clientPubkey,
+      )
+    ) {
+      throw new Error(`${fntag}, signature verify failed`);
+    }
+
+    const sessionData = this.sessions.get(sessionID);
+    if (sessionData === undefined) {
+      throw new Error(`${fntag}, sessionID non exist`);
+    }
+
+    const isCommmitFinalAckHash: boolean =
+      sessionData.commitFinalAckHash !== undefined &&
+      sessionData.commitFinalAckHash == req.hashCommitFinalAck;
+    if (!isCommmitFinalAckHash) {
+      throw new Error(`${fntag}, previous commit final ack hash not match`);
+    }
+
+    const isTransferCommenceHash: boolean =
+      sessionData.commenceReqHash !== undefined &&
+      sessionData.commenceReqHash == req.hashTransferCommence;
+    if (!isTransferCommenceHash) {
+      throw new Error(`${fntag}, previous transfer commence hash not match`);
+    }
   }
 }

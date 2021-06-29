@@ -454,28 +454,28 @@ export interface InitializationRequestMessage {
     credentialProfile?: CredentialProfile;
     /**
      * 
-     * @type {object}
+     * @type {InitializationRequestMessagePayloadProfile}
      * @memberof InitializationRequestMessage
      */
-    payloadProfile?: object;
+    payloadProfile: InitializationRequestMessagePayloadProfile;
     /**
      * 
-     * @type {AssetProfile}
+     * @type {string}
      * @memberof InitializationRequestMessage
      */
-    applicationProfile?: AssetProfile;
+    applicationProfile: string;
     /**
      * 
-     * @type {Array<string>}
+     * @type {string}
      * @memberof InitializationRequestMessage
      */
-    loggingProfile: Array<string>;
+    loggingProfile: string;
     /**
      * 
-     * @type {Array<string>}
+     * @type {string}
      * @memberof InitializationRequestMessage
      */
-    accessControlProfile: Array<string>;
+    accessControlProfile: string;
     /**
      * 
      * @type {string}
@@ -576,6 +576,25 @@ export enum InitializationRequestMessageEscrowTypeEnum {
     Burn = 'BURN'
 }
 
+/**
+ * 
+ * @export
+ * @interface InitializationRequestMessagePayloadProfile
+ */
+export interface InitializationRequestMessagePayloadProfile {
+    /**
+     * 
+     * @type {string}
+     * @memberof InitializationRequestMessagePayloadProfile
+     */
+    assetProfile?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InitializationRequestMessagePayloadProfile
+     */
+    capabilities?: string;
+}
 /**
  * 
  * @export
@@ -831,6 +850,12 @@ export interface TransferCommenceMessage {
      * @type {string}
      * @memberof TransferCommenceMessage
      */
+    sessionID: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCommenceMessage
+     */
     messageType: string;
     /**
      * 
@@ -879,7 +904,7 @@ export interface TransferCommenceMessage {
      * @type {number}
      * @memberof TransferCommenceMessage
      */
-    assetUnit?: number | null;
+    assetUnit?: number;
     /**
      * 
      * @type {string}

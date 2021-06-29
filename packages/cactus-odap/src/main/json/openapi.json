@@ -175,16 +175,24 @@
                         "$ref":"#/components/schemas/CredentialProfile"
                     },
                     "payloadProfile":{
-                        "$ref":"#/components/schemas/PayloadProfile"
+                        "type":"object",
+                        "properties": {
+                            "assetProfile":{
+                                "type":"string"
+                            },
+                            "capabilities":{
+                                "type":"string"
+                            }
+                        }
                     },
                     "applicationProfile":{
-                        "$ref":"#/components/schemas/AssetProfile"
+                        "type": "string"
                     },
                     "loggingProfile":{
-                        "$ref":"#/components/schemas/LoggingProfile"
+                        "type": "string"
                     },
                     "accessControlProfile":{
-                        "$ref":"#/components/schemas/AccessControlProfile"
+                        "type": "string"
                     },
                     "initializationRequestMessageSignature":{
                         "type":"string"
@@ -244,6 +252,8 @@
                 "required": [
                     "loggingProfile",
                     "accessControlProfile",
+                    "payloadProfile",
+                    "applicationProfile",
                     "initializationRequestMessageSignature",
                     "sourceGatewayPubkey",
                     "sourceGateWayDltSystem",
@@ -291,6 +301,9 @@
             "TransferCommenceMessage":{
                 "type":"object",
                 "properties": {
+                    "sessionID": {
+                        "type":"string"
+                    },
                     "messageType":{
                         "type":"string"
                     },
@@ -316,8 +329,7 @@
                         "type":"string"
                     },
                     "assetUnit":{
-                        "type":"integer",
-                        "nullable":true
+                        "type":"integer"
                     },
                     "hashPrevMessage":{
                         "type":"string"
@@ -331,6 +343,7 @@
                     }
                 },
                 "required": [
+                    "sessionID",
                     "messageType",
                     "originatorPubkey",
                     "beneficiaryPubkey",

@@ -5,6 +5,7 @@ import secp256k1 from "secp256k1";
 
 } from "../../../../main/typescript/public-api";*/
 import { OdapGateway } from "../../../../main/typescript/gateway/odap-gateway";
+import { InitializationRequestMessage } from "../../../../main/typescript/public-api";
 test("dummy test for transfer initiation flow", async (t: Test) => {
   /*
     run a gateway(now only call function)
@@ -23,10 +24,15 @@ test("dummy test for transfer initiation flow", async (t: Test) => {
   const dummyPubKeyBytes = secp256k1.publicKeyCreate(dummyPrivKeyBytes);
   const dummyPubKey = odapGateWay.bufArray2HexStr(dummyPubKeyBytes);
 
-  const initializationRequestMessage = {
+  const initializationRequestMessage: InitializationRequestMessage = {
     version: "0.0.0",
-    loggingProfile: ["dummy"],
-    accessControlProfile: ["dummy"],
+    loggingProfile: "dummy",
+    accessControlProfile: "dummy",
+    applicationProfile: "dummy",
+    payloadProfile: {
+      assetProfile: "dummy",
+      capabilities: "",
+    },
     initializationRequestMessageSignature: "",
     sourceGatewayPubkey: dummyPubKey,
     sourceGateWayDltSystem: "dummy",

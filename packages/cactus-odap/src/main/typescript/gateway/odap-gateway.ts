@@ -19,8 +19,10 @@ import secp256k1 from "secp256k1";
 import { Secp256k1Keys } from "@hyperledger/cactus-common";
 interface SessionData {
   initializationMsgHash?: string;
-  //loggingProfile?: void;
-  //accessControlProfile?: void;
+  loggingProfile?: string;
+  accessControlProfile?: string;
+  applicationProfile?: string;
+  assetProfile?: string;
   initializationRequestMsgSignature?: string;
   sourceGateWayPubkey?: string;
   sourceGateWayDltSystem?: string;
@@ -33,8 +35,12 @@ interface SessionData {
   beneficiaryPubkey?: string;
   clientIdentityPubkey?: string;
   serverIdentityPubkey?: string;
+  //in transfer commence request
+  clientDltSystem?: string;
+  serverDltSystem?: string;
   commenceReqHash?: string;
   commenceAckHash?: string;
+  clientSignatureForCommenceReq?: string;
   serverSignatureForCommenceAck?: string;
 
   lockEvidenceClaim?: string;
@@ -120,13 +126,12 @@ export class OdapGateway {
   public async lockEvidenceTransferCommence(
     req: TransferCommenceMessage,
   ): Promise<TransferCommenceResponseMessage> {
-    //TODO  pass a sessionID
-    this.checkValidtransferCommenceRequest(req, "");
+    this.checkValidtransferCommenceRequest(req, req.sessionID);
 
     const commenceReqHash = SHA256(JSON.stringify(req)).toString();
 
     const ack: TransferCommenceResponseMessage = {
-      messageType: "urn:ietf:odap:msgtype:transfer-commence-msg",
+      messageType: "urn:ietf:odap:msgtype:transfer-commenceack-msg",
       clientIdentityPubkey: req.clientIdentityPubkey,
       serverIdentityPubkey: req.serverIdentityPubkey,
       hashCommenceRequest: commenceReqHash,
@@ -134,8 +139,7 @@ export class OdapGateway {
     };
     const serverSignature = await this.odapGatewaySign(JSON.stringify(ack));
     ack.serverSignature = serverSignature;
-    //TODO: pass a real sessionID
-    await this.storeDataAfterTransferCommence(req, ack, "");
+    await this.storeDataAfterTransferCommence(req, ack, req.sessionID);
     return ack;
   }
   public async lockEvidence(
@@ -257,6 +261,10 @@ export class OdapGateway {
     sessionData.sourceGateWayDltSystem = msg.sourceGateWayDltSystem;
     sessionData.recipientGateWayPubkey = msg.recipientGateWayPubkey;
     sessionData.recipientGateWayDltSystem = msg.recipientGateWayDltSystem;
+    sessionData.applicationProfile = msg.applicationProfile;
+    sessionData.accessControlProfile = msg.accessControlProfile;
+    sessionData.loggingProfile = msg.loggingProfile;
+    sessionData.assetProfile = msg.payloadProfile.assetProfile;
     sessionData.initialMsgRcvTimeStamp = ack.timeStamp;
     sessionData.initialMsgProcessedTimeStamp = ack.processedTimeStamp;
     this.sessions.set(sessionID, sessionData);
@@ -268,6 +276,28 @@ export class OdapGateway {
     const fntag = "${this.className}#checkValidtransferCommenceRequest()";
     if (req.messageType != "urn:ietf:odap:msgtype:transfer-commence-msg") {
       throw new Error(`${fntag}, wrong message type for transfer commence`);
+    }
+
+    const clientSignature = new Uint8Array(
+      Buffer.from(req.clientSignature, "hex"),
+    );
+    const clientPubkey = new Uint8Array(
+      Buffer.from(req.clientIdentityPubkey, "hex"),
+    );
+
+    const reqForClientSignatureVerification = req;
+    reqForClientSignatureVerification.clientSignature = "";
+    if (
+      !secp256k1.ecdsaVerify(
+        clientSignature,
+        Buffer.from(
+          SHA256(JSON.stringify(reqForClientSignatureVerification)).toString(),
+          "hex",
+        ),
+        clientPubkey,
+      )
+    ) {
+      throw new Error(`${fntag}, signature verify failed`);
     }
 
     if (!this.supportedDltIDs.includes(req.senderDltSystem)) {
@@ -294,22 +324,15 @@ export class OdapGateway {
       throw new Error(`${fntag}, previous message hash not match`);
     }
 
-    //Question: are they the same?
-    const isSenderDltSystemMatch =
-      sessionData.sourceGateWayDltSystem !== undefined &&
-      sessionData.sourceGateWayDltSystem === req.senderDltSystem;
-    if (!isSenderDltSystemMatch) {
-      throw new Error(`${fntag}, sender dlt system not match`);
+    if (sessionData.assetProfile === undefined) {
+      throw new Error(`${fntag}, assetProfile not sent from previous request`);
     }
 
-    const isRecipientDltSystemMatch =
-      sessionData.recipientGateWayDltSystem !== undefined &&
-      sessionData.recipientGateWayDltSystem === req.recipientDltSystem;
-    if (!isRecipientDltSystemMatch) {
-      throw new Error(`${fntag}, recipient dlt system not match`);
+    const assetProfileHash = SHA256(sessionData.assetProfile).toString();
+    const isAssetProfileHashMatch = assetProfileHash === req.hashAssetProfile;
+    if (!isAssetProfileHashMatch) {
+      throw new Error(`${fntag}, assetProfile hash not match`);
     }
-
-    //TODO: check for asset profile hash
   }
   public async storeDataAfterTransferCommence(
     msg: TransferCommenceMessage,
@@ -325,6 +348,13 @@ export class OdapGateway {
     if (sessionData === undefined) {
       throw new Error(`${fntag}, session data undefined`);
     }
+
+    //in transfer commence request
+    sessionData.clientDltSystem = msg.senderDltSystem;
+    sessionData.serverDltSystem = msg.recipientDltSystem;
+
+    sessionData.clientSignatureForCommenceReq = msg.clientSignature;
+    sessionData.serverSignatureForCommenceAck = ack.serverSignature;
 
     sessionData.originatorPubkey = msg.originatorPubkey;
     sessionData.beneficiaryPubkey = msg.beneficiaryPubkey;

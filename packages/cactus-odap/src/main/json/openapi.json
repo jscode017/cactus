@@ -381,7 +381,14 @@
                     "messageHash":{
                         "type":"string"
                     }
-                }
+                },
+                "required": [
+                    "messageType",
+                    "serverIdentityPubkey",
+                    "clientIdentityPubkey",
+                    "hashCommenceRequest",
+                    "serverSignature"
+                ]
             },
             "LockEvidenceMessage":{
                 "type":"object",

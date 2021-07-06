@@ -935,19 +935,19 @@ export interface TransferCommenceResponseMessage {
      * @type {string}
      * @memberof TransferCommenceResponseMessage
      */
-    clientIdentityPubkey?: string;
+    clientIdentityPubkey: string;
     /**
      * 
      * @type {string}
      * @memberof TransferCommenceResponseMessage
      */
-    serverIdentityPubkey?: string;
+    serverIdentityPubkey: string;
     /**
      * 
      * @type {string}
      * @memberof TransferCommenceResponseMessage
      */
-    hashCommenceRequest?: string;
+    hashCommenceRequest: string;
     /**
      * 
      * @type {number}
@@ -959,13 +959,13 @@ export interface TransferCommenceResponseMessage {
      * @type {string}
      * @memberof TransferCommenceResponseMessage
      */
-    serverSignature?: string;
+    serverSignature: string;
     /**
      * 
      * @type {string}
      * @memberof TransferCommenceResponseMessage
      */
-    messageType?: string;
+    messageType: string;
     /**
      * 
      * @type {string}

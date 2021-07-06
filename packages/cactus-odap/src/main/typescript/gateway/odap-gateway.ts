@@ -90,7 +90,7 @@ export class OdapGateway {
       Buffer.from(SHA256(msg).toString(), `hex`),
       Buffer.from(this.privKey, `hex`),
     );
-    return signObj.signature.toString();
+    return this.bufArray2HexStr(signObj.signature);
   }
   public async sign(msg: string, privKey: string): Promise<string> {
     const signature = secp256k1.ecdsaSign(
@@ -126,9 +126,8 @@ export class OdapGateway {
   public async lockEvidenceTransferCommence(
     req: TransferCommenceMessage,
   ): Promise<TransferCommenceResponseMessage> {
-    this.checkValidtransferCommenceRequest(req, req.sessionID);
-
     const commenceReqHash = SHA256(JSON.stringify(req)).toString();
+    this.checkValidtransferCommenceRequest(req, req.sessionID);
 
     const ack: TransferCommenceResponseMessage = {
       messageType: "urn:ietf:odap:msgtype:transfer-commenceack-msg",
@@ -145,9 +144,8 @@ export class OdapGateway {
   public async lockEvidence(
     req: LockEvidenceMessage,
   ): Promise<LockEvidenceResponseMessage> {
-    await this.checkValidLockEvidenceRequest(req, req.sessionID);
-
     const lockEvidenceReqHash = SHA256(JSON.stringify(req)).toString();
+    await this.checkValidLockEvidenceRequest(req, req.sessionID);
 
     const ack: LockEvidenceResponseMessage = {
       messageType: "urn:ietf:odap:msgtype:lock-evidence-req-msg",
@@ -165,9 +163,9 @@ export class OdapGateway {
   public async CommitPrepare(
     req: CommitPreparationMessage,
   ): Promise<CommitPreparationResponse> {
+    const hashCommitPrepare = SHA256(JSON.stringify(req)).toString();
     await this.checkValidCommitPreparationRequest(req, req.sessionID);
 
-    const hashCommitPrepare = SHA256(JSON.stringify(req)).toString();
     const ack: CommitPreparationResponse = {
       messageType: "urn:ietf:odap:msgtype:commit-prepare-ack-msg",
       clientIdentityPubkey: req.clientIdentityPubkey,
@@ -183,9 +181,9 @@ export class OdapGateway {
   public async CommitFinal(
     req: CommitFinalMessage,
   ): Promise<CommitFinalResponseMessage> {
+    const hashCommitFinal = SHA256(JSON.stringify(req)).toString();
     await this.checkValidCommitFinalRequest(req, req.sessionID);
 
-    const hashCommitFinal = SHA256(JSON.stringify(req)).toString();
     const ack: CommitFinalResponseMessage = {
       messageType: "urn:ietf:odap:msgtype:commit-final-msg",
       serverIdentityPubkey: req.serverIdentityPubkey,
@@ -211,29 +209,23 @@ export class OdapGateway {
     req: InitializationRequestMessage,
   ): void {
     const fntag = "${this.className()}#checkValidInitializationRequest()";
-    const sourceSignature = new Uint8Array(
-      Buffer.from(req.initializationRequestMessageSignature, "hex"),
-    );
+    const strSignature = req.initializationRequestMessageSignature;
+    const sourceSignature = new Uint8Array(Buffer.from(strSignature, "hex"));
     const sourcePubkey = new Uint8Array(
       Buffer.from(req.sourceGatewayPubkey, "hex"),
     );
 
-    const reqForSourceSignatureVerification = req;
-    reqForSourceSignatureVerification.initializationRequestMessageSignature =
-      "";
+    req.initializationRequestMessageSignature = "";
     if (
       !secp256k1.ecdsaVerify(
         sourceSignature,
-        Buffer.from(
-          SHA256(JSON.stringify(reqForSourceSignatureVerification)).toString(),
-          "hex",
-        ),
+        Buffer.from(SHA256(JSON.stringify(req)).toString(), "hex"),
         sourcePubkey,
       )
     ) {
       throw new Error(`${fntag}, signature verify failed`);
     }
-
+    req.initializationRequestMessageSignature = strSignature;
     if (!this.supportedDltIDs.includes(req.sourceGateWayDltSystem)) {
       throw new Error(
         `${fntag}, source gate way dlt system is not supported in this gateway`,
@@ -438,6 +430,7 @@ export class OdapGateway {
 
     sessionData.lockEvidenceClaim = req.lockEvidenceClaim;
     sessionData.clientSignatureForLockEvidence = req.clientSignature;
+    sessionData.lockEvidenceAckHash = SHA256(JSON.stringify(ack)).toString();
     sessionData.serverSignatureForLockEvidence = ack.serverSignature;
 
     this.sessions.set(sessionID, sessionData);
@@ -503,7 +496,7 @@ export class OdapGateway {
     }
 
     sessionData.commitPrepareReqHash = ack.hashCommitPrep;
-    sessionData.commitPrepareAckHash = JSON.stringify(ack);
+    sessionData.commitPrepareAckHash = SHA256(JSON.stringify(ack)).toString();
     sessionData.clientSignatureForCommitPreparation = req.clientSignature;
     sessionData.serverSignatureForCommitPreparation = ack.serverSignature;
     this.sessions.set(sessionID, sessionData);
@@ -572,7 +565,7 @@ export class OdapGateway {
     sessionData.clientSignatureForCommitFinal = req.clientSignature;
     sessionData.serverSignatureForCommitFinal = ack.serverSignature;
     sessionData.commitFinalReqHash = ack.hashCommitFinal;
-    sessionData.commitPrepareAckHash = JSON.stringify(ack);
+    sessionData.commitFinalAckHash = SHA256(JSON.stringify(ack)).toString();
     this.sessions.set(sessionID, sessionData);
   }
   public async CheckValidTransferCompleteRequest(

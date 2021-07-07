@@ -16,7 +16,15 @@ import { v4 as uuidV4 } from "uuid";
 import { time } from "console";
 import { SHA256 } from "crypto-js";
 import secp256k1 from "secp256k1";
-import { Secp256k1Keys } from "@hyperledger/cactus-common";
+import {
+  Secp256k1Keys,
+  LoggerProvider,
+} from "@hyperledger/cactus-common";
+
+const log = LoggerProvider.getOrCreate({
+  level: "INFO",
+  label: "odap-logger",
+});
 interface SessionData {
   initializationMsgHash?: string;
   loggingProfile?: string;
@@ -105,6 +113,9 @@ export class OdapGateway {
   public async initiateTransfer(
     req: InitializationRequestMessage,
   ): Promise<InitialMessageAck> {
+    log.info(
+      `server gate way receive initiate transfer request: ${JSON.stringify(req)}`,
+    );
     const recvTimestamp: string = time.toString();
     const InitializationRequestMessageHash = SHA256(
       JSON.stringify(req),
@@ -126,6 +137,9 @@ export class OdapGateway {
   public async lockEvidenceTransferCommence(
     req: TransferCommenceMessage,
   ): Promise<TransferCommenceResponseMessage> {
+    log.info(
+      `server gate way receive lock evidence transfer commence request: ${JSON.stringify(req)}`,
+    );
     const commenceReqHash = SHA256(JSON.stringify(req)).toString();
     this.checkValidtransferCommenceRequest(req, req.sessionID);
 
@@ -144,6 +158,9 @@ export class OdapGateway {
   public async lockEvidence(
     req: LockEvidenceMessage,
   ): Promise<LockEvidenceResponseMessage> {
+    log.info(
+      `server gate way receive lock evidence request: ${JSON.stringify(req)}`,
+    );
     const lockEvidenceReqHash = SHA256(JSON.stringify(req)).toString();
     await this.checkValidLockEvidenceRequest(req, req.sessionID);
 
@@ -163,6 +180,9 @@ export class OdapGateway {
   public async CommitPrepare(
     req: CommitPreparationMessage,
   ): Promise<CommitPreparationResponse> {
+    log.info(
+      `server gate way receive commit prepare request: ${JSON.stringify(req)}`,
+    );
     const hashCommitPrepare = SHA256(JSON.stringify(req)).toString();
     await this.checkValidCommitPreparationRequest(req, req.sessionID);
 
@@ -181,6 +201,9 @@ export class OdapGateway {
   public async CommitFinal(
     req: CommitFinalMessage,
   ): Promise<CommitFinalResponseMessage> {
+    log.info(
+      `server gate way receive commit final request: ${JSON.stringify(req)}`,
+    );
     const hashCommitFinal = SHA256(JSON.stringify(req)).toString();
     await this.checkValidCommitFinalRequest(req, req.sessionID);
 
@@ -200,6 +223,9 @@ export class OdapGateway {
   public async TransferComplete(
     req: TransferCompleteMessage,
   ): Promise<TransferCompletMessageResponse> {
+    log.info(
+      `server gate way receive transfer complete request: ${JSON.stringify(req)}`,
+    );
     await this.CheckValidTransferCompleteRequest(req, req.sessionID);
 
     return { ok: "true" };

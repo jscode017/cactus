@@ -400,7 +400,8 @@
                 "type": "object",
                 "required": [
                     "functionOutput",
-                    "success"
+                    "success",
+                    "transactionID"
                 ],
                 "properties": {
                     "functionOutput": {
@@ -409,6 +410,10 @@
                     },
                     "success": {
                         "type": "boolean",
+                        "nullable": false
+                    },
+                    "transactionID": {
+                        "type": "string",
                         "nullable": false
                     }
                 }

@@ -759,6 +759,12 @@ export interface RunTransactionResponse {
      * @memberof RunTransactionResponse
      */
     success: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof RunTransactionResponse
+     */
+    transactionID: string;
 }
 /**
  * 

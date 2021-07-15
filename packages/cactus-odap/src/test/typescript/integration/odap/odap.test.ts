@@ -4,7 +4,10 @@ import secp256k1 from "secp256k1";
 /*import {
 
 } from "../../../../main/typescript/public-api";*/
-import { OdapGateway } from "../../../../main/typescript/gateway/odap-gateway";
+import {
+  OdapClientRequest,
+  OdapGateway,
+} from "../../../../main/typescript/gateway/odap-gateway";
 import {
   CommitFinalMessage,
   CommitFinalResponseMessage,
@@ -18,6 +21,7 @@ import {
   TransferCompleteMessage,
 } from "../../../../main/typescript/public-api";
 import { SHA256 } from "crypto-js";
+import { Logger } from "../../../../../../cactus-common/dist/types/main/typescript";
 test("dummy test for odap", async (t: Test) => {
   const odapConstructor = {
     name: "cactus-plugin#odapGateway",
@@ -40,7 +44,7 @@ test("dummy test for odap", async (t: Test) => {
   };
   const sourceGateWayDltSystem = "dummy";
   const recipientGateWayDltSystem = "dummy";
-  let initializationRequestMessage: InitializationRequestMessage = {
+  const initializationRequestMessage: InitializationRequestMessage = {
     version: version,
     loggingProfile: loggingProfile,
     accessControlProfile: accessControlProfile,

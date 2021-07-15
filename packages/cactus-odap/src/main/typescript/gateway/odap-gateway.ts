@@ -4,6 +4,7 @@ import {
   CommitPreparationMessage,
   CommitPreparationResponse,
   InitializationRequestMessage,
+  InitializationRequestMessagePayloadProfile,
   InitialMessageAck,
   LockEvidenceMessage,
   LockEvidenceResponseMessage,
@@ -16,10 +17,7 @@ import { v4 as uuidV4 } from "uuid";
 import { time } from "console";
 import { SHA256 } from "crypto-js";
 import secp256k1 from "secp256k1";
-import {
-  Secp256k1Keys,
-  LoggerProvider,
-} from "@hyperledger/cactus-common";
+import { Secp256k1Keys, LoggerProvider, Logger } from "@hyperledger/cactus-common";
 
 const log = LoggerProvider.getOrCreate({
   level: "INFO",
@@ -76,6 +74,28 @@ export interface OdapGatewayConstructorOptions {
 export interface OdapGatewayKeyPairs {
   publicKey: Uint8Array;
   privateKey: Uint8Array;
+}
+export interface OdapClientRequest {
+  odapServerGateWay: OdapGateway;
+  version: string;
+  loggingProfile: string;
+  accessControlProfile: string;
+  applicationProfile: string;
+  assetProfile: string;
+  payLoadProfile: InitializationRequestMessagePayloadProfile;
+  //sourceGateWayPubkey?: string; client gateway's pubkey
+  sourceGateWayDltSystem: string;
+  recipientGateWayPubkey: string;
+  recipientGateWayDltSystem: string;
+
+  originatorPubkey: string;
+  beneficiaryPubkey: string;
+  clientIdentityPubkey: string;
+  serverIdentityPubkey: string;
+
+  //in transfer commence request
+  clientDltSystem: string;
+  serverDltSystem: string;
 }
 export class OdapGateway {
   name: string;
@@ -302,7 +322,7 @@ export class OdapGateway {
     const clientPubkey = new Uint8Array(
       Buffer.from(req.clientIdentityPubkey, "hex"),
     );
-
+    log.info(JSON.stringify(req));
     const reqForClientSignatureVerification = req;
     reqForClientSignatureVerification.clientSignature = "";
     if (
@@ -647,5 +667,285 @@ export class OdapGateway {
     if (!isTransferCommenceHash) {
       throw new Error(`${fntag}, previous transfer commence hash not match`);
     }
+  }
+  public async SendClientRequest(req: OdapClientRequest): Promise<void> {
+    const fntag = "${this.className()}#sendClientRequest()";
+
+    const initializationRequestMessage: InitializationRequestMessage = {
+      version: req.version,
+      loggingProfile: req.loggingProfile,
+      accessControlProfile: req.accessControlProfile,
+      applicationProfile: req.applicationProfile,
+      payloadProfile: req.payLoadProfile,
+      initializationRequestMessageSignature: "",
+      sourceGatewayPubkey: this.pubKey,
+      sourceGateWayDltSystem: req.sourceGateWayDltSystem,
+      recipientGateWayPubkey: req.recipientGateWayPubkey,
+      recipientGateWayDltSystem: req.recipientGateWayDltSystem,
+    };
+    //const dummyPrivKeyStr = odapGateWay.bufArray2HexStr(dummyPrivKeyBytes);
+    /*initializationRequestMessage.initializationRequestMessageSignature = await odapGateWay.sign(
+      JSON.stringify(initializationRequestMessage),
+      dummyPrivKeyStr,
+    );
+    t.doesNotThrow(
+      async () =>
+        await odapGateWay.initiateTransfer(initializationRequestMessage),
+      "does not throw if initial transfer proccessed",
+    );*/
+    initializationRequestMessage.initializationRequestMessageSignature = "";
+    const initializeReqSignature = await this.odapGatewaySign(
+      JSON.stringify(initializationRequestMessage),
+    );
+    initializationRequestMessage.initializationRequestMessageSignature = initializeReqSignature;
+    const initializeReqAck: InitialMessageAck = await req.odapServerGateWay.initiateTransfer(
+      initializationRequestMessage,
+    );
+    initializationRequestMessage.initializationRequestMessageSignature = initializeReqSignature;
+    const initializationMsgHash = SHA256(
+      JSON.stringify(initializationRequestMessage),
+    ).toString();
+    if (initializeReqAck.initialRequestMessageHash != initializationMsgHash) {
+      throw new Error(
+        `${fntag}, intial message hash not match from intial message ack`,
+      );
+    }
+
+    const sessionID = initializeReqAck.sessionID;
+
+    const hashAssetProfile = SHA256(req.assetProfile).toString();
+
+    const transferCommenceReq: TransferCommenceMessage = {
+      sessionID: sessionID,
+      messageType: "urn:ietf:odap:msgtype:transfer-commence-msg",
+      originatorPubkey: req.originatorPubkey,
+      beneficiaryPubkey: req.beneficiaryPubkey,
+      clientIdentityPubkey: this.pubKey,
+      serverIdentityPubkey: req.serverDltSystem,
+      hashPrevMessage: initializationMsgHash,
+      hashAssetProfile: hashAssetProfile,
+      senderDltSystem: req.clientDltSystem,
+      recipientDltSystem: req.recipientGateWayDltSystem,
+      clientSignature: "",
+    };
+    const transferCommenceReqSignature = await this.odapGatewaySign(
+      JSON.stringify(transferCommenceReq),
+    );
+    transferCommenceReq.clientSignature = transferCommenceReqSignature;
+
+    const transferCommenceReqHash = SHA256(
+      JSON.stringify(transferCommenceReq),
+    ).toString();
+    const clientSignature = new Uint8Array(
+      Buffer.from(transferCommenceReq.clientSignature, "hex"),
+    );
+    const sourcePubkey = new Uint8Array(Buffer.from(this.pubKey, "hex"));
+    transferCommenceReq.clientSignature = "";
+    if (
+      !secp256k1.ecdsaVerify(
+        clientSignature,
+        Buffer.from(
+          SHA256(JSON.stringify(transferCommenceReq)).toString(),
+          "hex",
+        ),
+        sourcePubkey,
+      )
+    ) {
+      throw new Error(`${fntag}, hihi signature verify failed`);
+    } else {
+      log.info("signature1 pass");
+    }
+    const transferCommenceReqSignature2 = await this.odapGatewaySign(
+      JSON.stringify(transferCommenceReq),
+    );
+    transferCommenceReq.clientSignature = transferCommenceReqSignature2;
+    const transferCommenceAck: TransferCommenceResponseMessage = await req.odapServerGateWay.lockEvidenceTransferCommence(
+      transferCommenceReq,
+    );
+    if (transferCommenceReqHash != transferCommenceAck.hashCommenceRequest) {
+      throw new Error(
+        `${fntag}, transfer commence req hash not match from transfer commence ack`,
+      );
+    }
+    if (
+      transferCommenceReq.serverIdentityPubkey !=
+      transferCommenceAck.serverIdentityPubkey
+    ) {
+      throw new Error(
+        `${fntag}, serverIdentity pub key not match from transfer commence ack`,
+      );
+    }
+    if (
+      transferCommenceReq.clientIdentityPubkey !=
+      transferCommenceAck.clientIdentityPubkey
+    ) {
+      throw new Error(
+        `${fntag}, clientIdentity pub key not match from transfer commence ack`,
+      );
+    }
+
+    /* TODO: skip checking signature now, have to figure out a way to config the server gateway's publickey of the 
+    const transferCommenceAckSignature = transferCommenceAck.serverSignature;
+  
+    const transferCommenceAckSignatureHex = new Uint8Array(
+      Buffer.from(transferCommenceAckSignature, "hex"),
+    );
+    const sourcePubkey = new Uint8Array(
+      Buffer.from(transferCommenceReq.serverIdentityPubkey, "hex"),
+    );
+    transferCommenceAck.serverSignature = "";
+    if (
+      !secp256k1.ecdsaVerify(
+        transferCommenceAckSignatureHex,
+        Buffer.from(
+          SHA256(JSON.stringify(transferCommenceAck)).toString(),
+          "hex",
+        ),
+        sourcePubkey,
+      )
+    ) {
+      t.error("transfer commence ack signature verify failed");
+    }*/
+    const commenceAckHash = SHA256(
+      JSON.stringify(transferCommenceAck),
+    ).toString();
+    const lockEvidenceReq: LockEvidenceMessage = {
+      sessionID: sessionID,
+      messageType: "urn:ietf:odap:msgtype:lock-evidence-req-msg",
+      clientIdentityPubkey: req.clientIdentityPubkey,
+      serverIdentityPubkey: req.serverIdentityPubkey,
+      clientSignature: "",
+      hashCommenceAckRequest: commenceAckHash,
+      lockEvidenceClaim: " ",
+      lockEvidenceExpiration: " ",
+    };
+    lockEvidenceReq.clientSignature = await this.odapGatewaySign(
+      JSON.stringify(lockEvidenceReq),
+    );
+    const lockEvidenceReqHash = SHA256(
+      JSON.stringify(lockEvidenceReq),
+    ).toString();
+    const lockEvidenceAck = await req.odapServerGateWay.lockEvidence(
+      lockEvidenceReq,
+    );
+    const lockEvidenceAckHash = SHA256(
+      JSON.stringify(lockEvidenceAck),
+    ).toString();
+
+    if (lockEvidenceReqHash != lockEvidenceAck.hashLockEvidenceRequest){
+      throw new Error(
+        `${fntag}, lock evidence req hash not match from lock evidence ack`,
+      );
+    }
+    if (
+      lockEvidenceReq.serverIdentityPubkey !=
+      lockEvidenceAck.serverIdentityPubkey
+    ) {
+      throw new Error(
+        `${fntag}, lock evidence serverIdentity pub key not match from lock evidence ack`,
+      );
+    }
+
+    if (
+      lockEvidenceReq.clientIdentityPubkey !=
+      lockEvidenceAck.clientIdentityPubkey
+    ) {
+      throw new Error(
+        `${fntag}, lock evidence clientIdentity pub key not match from lock evidence ack`,
+      );
+    }
+    //TODO: verify signature of lock evidence ack
+
+    const commitPrepareReq: CommitPreparationMessage = {
+      sessionID: sessionID,
+      messageType: "urn:ietf:odap:msgtype:commit-prepare-msg",
+      clientIdentityPubkey: req.clientIdentityPubkey,
+      serverIdentityPubkey: req.serverIdentityPubkey,
+      clientSignature: "",
+      hashLockEvidenceAck: lockEvidenceAckHash,
+    };
+    commitPrepareReq.clientSignature = await this.odapGatewaySign(
+      JSON.stringify(commitPrepareReq),
+    );
+    const commitPrepareHash = SHA256(
+      JSON.stringify(commitPrepareReq),
+    ).toString();
+
+    const commitPrepareAck: CommitPreparationResponse = await req.odapServerGateWay.CommitPrepare(
+      commitPrepareReq,
+    );
+    const commitPrepareAckHash = SHA256(
+      JSON.stringify(commitPrepareAck),
+    ).toString();
+    if (commitPrepareHash != commitPrepareAck.hashCommitPrep) {
+      throw new Error(
+        `${fntag}, commit prepare hash not match from commit prepare ack`,
+      );
+    }
+    if (
+      commitPrepareReq.serverIdentityPubkey !=
+      commitPrepareAck.serverIdentityPubkey
+    ) {
+      throw new Error(
+        `${fntag}, commit prepare serverIdentity pub key not match from commit prepare ack`,
+      );
+    }
+    if (
+      commitPrepareReq.clientIdentityPubkey !=
+      commitPrepareAck.clientIdentityPubkey
+    ) {
+      throw new Error(
+        `${fntag}, commit prepare clientIdentity pub key not match from commit prepare ack`,
+      );
+    }
+
+    //TODO: verify signature
+
+    const commitFinalReq: CommitFinalMessage = {
+      sessionID: sessionID,
+      messageType: "urn:ietf:odap:msgtype:commit-final-msg",
+      clientIdentityPubkey: req.clientIdentityPubkey,
+      serverIdentityPubkey: req.serverIdentityPubkey,
+      clientSignature: "",
+      hashCommitPrepareAck: commitPrepareAckHash,
+      commitFinalClaim: "",
+    };
+    commitFinalReq.clientSignature = await this.odapGatewaySign(
+      JSON.stringify(commitFinalReq),
+    );
+    const commitFinalReqHash = SHA256(
+      JSON.stringify(commitFinalReq),
+    ).toString();
+    const commitFinalAck: CommitFinalResponseMessage = await req.odapServerGateWay.CommitFinal(
+      commitFinalReq,
+    );
+    const commitFinalAckHash = SHA256(
+      JSON.stringify(commitFinalAck),
+    ).toString();
+    if (commitFinalReqHash != commitFinalAck.hashCommitFinal){
+      throw new Error(
+        `${fntag}, commit final req hash not match from commit final ack`,
+      );
+    }
+    if (
+      commitFinalReq.serverIdentityPubkey != commitFinalAck.serverIdentityPubkey
+    ) {
+      throw new Error(
+        `${fntag}, commit final serverIdentity pub key not match from commit final ack`,
+      );
+    }
+    const transferCompleteReq: TransferCompleteMessage = {
+      sessionID: sessionID,
+      messageType: "urn:ietf:odap:msgtype:commit-transfer-complete-msg",
+      clientIdentityPubkey: req.clientIdentityPubkey,
+      serverIdentityPubkey: req.serverIdentityPubkey,
+      clientSignature: "",
+      hashTransferCommence: transferCommenceReqHash,
+      hashCommitFinalAck: commitFinalAckHash,
+    };
+    transferCompleteReq.clientSignature = await this.odapGatewaySign(
+      JSON.stringify(transferCompleteReq),
+    );
+    await req.odapServerGateWay.TransferComplete(transferCompleteReq);
   }
 }

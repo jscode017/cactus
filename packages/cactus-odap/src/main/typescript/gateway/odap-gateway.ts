@@ -8,6 +8,7 @@ import {
   InitialMessageAck,
   LockEvidenceMessage,
   LockEvidenceResponseMessage,
+  SendClientRequestMessage,
   TransferCommenceMessage,
   TransferCommenceResponseMessage,
   TransferCompleteMessage,
@@ -74,28 +75,6 @@ export interface OdapGatewayConstructorOptions {
 export interface OdapGatewayKeyPairs {
   publicKey: Uint8Array;
   privateKey: Uint8Array;
-}
-export interface OdapClientRequest {
-  odapServerGateWay: OdapGateway;
-  version: string;
-  loggingProfile: string;
-  accessControlProfile: string;
-  applicationProfile: string;
-  assetProfile: string;
-  payLoadProfile: InitializationRequestMessagePayloadProfile;
-  //sourceGateWayPubkey?: string; client gateway's pubkey
-  sourceGateWayDltSystem: string;
-  recipientGateWayPubkey: string;
-  recipientGateWayDltSystem: string;
-
-  originatorPubkey: string;
-  beneficiaryPubkey: string;
-  clientIdentityPubkey: string;
-  serverIdentityPubkey: string;
-
-  //in transfer commence request
-  clientDltSystem: string;
-  serverDltSystem: string;
 }
 export class OdapGateway {
   name: string;
@@ -668,7 +647,7 @@ export class OdapGateway {
       throw new Error(`${fntag}, previous transfer commence hash not match`);
     }
   }
-  public async SendClientRequest(req: OdapClientRequest): Promise<void> {
+  public async SendClientRequest(req: SendClientRequestMessage, odapGateWay: OdapGateway): Promise<void> {
     const fntag = "${this.className()}#sendClientRequest()";
 
     const initializationRequestMessage: InitializationRequestMessage = {
@@ -698,7 +677,7 @@ export class OdapGateway {
       JSON.stringify(initializationRequestMessage),
     );
     initializationRequestMessage.initializationRequestMessageSignature = initializeReqSignature;
-    const initializeReqAck: InitialMessageAck = await req.odapServerGateWay.initiateTransfer(
+    const initializeReqAck: InitialMessageAck = await odapGateWay.initiateTransfer(
       initializationRequestMessage,
     );
     initializationRequestMessage.initializationRequestMessageSignature = initializeReqSignature;
@@ -759,7 +738,7 @@ export class OdapGateway {
       JSON.stringify(transferCommenceReq),
     );
     transferCommenceReq.clientSignature = transferCommenceReqSignature2;
-    const transferCommenceAck: TransferCommenceResponseMessage = await req.odapServerGateWay.lockEvidenceTransferCommence(
+    const transferCommenceAck: TransferCommenceResponseMessage = await odapGateWay.lockEvidenceTransferCommence(
       transferCommenceReq,
     );
     if (transferCommenceReqHash != transferCommenceAck.hashCommenceRequest) {
@@ -825,9 +804,7 @@ export class OdapGateway {
     const lockEvidenceReqHash = SHA256(
       JSON.stringify(lockEvidenceReq),
     ).toString();
-    const lockEvidenceAck = await req.odapServerGateWay.lockEvidence(
-      lockEvidenceReq,
-    );
+    const lockEvidenceAck = await odapGateWay.lockEvidence(lockEvidenceReq);
     const lockEvidenceAckHash = SHA256(
       JSON.stringify(lockEvidenceAck),
     ).toString();
@@ -871,7 +848,7 @@ export class OdapGateway {
       JSON.stringify(commitPrepareReq),
     ).toString();
 
-    const commitPrepareAck: CommitPreparationResponse = await req.odapServerGateWay.CommitPrepare(
+    const commitPrepareAck: CommitPreparationResponse = await odapGateWay.CommitPrepare(
       commitPrepareReq,
     );
     const commitPrepareAckHash = SHA256(
@@ -916,7 +893,7 @@ export class OdapGateway {
     const commitFinalReqHash = SHA256(
       JSON.stringify(commitFinalReq),
     ).toString();
-    const commitFinalAck: CommitFinalResponseMessage = await req.odapServerGateWay.CommitFinal(
+    const commitFinalAck: CommitFinalResponseMessage = await odapGateWay.CommitFinal(
       commitFinalReq,
     );
     const commitFinalAckHash = SHA256(
@@ -946,6 +923,6 @@ export class OdapGateway {
     transferCompleteReq.clientSignature = await this.odapGatewaySign(
       JSON.stringify(transferCompleteReq),
     );
-    await req.odapServerGateWay.TransferComplete(transferCompleteReq);
+    await odapGateWay.TransferComplete(transferCompleteReq);
   }
 }

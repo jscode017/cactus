@@ -4,10 +4,8 @@ import secp256k1 from "secp256k1";
 /*import {
 
 } from "../../../../main/typescript/public-api";*/
-import {
-  OdapClientRequest,
-  OdapGateway,
-} from "../../../../main/typescript/gateway/odap-gateway";
+import { OdapGateway } from "../../../../main/typescript/gateway/odap-gateway";
+import { SendClientRequestMessage } from "../../../../main/typescript/public-api";
 test("dummy test for odap send client request", async (t: Test) => {
   const odapConstructor = {
     name: "cactus-plugin#odapGateway",
@@ -22,8 +20,7 @@ test("dummy test for odap send client request", async (t: Test) => {
   }
   const dummyPubKeyBytes = secp256k1.publicKeyCreate(dummyPrivKeyBytes);
   const dummyPubKey = clientOdapGateWay.bufArray2HexStr(dummyPubKeyBytes);
-  const odapClientRequest: OdapClientRequest = {
-    odapServerGateWay: serverOdapGateWay,
+  const odapClientRequest: SendClientRequestMessage = {
     version: "0.0.0",
     loggingProfile: "dummy",
     accessControlProfile: "dummy",
@@ -33,6 +30,7 @@ test("dummy test for odap send client request", async (t: Test) => {
       capabilities: "",
     },
     assetProfile: "dummy",
+    assetControlProfile: "dummy",
     beneficiaryPubkey: dummyPubKey,
     clientDltSystem: "dummy",
     clientIdentityPubkey: clientOdapGateWay.pubKey,
@@ -44,7 +42,11 @@ test("dummy test for odap send client request", async (t: Test) => {
     sourceGateWayDltSystem: "dummy",
   };
   t.doesNotThrow(
-    async () => await clientOdapGateWay.SendClientRequest(odapClientRequest),
+    async () =>
+      await clientOdapGateWay.SendClientRequest(
+        odapClientRequest,
+        serverOdapGateWay,
+      ),
     "does not throw if lock evidence proccessed",
   );
 });

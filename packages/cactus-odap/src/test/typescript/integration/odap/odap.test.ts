@@ -4,10 +4,7 @@ import secp256k1 from "secp256k1";
 /*import {
 
 } from "../../../../main/typescript/public-api";*/
-import {
-  OdapClientRequest,
-  OdapGateway,
-} from "../../../../main/typescript/gateway/odap-gateway";
+import { OdapGateway } from "../../../../main/typescript/gateway/odap-gateway";
 import {
   CommitFinalMessage,
   CommitFinalResponseMessage,

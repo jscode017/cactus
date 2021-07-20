@@ -25,6 +25,7 @@ test("dummy test for transfer commence flow", async (t: Test) => {
   const dummyPubKey = odapGateWay.bufArray2HexStr(dummyPubKeyBytes);
   const dummyHash = SHA256("dummy").toString();
   const sessionData = {
+    initializationMsgHash: dummyHash,
     clientIdentityPubkey: dummyPubKey,
     serverIdentityPubkey: dummyPubKey,
     recipientGateWayDltSystem: "dummy",
@@ -34,7 +35,7 @@ test("dummy test for transfer commence flow", async (t: Test) => {
   const sessionID = uuidV4();
 
   odapGateWay.sessions.set(sessionID, sessionData);
-  
+
   const transferCommenceReq: TransferCommenceMessage = {
     sessionID: sessionID,
     messageType: "urn:ietf:odap:msgtype:transfer-commence-msg",

@@ -664,6 +664,77 @@
                     "ok"
                 ]
             },
+            "SendClientRequestMessage":{
+                "type":"object",
+                "properties": {
+                    "version":{
+                        "type":"string"
+                    },
+                    "loggingProfile":{
+                        "type":"string"
+                    },
+                    "accessControlProfile":{
+                        "type":"string"
+                    },
+                    "assetControlProfile":{
+                        "type":"string"
+                    },
+                    "applicationProfile":{
+                        "type":"string"
+                    },
+                    "assetProfile":{
+                        "type":"string"
+                    },
+                    "payLoadProfile":{
+                        "$ref":"#/components/schemas/PayloadProfile"
+                    },
+                    "sourceGateWayDltSystem":{
+                        "type":"string"
+                    },
+                    "recipientGateWayDltSystem":{
+                        "type":"string"
+                    },
+                    "recipientGateWayPubkey":{
+                        "type":"string"
+                    },
+                    "originatorPubkey": {
+                        "type":"string"
+                    },
+                    "beneficiaryPubkey":{
+                        "type":"string"
+                    },
+                    "clientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "serverIdentityPubkey": {
+                        "type":"string"
+                    },
+                    "clientDltSystem": {
+                        "type":"string"
+                    },
+                    "serverDltSystem": {
+                        "type":"string"
+                    }
+                },
+                "required": [
+                    "version",
+                    "loggingProfile",
+                    "accessControlProfile",
+                    "assetControlProfile",
+                    "applicationProfile",
+                    "assetProfile",
+                    "payLoadProfile",
+                    "sourceGateWayDltSystem",
+                    "recipientGateWayDltSystem",
+                    "recipientGateWayPubkey",
+                    "originatorPubkey",
+                    "beneficiaryPubkey",
+                    "clientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "clientDltSystem",
+                    "serverDltSystem"
+                ]
+            },
             "OdapMessage":{
                 "type":"object",
                 "properties": {
@@ -932,6 +1003,39 @@
                     }
                 }
             }
+        },
+        "/api/v1/sendclientrequest":{
+            "post":{
+                "x-hyperledger-cactus": {
+                    "http": {
+                        "verbLowerCase": "post",
+                        "path": "/api/v1/sendclientrequest"
+                    }
+                },
+                "operationId": "apiV1SendClientRequest",
+                "description":"",
+                "requestBody":{
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SendClientRequestMessage"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
+
     }   
 }

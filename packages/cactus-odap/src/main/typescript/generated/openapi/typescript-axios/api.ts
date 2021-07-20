@@ -842,6 +842,109 @@ export enum OdapMessageActionResponseResponseCodeEnum {
 /**
  * 
  * @export
+ * @interface SendClientRequestMessage
+ */
+export interface SendClientRequestMessage {
+    /**
+     * 
+     * @type {string}
+     * @memberof SendClientRequestMessage
+     */
+    version: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SendClientRequestMessage
+     */
+    loggingProfile: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SendClientRequestMessage
+     */
+    accessControlProfile: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SendClientRequestMessage
+     */
+    assetControlProfile: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SendClientRequestMessage
+     */
+    applicationProfile: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SendClientRequestMessage
+     */
+    assetProfile: string;
+    /**
+     * 
+     * @type {object}
+     * @memberof SendClientRequestMessage
+     */
+    payLoadProfile: object;
+    /**
+     * 
+     * @type {string}
+     * @memberof SendClientRequestMessage
+     */
+    sourceGateWayDltSystem: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SendClientRequestMessage
+     */
+    recipientGateWayDltSystem: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SendClientRequestMessage
+     */
+    recipientGateWayPubkey: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SendClientRequestMessage
+     */
+    originatorPubkey: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SendClientRequestMessage
+     */
+    beneficiaryPubkey: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SendClientRequestMessage
+     */
+    clientIdentityPubkey: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SendClientRequestMessage
+     */
+    serverIdentityPubkey: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SendClientRequestMessage
+     */
+    clientDltSystem: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SendClientRequestMessage
+     */
+    serverDltSystem: string;
+}
+/**
+ * 
+ * @export
  * @interface TransferCommenceMessage
  */
 export interface TransferCommenceMessage {
@@ -1048,6 +1151,39 @@ export interface TransferCompleteMessage {
  */
 export const DefaultApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         * 
+         * @param {SendClientRequestMessage} [sendClientRequestMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiV1SendClientRequest: async (sendClientRequestMessage?: SendClientRequestMessage, options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v1/sendclientrequest`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(sendClientRequestMessage, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          * 
          * @param {InitializationRequestMessage} [initializationRequestMessage] 
@@ -1258,6 +1394,16 @@ export const DefaultApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @param {SendClientRequestMessage} [sendClientRequestMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiV1SendClientRequest(sendClientRequestMessage?: SendClientRequestMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV1SendClientRequest(sendClientRequestMessage, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @param {InitializationRequestMessage} [initializationRequestMessage] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1328,6 +1474,15 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
     return {
         /**
          * 
+         * @param {SendClientRequestMessage} [sendClientRequestMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiV1SendClientRequest(sendClientRequestMessage?: SendClientRequestMessage, options?: any): AxiosPromise<any> {
+            return localVarFp.apiV1SendClientRequest(sendClientRequestMessage, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {InitializationRequestMessage} [initializationRequestMessage] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1390,6 +1545,17 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
  * @extends {BaseAPI}
  */
 export class DefaultApi extends BaseAPI {
+    /**
+     * 
+     * @param {SendClientRequestMessage} [sendClientRequestMessage] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public apiV1SendClientRequest(sendClientRequestMessage?: SendClientRequestMessage, options?: any) {
+        return DefaultApiFp(this.configuration).apiV1SendClientRequest(sendClientRequestMessage, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @param {InitializationRequestMessage} [initializationRequestMessage] 

@@ -18,6 +18,7 @@ import { registerWebServiceEndpoint } from "@hyperledger/cactus-core";
 import { OdapGateway } from "../gateway/odap-gateway";
 import { SendClientRequestMessage} from "../generated/openapi/typescript-axios";
 import OAS from "../../json/openapi.json";
+import uuid from "uuid";
 
 export interface ISendClientRequestEndpointOptions {
   logLevel?: LogLevelDesc;
@@ -87,7 +88,16 @@ export class SendClientRequestEndpoint implements IWebServiceEndpoint {
     this.log.debug(reqTag);
     const reqBody: SendClientRequestMessage = req.body;
     try {
-      const resBody = await this.options.gateway.SendClientRequest(reqBody);
+      //TODO: replace dummy gateway with instanceID of odap gateway plugin
+      const odapConstructor = {
+        name: "cactus-plugin#odapGateway",
+        dltIDs: ["dummy"],
+      };
+      const dummyGateWay = new OdapGateway(odapConstructor);
+      const resBody = await this.options.gateway.SendClientRequest(
+        reqBody,
+        dummyGateWay,
+      );
       res.json(resBody);
     } catch (ex) {
       this.log.error(`Crash while serving ${reqTag}`, ex);

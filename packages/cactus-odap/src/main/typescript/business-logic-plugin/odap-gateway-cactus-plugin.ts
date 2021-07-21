@@ -20,7 +20,8 @@ import { CommitPrepareEndpoint } from "../web-services/commite-prepare-endpoint"
 import { LockEvidenceEndpoint } from "../web-services/lock-evidence-endpoint";
 import { LockEvidencePrepareEndpoint } from "../web-services/lock-evidence-transfer-commence-endpoint";
 import { TransferCompleteEndpoint } from "../web-services/transfer-complete";
-import { TransferInitiationEndpoint } from "../web-services/transfer-initiation-endpoint";
+import { apiV2Phase1TransferInitiation } from "../web-services/transfer-initiation-endpoint";
+import { SendClientRequestEndpoint } from "../web-services/send-client-request";
 
 export interface OrgEnv {
   CORE_PEER_LOCALMSPID: string;
@@ -84,7 +85,7 @@ export class OdapGateWayCactusPlugin
       dltIDs: ["dummy"],
     };
     const odapGateWay = new OdapGateway(odapConstructor);
-    const transferinitiation = new TransferInitiationEndpoint({
+    const transferinitiation = new apiV2Phase1TransferInitiation({
       gateway: odapGateWay,
     });
     const lockEvidencePreparation = new LockEvidencePrepareEndpoint({
@@ -98,7 +99,9 @@ export class OdapGateWayCactusPlugin
     const transferComplete = new TransferCompleteEndpoint({
       gateway: odapGateWay,
     });
-
+    const sendClientrequest = new SendClientRequestEndpoint({
+      gateway: odapGateWay,
+    });
     this.endpoints = [
       transferinitiation,
       lockEvidencePreparation,
@@ -106,6 +109,7 @@ export class OdapGateWayCactusPlugin
       commitPreparation,
       commitFinal,
       transferComplete,
+      sendClientrequest,
     ];
     return this.endpoints;
   }

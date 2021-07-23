@@ -1,3 +1,19 @@
+import type { Server } from "http";
+import type { Server as SecureServer } from "https";
+import { Optional } from "typescript-optional";
+import { Express } from "express";
+import {
+  Secp256k1Keys,
+  Logger,
+  Checks,
+  LogLevelDesc,
+  LoggerProvider,
+} from "@hyperledger/cactus-common";
+import {
+  ICactusPlugin,
+  IPluginWebService,
+  IWebServiceEndpoint,
+} from "@hyperledger/cactus-core-api";
 import {
   CommitFinalMessage,
   CommitFinalResponseMessage,
@@ -18,12 +34,15 @@ import { v4 as uuidV4 } from "uuid";
 import { time } from "console";
 import { SHA256 } from "crypto-js";
 import secp256k1 from "secp256k1";
-import {
-  Secp256k1Keys,
-  LoggerProvider,
-  Logger,
-} from "@hyperledger/cactus-common";
-
+import { DefaultApi as OdapGatewayApi } from "../generated/openapi/typescript-axios/api";
+import { CommitFinalEndpoint } from "../web-services/commit-final-endpoint";
+import { CommitPrepareEndpoint } from "../web-services/commite-prepare-endpoint";
+import { LockEvidenceEndpoint } from "../web-services/lock-evidence-endpoint";
+import { LockEvidencePrepareEndpoint } from "../web-services/lock-evidence-transfer-commence-endpoint";
+import { TransferCompleteEndpoint } from "../web-services/transfer-complete";
+import { ApiV1Phase1TransferInitiation } from "../web-services/transfer-initiation-endpoint";
+import { SendClientRequestEndpoint } from "../web-services/send-client-request";
+import { PluginRegistry } from "@hyperledger/cactus-core";
 const log = LoggerProvider.getOrCreate({
   level: "INFO",
   label: "odap-logger",
@@ -75,27 +94,111 @@ interface SessionData {
 export interface OdapGatewayConstructorOptions {
   name: string;
   dltIDs: string[];
+  instanceId: string;
 }
 export interface OdapGatewayKeyPairs {
   publicKey: Uint8Array;
   privateKey: Uint8Array;
 }
-export class OdapGateway {
+export class OdapGateway implements ICactusPlugin, IPluginWebService{
   name: string;
   sessions: Map<string, SessionData>;
   pubKey: string;
   privKey: string;
+  public static readonly CLASS_NAME = "OdapGateWay";
+
+  private readonly log: Logger;
+  private readonly instanceId: string;
+
+  pluginRegistry: PluginRegistry;
+
+  private endpoints: IWebServiceEndpoint[] | undefined;
   //map[]object, object refer to a state
   //of a specific comminications
   private supportedDltIDs: string[];
   public constructor(options: OdapGatewayConstructorOptions) {
+    const fnTag = `${this.className}#constructor()`;
+    Checks.truthy(options, `${fnTag} arg options`);
+    Checks.truthy(options.instanceId, `${fnTag} arg options.instanceId`);
+    Checks.nonBlankString(options.instanceId, `${fnTag} options.instanceId`);
+
+    const level = "INFO";
+    const label = this.className;
+    this.log = LoggerProvider.getOrCreate({ level, label });
+    this.instanceId = options.instanceId;
     this.name = options.name;
     this.supportedDltIDs = options.dltIDs;
     this.sessions = new Map();
     const keyPairs: OdapGatewayKeyPairs = Secp256k1Keys.generateKeyPairsBuffer();
     this.pubKey = this.bufArray2HexStr(keyPairs.publicKey);
     this.privKey = this.bufArray2HexStr(keyPairs.privateKey);
+
+    this.pluginRegistry = new PluginRegistry();
   }
+
+  public get className(): string {
+    return OdapGateway.CLASS_NAME;
+  }
+  /*public getAspect(): PluginAspect {
+    return PluginAspect.WEB_SERVICE;
+  }*/
+
+  async registerWebServices(app: Express): Promise<IWebServiceEndpoint[]> {
+    const webServices = await this.getOrCreateWebServices();
+    await Promise.all(webServices.map((ws) => ws.registerExpress(app)));
+    return webServices;
+  }
+
+  public async getOrCreateWebServices(): Promise<IWebServiceEndpoint[]> {
+    if (Array.isArray(this.endpoints)) {
+      return this.endpoints;
+    }
+
+    const transferinitiation = new ApiV1Phase1TransferInitiation({
+      gateway: this,
+    });
+    const lockEvidencePreparation = new LockEvidencePrepareEndpoint({
+      gateway: this,
+    });
+    const lockEvidence = new LockEvidenceEndpoint({ gateway: this });
+    const commitPreparation = new CommitPrepareEndpoint({
+      gateway: this,
+    });
+    const commitFinal = new CommitFinalEndpoint({ gateway: this });
+    const transferComplete = new TransferCompleteEndpoint({
+      gateway: this,
+    });
+    const sendClientrequest = new SendClientRequestEndpoint({
+      gateway: this,
+    });
+    this.endpoints = [
+      transferinitiation,
+      lockEvidencePreparation,
+      lockEvidence,
+      commitPreparation,
+      commitFinal,
+      transferComplete,
+      sendClientrequest,
+    ];
+    return this.endpoints;
+  }
+
+  public getHttpServer(): Optional<Server | SecureServer> {
+    return Optional.empty();
+  }
+
+  public async shutdown(): Promise<void> {
+    this.log.info(`Shutting down ${this.className}...`);
+  }
+
+  public getInstanceId(): string {
+    return this.instanceId;
+  }
+
+  public getPackageName(): string {
+    return "@hyperledger/cactus-odap-odap-gateway-business-logic-plugin";
+  }
+
   public async odapGatewaySign(msg: string): Promise<string> {
     const signObj = secp256k1.ecdsaSign(
       Buffer.from(SHA256(msg).toString(), `hex`),
@@ -651,9 +754,11 @@ export class OdapGateway {
       throw new Error(`${fntag}, previous transfer commence hash not match`);
     }
   }
-  public async SendClientRequest(req: SendClientRequestMessage, odapGateWay: OdapGateway): Promise<void> {
+  public async SendClientRequest(req: SendClientRequestMessage): Promise<void> {
     const fntag = "${this.className()}#sendClientRequest()";
-
+    const odapServerGateway = this.pluginRegistry.plugins.find(
+      (plugin) => plugin.getInstanceId() == req.serverGatewayInstanceID,
+    ) as OdapGateway;
     const initializationRequestMessage: InitializationRequestMessage = {
       version: req.version,
       loggingProfile: req.loggingProfile,
@@ -681,7 +786,7 @@ export class OdapGateway {
       JSON.stringify(initializationRequestMessage),
     );
     initializationRequestMessage.initializationRequestMessageSignature = initializeReqSignature;
-    const initializeReqAck: InitialMessageAck = await odapGateWay.initiateTransfer(
+    const initializeReqAck: InitialMessageAck = await odapServerGateway.initiateTransfer(
       initializationRequestMessage,
     );
     initializationRequestMessage.initializationRequestMessageSignature = initializeReqSignature;
@@ -690,7 +795,7 @@ export class OdapGateway {
     ).toString();
     if (initializeReqAck.initialRequestMessageHash != initializationMsgHash) {
       throw new Error(
-        `${fntag}, intial message hash not match from intial message ack`,
+        `${fntag}, initial message hash not match from intial message ack`,
       );
     }
 
@@ -719,30 +824,7 @@ export class OdapGateway {
     const transferCommenceReqHash = SHA256(
       JSON.stringify(transferCommenceReq),
     ).toString();
-    const clientSignature = new Uint8Array(
-      Buffer.from(transferCommenceReq.clientSignature, "hex"),
-    );
-    const sourcePubkey = new Uint8Array(Buffer.from(this.pubKey, "hex"));
-    transferCommenceReq.clientSignature = "";
-    if (
-      !secp256k1.ecdsaVerify(
-        clientSignature,
-        Buffer.from(
-          SHA256(JSON.stringify(transferCommenceReq)).toString(),
-          "hex",
-        ),
-        sourcePubkey,
-      )
-    ) {
-      throw new Error(`${fntag}, hihi signature verify failed`);
-    } else {
-      log.info("signature1 pass");
-    }
-    const transferCommenceReqSignature2 = await this.odapGatewaySign(
-      JSON.stringify(transferCommenceReq),
-    );
-    transferCommenceReq.clientSignature = transferCommenceReqSignature2;
-    const transferCommenceAck: TransferCommenceResponseMessage = await odapGateWay.lockEvidenceTransferCommence(
+    const transferCommenceAck: TransferCommenceResponseMessage = await odapServerGateway.lockEvidenceTransferCommence(
       transferCommenceReq,
     );
     if (transferCommenceReqHash != transferCommenceAck.hashCommenceRequest) {
@@ -808,7 +890,7 @@ export class OdapGateway {
     const lockEvidenceReqHash = SHA256(
       JSON.stringify(lockEvidenceReq),
     ).toString();
-    const lockEvidenceAck = await odapGateWay.lockEvidence(lockEvidenceReq);
+    const lockEvidenceAck = await odapServerGateway.lockEvidence(lockEvidenceReq);
     const lockEvidenceAckHash = SHA256(
       JSON.stringify(lockEvidenceAck),
     ).toString();
@@ -852,7 +934,7 @@ export class OdapGateway {
       JSON.stringify(commitPrepareReq),
     ).toString();
 
-    const commitPrepareAck: CommitPreparationResponse = await odapGateWay.CommitPrepare(
+    const commitPrepareAck: CommitPreparationResponse = await odapServerGateway.CommitPrepare(
       commitPrepareReq,
     );
     const commitPrepareAckHash = SHA256(
@@ -897,13 +979,13 @@ export class OdapGateway {
     const commitFinalReqHash = SHA256(
       JSON.stringify(commitFinalReq),
     ).toString();
-    const commitFinalAck: CommitFinalResponseMessage = await odapGateWay.CommitFinal(
+    const commitFinalAck: CommitFinalResponseMessage = await odapServerGateway.CommitFinal(
       commitFinalReq,
     );
     const commitFinalAckHash = SHA256(
       JSON.stringify(commitFinalAck),
     ).toString();
-    if (commitFinalReqHash != commitFinalAck.hashCommitFinal){
+    if (commitFinalReqHash != commitFinalAck.hashCommitFinal) {
       throw new Error(
         `${fntag}, commit final req hash not match from commit final ack`,
       );
@@ -927,6 +1009,6 @@ export class OdapGateway {
     transferCompleteReq.clientSignature = await this.odapGatewaySign(
       JSON.stringify(transferCompleteReq),
     );
-    await odapGateWay.TransferComplete(transferCompleteReq);
+    await odapServerGateway.TransferComplete(transferCompleteReq);
   }
 }

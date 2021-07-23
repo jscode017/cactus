@@ -9,7 +9,7 @@ import bodyParser from "body-parser";
 import express from "express";
 
 import { PluginRegistry } from "@hyperledger/cactus-core";
-
+import { SendClientRequestMessage } from "../../../../main/typescript/public-api";
 import {
   IListenOptions,
   LogLevelDesc,
@@ -23,10 +23,6 @@ import {
   InitializationRequestMessage,
 } from "../../../../main/typescript/public-api";
 
-import {
-  IOdapGateWayCactusPluginOptions,
-  OdapGateWayCactusPlugin,
-} from "../../../../main/typescript/business-logic-plugin/odap-gateway-cactus-plugin";
 import { Configuration } from "@hyperledger/cactus-core-api";
 import {
   OdapGateway,
@@ -46,7 +42,6 @@ test(testCase, async (t: Test) => {
   //const logLevel: LogLevelDesc = "TRACE";
 
   const pluginRegistry = new PluginRegistry();
-
   const expressApp = express();
   expressApp.use(bodyParser.json({ limit: "250mb" }));
   const server = http.createServer(expressApp);
@@ -65,11 +60,13 @@ test(testCase, async (t: Test) => {
   const apiConfig = new Configuration({ basePath: apiHost });
   const apiClient = new OdapApi(apiConfig);
   const odapClientGateWayPluginID = uuidv4();
-  const odapPluginOptions: IOdapGateWayCactusPluginOptions = {
+  const odapPluginOptions: OdapGatewayConstructorOptions = {
+    name: "cactus-plugin#odapGateway",
+    dltIDs: ["dummy"],
     instanceId: odapClientGateWayPluginID,
   };
 
-  const plugin = new OdapGateWayCactusPlugin(odapPluginOptions);
+  const plugin = new OdapGateway(odapPluginOptions);
   await plugin.getOrCreateWebServices();
   await plugin.registerWebServices(expressApp);
   pluginRegistry.add(plugin);
@@ -79,13 +76,8 @@ test(testCase, async (t: Test) => {
       dummyPrivKeyBytes = randomBytes(32);
     }
     const dummyPubKeyBytes = secp256k1.publicKeyCreate(dummyPrivKeyBytes);
-    const dummyOdapConstructor = {
-      name: "cactus-plugin#odapGateway",
-      dltIDs: ["dummy"],
-      instanceID: uuidv4(),
-    };
-    const dummyOdapGateWay = new OdapGateway(dummyOdapConstructor);
-    const dummyPubKey = dummyOdapGateWay.bufArray2HexStr(dummyPubKeyBytes);
+
+    const dummyPubKey = plugin.bufArray2HexStr(dummyPubKeyBytes);
 
     const initializationRequestMessage: InitializationRequestMessage = {
       version: "0.0.0",
@@ -102,8 +94,8 @@ test(testCase, async (t: Test) => {
       recipientGateWayPubkey: dummyPubKey,
       recipientGateWayDltSystem: "dummy",
     };
-    const dummyPrivKeyStr = dummyOdapGateWay.bufArray2HexStr(dummyPrivKeyBytes);
-    initializationRequestMessage.initializationRequestMessageSignature = await dummyOdapGateWay.sign(
+    const dummyPrivKeyStr = plugin.bufArray2HexStr(dummyPrivKeyBytes);
+    initializationRequestMessage.initializationRequestMessageSignature = await plugin.sign(
       JSON.stringify(initializationRequestMessage),
       dummyPrivKeyStr,
     );
@@ -113,7 +105,106 @@ test(testCase, async (t: Test) => {
     const res = await apiClient.apiV1Phase1TransferInitiation(
       initializationRequestMessage,
     );
-    console.log(res);
+    t.ok(res);
+    //t.equal(res.status, 200);
+  }
+  t.end();
+});
+test("run send client request via openapi", async (t: Test) => {
+  //const logLevel: LogLevelDesc = "TRACE";
+
+  const odapClientGateWayPluginID = uuidv4();
+  const odapPluginOptions: OdapGatewayConstructorOptions = {
+    name: "cactus-plugin#odapGateway",
+    dltIDs: ["dummy"],
+    instanceId: odapClientGateWayPluginID,
+  };
+
+  const clientOdapGateway = new OdapGateway(odapPluginOptions);
+
+  const odapServerGatewayInstanceID = uuidv4();
+  // the block below adds the server odap gateway to the plugin registry
+  let odapServerGatewayPubKey: string;
+  {
+    const expressApp = express();
+    expressApp.use(bodyParser.json({ limit: "250mb" }));
+    const server = http.createServer(expressApp);
+    const listenOptions: IListenOptions = {
+      hostname: "localhost",
+      port: 0,
+      server,
+    };
+    const addressInfo = (await Servers.listen(listenOptions)) as AddressInfo;
+    test.onFinish(async () => await Servers.shutdown(server));
+    const { address, port } = addressInfo;
+    const apiHost = `http://${address}:${port}`;
+    t.comment(
+      `Metrics URL: ${apiHost}/api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-fabric/get-prometheus-exporter-metrics`,
+    );
+    const odapPluginOptions: OdapGatewayConstructorOptions = {
+      name: "cactus-plugin#odapGateway",
+      dltIDs: ["dummy"],
+      instanceId: odapServerGatewayInstanceID,
+    };
+
+    const plugin = new OdapGateway(odapPluginOptions);
+    odapServerGatewayPubKey = plugin.pubKey;
+    await plugin.getOrCreateWebServices();
+    await plugin.registerWebServices(expressApp);
+    clientOdapGateway.pluginRegistry.add(plugin);
+  }
+  {
+    const expressApp = express();
+    expressApp.use(bodyParser.json({ limit: "250mb" }));
+    const server = http.createServer(expressApp);
+    const listenOptions: IListenOptions = {
+      hostname: "localhost",
+      port: 0,
+      server,
+    };
+    const addressInfo = (await Servers.listen(listenOptions)) as AddressInfo;
+    test.onFinish(async () => await Servers.shutdown(server));
+    const { address, port } = addressInfo;
+    const apiHost = `http://${address}:${port}`;
+    const apiConfig = new Configuration({ basePath: apiHost });
+    const apiClient = new OdapApi(apiConfig);
+    t.comment(
+      `Metrics URL: ${apiHost}/api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-fabric/get-prometheus-exporter-metrics`,
+    );
+    await clientOdapGateway.getOrCreateWebServices();
+    await clientOdapGateway.registerWebServices(expressApp);
+    let dummyPrivKeyBytes = randomBytes(32);
+    while (!secp256k1.privateKeyVerify(dummyPrivKeyBytes)) {
+      dummyPrivKeyBytes = randomBytes(32);
+    }
+    const dummyPubKeyBytes = secp256k1.publicKeyCreate(dummyPrivKeyBytes);
+    const dummyPubKey = clientOdapGateway.bufArray2HexStr(dummyPubKeyBytes);
+    const odapClientRequest: SendClientRequestMessage = {
+      serverGatewayInstanceID: odapServerGatewayInstanceID,
+      version: "0.0.0",
+      loggingProfile: "dummy",
+      accessControlProfile: "dummy",
+      applicationProfile: "dummy",
+      payLoadProfile: {
+        assetProfile: "dummy",
+        capabilities: "",
+      },
+      assetProfile: "dummy",
+      assetControlProfile: "dummy",
+      beneficiaryPubkey: dummyPubKey,
+      clientDltSystem: "dummy",
+      clientIdentityPubkey: clientOdapGateway.pubKey,
+      originatorPubkey: dummyPubKey,
+      recipientGateWayDltSystem: "dummy",
+      recipientGateWayPubkey: odapServerGatewayPubKey,
+      serverDltSystem: "dummy",
+      serverIdentityPubkey: dummyPubKey,
+      sourceGateWayDltSystem: "dummy",
+    };
+    const res = await apiClient.apiV1SendClientRequest(odapClientRequest);
+    /*const odapConnector = pluginRegistry.plugins.find(
+      (plugin) => plugin.getInstanceId() == odapClientGateWayPluginID,
+    ) as ;*/
     t.ok(res);
     //t.equal(res.status, 200);
   }

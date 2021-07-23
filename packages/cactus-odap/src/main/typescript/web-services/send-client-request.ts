@@ -90,16 +90,7 @@ export class SendClientRequestEndpoint implements IWebServiceEndpoint {
     const reqBody: SendClientRequestMessage = req.body;
     try {
       //TODO: replace dummy gateway with instanceID of odap gateway plugin
-      const odapConstructor = {
-        name: "cactus-plugin#odapGateway",
-        dltIDs: ["dummy"],
-        instanceID: uuidV4(),
-      };
-      const dummyGateWay = new OdapGateway(odapConstructor);
-      const resBody = await this.options.gateway.SendClientRequest(
-        reqBody,
-        dummyGateWay,
-      );
+      const resBody = await this.options.gateway.SendClientRequest(reqBody);
       res.json(resBody);
     } catch (ex) {
       this.log.error(`Crash while serving ${reqTag}`, ex);

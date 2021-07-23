@@ -18,7 +18,11 @@ import { v4 as uuidV4 } from "uuid";
 import { time } from "console";
 import { SHA256 } from "crypto-js";
 import secp256k1 from "secp256k1";
-import { Secp256k1Keys, LoggerProvider, Logger } from "@hyperledger/cactus-common";
+import {
+  Secp256k1Keys,
+  LoggerProvider,
+  Logger,
+} from "@hyperledger/cactus-common";
 
 const log = LoggerProvider.getOrCreate({
   level: "INFO",

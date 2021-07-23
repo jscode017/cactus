@@ -24,13 +24,13 @@ export interface ITransferInitiationEndpointOptions {
   gateway: OdapGateway;
 }
 
-export class apiV2Phase1TransferInitiation implements IWebServiceEndpoint {
-  public static readonly CLASS_NAME = "TransferInitiationEndpoint";
+export class ApiV1Phase1TransferInitiation implements IWebServiceEndpoint {
+  public static readonly CLASS_NAME = "ApiV1Phase1TransferInitiation";
 
   private readonly log: Logger;
 
   public get className(): string {
-    return apiV2Phase1TransferInitiation.CLASS_NAME;
+    return ApiV1Phase1TransferInitiation.CLASS_NAME;
   }
 
   constructor(public readonly options: ITransferInitiationEndpointOptions) {
@@ -48,21 +48,22 @@ export class apiV2Phase1TransferInitiation implements IWebServiceEndpoint {
   }*/
 
   public getPath(): string {
-    const apiPath = OAS.paths["/api/v2/phase1/transferinitiation"];
+    const apiPath = OAS.paths["/api/v1/phase1/transferinitiation"];
     return apiPath.post["x-hyperledger-cactus"].http.path;
   }
 
   public getVerbLowerCase(): string {
-    const apiPath = OAS.paths["/api/v2/phase1/transferinitiation"];
+    const apiPath = OAS.paths["/api/v1/phase1/transferinitiation"];
     return apiPath.post["x-hyperledger-cactus"].http.verbLowerCase;
   }
 
   public getOperationId(): string {
-    return OAS.paths["/api/v2/phase1/transferinitiation"].post.operationId;
+    return OAS.paths["/api/v1/phase1/transferinitiation"].post.operationId;
   }
 
   getAuthorizationOptionsProvider(): IAsyncProvider<IEndpointAuthzOptions> {
     // TODO: make this an injectable dependency in the constructor
+    console.log("getting authorized provider");
     return {
       get: async () => ({
         isProtected: true,
@@ -74,6 +75,7 @@ export class apiV2Phase1TransferInitiation implements IWebServiceEndpoint {
   public async registerExpress(
     expressApp: Express,
   ): Promise<IWebServiceEndpoint> {
+    console.log("registering express");
     await registerWebServiceEndpoint(expressApp, this);
     return this;
   }
@@ -87,6 +89,7 @@ export class apiV2Phase1TransferInitiation implements IWebServiceEndpoint {
     this.log.debug(reqTag);
     const reqBody: InitializationRequestMessage = req.body;
     try {
+      console.log("try in handle request");
       const resBody = await this.options.gateway.initiateTransfer(reqBody);
       res.json(resBody);
     } catch (ex) {

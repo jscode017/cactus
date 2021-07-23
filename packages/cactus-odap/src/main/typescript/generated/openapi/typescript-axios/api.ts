@@ -1153,6 +1153,39 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     return {
         /**
          * 
+         * @param {InitializationRequestMessage} [initializationRequestMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiV1Phase1TransferInitiation: async (initializationRequestMessage?: InitializationRequestMessage, options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v1/phase1/transferinitiation`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(initializationRequestMessage, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {SendClientRequestMessage} [sendClientRequestMessage] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1178,39 +1211,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(sendClientRequestMessage, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {InitializationRequestMessage} [initializationRequestMessage] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiV2Phase1TransferInitiation: async (initializationRequestMessage?: InitializationRequestMessage, options: any = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/v2/phase1/transferinitiation`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(initializationRequestMessage, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1394,22 +1394,22 @@ export const DefaultApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @param {InitializationRequestMessage} [initializationRequestMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiV1Phase1TransferInitiation(initializationRequestMessage?: InitializationRequestMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InitialMessageAck>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV1Phase1TransferInitiation(initializationRequestMessage, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @param {SendClientRequestMessage} [sendClientRequestMessage] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         async apiV1SendClientRequest(sendClientRequestMessage?: SendClientRequestMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiV1SendClientRequest(sendClientRequestMessage, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 
-         * @param {InitializationRequestMessage} [initializationRequestMessage] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async apiV2Phase1TransferInitiation(initializationRequestMessage?: InitializationRequestMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InitialMessageAck>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV2Phase1TransferInitiation(initializationRequestMessage, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1474,21 +1474,21 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
     return {
         /**
          * 
+         * @param {InitializationRequestMessage} [initializationRequestMessage] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiV1Phase1TransferInitiation(initializationRequestMessage?: InitializationRequestMessage, options?: any): AxiosPromise<InitialMessageAck> {
+            return localVarFp.apiV1Phase1TransferInitiation(initializationRequestMessage, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {SendClientRequestMessage} [sendClientRequestMessage] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         apiV1SendClientRequest(sendClientRequestMessage?: SendClientRequestMessage, options?: any): AxiosPromise<any> {
             return localVarFp.apiV1SendClientRequest(sendClientRequestMessage, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {InitializationRequestMessage} [initializationRequestMessage] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        apiV2Phase1TransferInitiation(initializationRequestMessage?: InitializationRequestMessage, options?: any): AxiosPromise<InitialMessageAck> {
-            return localVarFp.apiV2Phase1TransferInitiation(initializationRequestMessage, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1547,6 +1547,17 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
 export class DefaultApi extends BaseAPI {
     /**
      * 
+     * @param {InitializationRequestMessage} [initializationRequestMessage] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public apiV1Phase1TransferInitiation(initializationRequestMessage?: InitializationRequestMessage, options?: any) {
+        return DefaultApiFp(this.configuration).apiV1Phase1TransferInitiation(initializationRequestMessage, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {SendClientRequestMessage} [sendClientRequestMessage] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1554,17 +1565,6 @@ export class DefaultApi extends BaseAPI {
      */
     public apiV1SendClientRequest(sendClientRequestMessage?: SendClientRequestMessage, options?: any) {
         return DefaultApiFp(this.configuration).apiV1SendClientRequest(sendClientRequestMessage, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {InitializationRequestMessage} [initializationRequestMessage] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    public apiV2Phase1TransferInitiation(initializationRequestMessage?: InitializationRequestMessage, options?: any) {
-        return DefaultApiFp(this.configuration).apiV2Phase1TransferInitiation(initializationRequestMessage, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

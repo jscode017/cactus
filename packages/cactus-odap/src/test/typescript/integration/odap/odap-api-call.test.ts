@@ -18,14 +18,20 @@ import {
 
 import { PluginKeychainMemory } from "@hyperledger/cactus-plugin-keychain-memory";
 
-import { DefaultApi as OdapApi, InitializationRequestMessage } from "../../../../main/typescript/public-api";
+import {
+  DefaultApi as OdapApi,
+  InitializationRequestMessage,
+} from "../../../../main/typescript/public-api";
 
 import {
   IOdapGateWayCactusPluginOptions,
   OdapGateWayCactusPlugin,
 } from "../../../../main/typescript/business-logic-plugin/odap-gateway-cactus-plugin";
 import { Configuration } from "@hyperledger/cactus-core-api";
-import { OdapGateway } from "../../../../main/typescript/gateway/odap-gateway";
+import {
+  OdapGateway,
+  OdapGatewayConstructorOptions,
+} from "../../../../main/typescript/gateway/odap-gateway";
 
 /**
  * Use this to debug issues with the fabric node SDK
@@ -37,7 +43,7 @@ import { OdapGateway } from "../../../../main/typescript/gateway/odap-gateway";
 const testCase = "runs odap gateway tests via openApi";
 
 test(testCase, async (t: Test) => {
-  const logLevel: LogLevelDesc = "TRACE";
+  //const logLevel: LogLevelDesc = "TRACE";
 
   const pluginRegistry = new PluginRegistry();
 
@@ -56,15 +62,11 @@ test(testCase, async (t: Test) => {
   t.comment(
     `Metrics URL: ${apiHost}/api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-fabric/get-prometheus-exporter-metrics`,
   );
-
   const apiConfig = new Configuration({ basePath: apiHost });
   const apiClient = new OdapApi(apiConfig);
-
   const odapClientGateWayPluginID = uuidv4();
   const odapPluginOptions: IOdapGateWayCactusPluginOptions = {
     instanceId: odapClientGateWayPluginID,
-    odapGateWayApiClient: apiClient,
-    logLevel: logLevel,
   };
 
   const plugin = new OdapGateWayCactusPlugin(odapPluginOptions);
@@ -80,6 +82,7 @@ test(testCase, async (t: Test) => {
     const dummyOdapConstructor = {
       name: "cactus-plugin#odapGateway",
       dltIDs: ["dummy"],
+      instanceID: uuidv4(),
     };
     const dummyOdapGateWay = new OdapGateway(dummyOdapConstructor);
     const dummyPubKey = dummyOdapGateWay.bufArray2HexStr(dummyPubKeyBytes);
@@ -107,7 +110,7 @@ test(testCase, async (t: Test) => {
     /*const odapConnector = pluginRegistry.plugins.find(
       (plugin) => plugin.getInstanceId() == odapClientGateWayPluginID,
     ) as ;*/
-    const res = await apiClient.apiV2Phase1TransferInitiation(
+    const res = await apiClient.apiV1Phase1TransferInitiation(
       initializationRequestMessage,
     );
     console.log(res);

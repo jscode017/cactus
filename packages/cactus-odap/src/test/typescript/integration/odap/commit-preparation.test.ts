@@ -10,6 +10,7 @@ test("dummy test for commit prepare flow", async (t: Test) => {
   const odapConstructor = {
     name: "cactus-plugin#odapGateway",
     dltIDs: ["dummy"],
+    instanceId: uuidV4(),
   };
   const odapGateWay = new OdapGateway(odapConstructor);
 

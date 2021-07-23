@@ -1,6 +1,7 @@
 import test, { Test } from "tape";
 import { randomBytes } from "crypto";
 import secp256k1 from "secp256k1";
+import { v4 as uuidV4 } from "uuid";
 /*import {
 
 } from "../../../../main/typescript/public-api";*/
@@ -15,6 +16,7 @@ test("dummy test for transfer initiation flow", async (t: Test) => {
   const odapConstructor = {
     name: "cactus-plugin#odapGateway",
     dltIDs: ["dummy"],
+    instanceId: uuidV4(),
   };
   const odapGateWay = new OdapGateway(odapConstructor);
   let dummyPrivKeyBytes = randomBytes(32);

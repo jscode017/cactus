@@ -20,7 +20,7 @@ import { CommitPrepareEndpoint } from "../web-services/commite-prepare-endpoint"
 import { LockEvidenceEndpoint } from "../web-services/lock-evidence-endpoint";
 import { LockEvidencePrepareEndpoint } from "../web-services/lock-evidence-transfer-commence-endpoint";
 import { TransferCompleteEndpoint } from "../web-services/transfer-complete";
-import { apiV2Phase1TransferInitiation } from "../web-services/transfer-initiation-endpoint";
+import { ApiV1Phase1TransferInitiation } from "../web-services/transfer-initiation-endpoint";
 import { SendClientRequestEndpoint } from "../web-services/send-client-request";
 
 export interface OrgEnv {
@@ -34,7 +34,7 @@ export interface OrgEnv {
 export interface IOdapGateWayCactusPluginOptions {
   logLevel?: LogLevelDesc;
   instanceId: string;
-  odapGateWayApiClient: OdapGatewayApi;
+  odapGateWayApiClient?: OdapGatewayApi;
 }
 
 export class OdapGateWayCactusPlugin
@@ -58,10 +58,6 @@ export class OdapGateWayCactusPlugin
     Checks.truthy(options, `${fnTag} arg options`);
     Checks.truthy(options.instanceId, `${fnTag} arg options.instanceId`);
     Checks.nonBlankString(options.instanceId, `${fnTag} options.instanceId`);
-    Checks.truthy(
-      options.odapGateWayApiClient,
-      `${fnTag} arg options.odapGateWayApiClient`,
-    );
 
     const level = this.options.logLevel || "INFO";
     const label = this.className;
@@ -85,7 +81,7 @@ export class OdapGateWayCactusPlugin
       dltIDs: ["dummy"],
     };
     const odapGateWay = new OdapGateway(odapConstructor);
-    const transferinitiation = new apiV2Phase1TransferInitiation({
+    const transferinitiation = new ApiV1Phase1TransferInitiation({
       gateway: odapGateWay,
     });
     const lockEvidencePreparation = new LockEvidencePrepareEndpoint({

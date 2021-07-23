@@ -1,4 +1,5 @@
 import { Express, Request, Response } from "express";
+import { v4 as uuidV4 } from "uuid";
 
 import {
   IWebServiceEndpoint,
@@ -92,6 +93,7 @@ export class SendClientRequestEndpoint implements IWebServiceEndpoint {
       const odapConstructor = {
         name: "cactus-plugin#odapGateway",
         dltIDs: ["dummy"],
+        instanceID: uuidV4(),
       };
       const dummyGateWay = new OdapGateway(odapConstructor);
       const resBody = await this.options.gateway.SendClientRequest(

@@ -1,6 +1,7 @@
 import test, { Test } from "tape";
 import { randomBytes } from "crypto";
 import secp256k1 from "secp256k1";
+import { v4 as uuidV4 } from "uuid";
 /*import {
 
 } from "../../../../main/typescript/public-api";*/
@@ -10,6 +11,7 @@ test("dummy test for odap send client request", async (t: Test) => {
   const odapConstructor = {
     name: "cactus-plugin#odapGateway",
     dltIDs: ["dummy"],
+    instanceId: uuidV4(),
   };
   const clientOdapGateWay = new OdapGateway(odapConstructor);
   //TODO: how to discover the servergateway, how to call by its api?
@@ -21,6 +23,7 @@ test("dummy test for odap send client request", async (t: Test) => {
   const dummyPubKeyBytes = secp256k1.publicKeyCreate(dummyPrivKeyBytes);
   const dummyPubKey = clientOdapGateWay.bufArray2HexStr(dummyPubKeyBytes);
   const odapClientRequest: SendClientRequestMessage = {
+    
     version: "0.0.0",
     loggingProfile: "dummy",
     accessControlProfile: "dummy",

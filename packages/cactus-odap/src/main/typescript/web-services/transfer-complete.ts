@@ -48,17 +48,17 @@ export class TransferCompleteEndpoint implements IWebServiceEndpoint {
   }*/
 
   public getPath(): string {
-    const apiPath = OAS.paths["/api/v2/phase3/transfercomplete"];
+    const apiPath = OAS.paths["/api/v1/phase3/transfercomplete"];
     return apiPath.get["x-hyperledger-cactus"].http.path;
   }
 
   public getVerbLowerCase(): string {
-    const apiPath = OAS.paths["/api/v2/phase3/transfercomplete"];
+    const apiPath = OAS.paths["/api/v1/phase3/transfercomplete"];
     return apiPath.get["x-hyperledger-cactus"].http.verbLowerCase;
   }
 
   public getOperationId(): string {
-    return OAS.paths["/api/v2/phase3/transfercomplete"].get.operationId;
+    return OAS.paths["/api/v1/phase3/transfercomplete"].get.operationId;
   }
 
   getAuthorizationOptionsProvider(): IAsyncProvider<IEndpointAuthzOptions> {

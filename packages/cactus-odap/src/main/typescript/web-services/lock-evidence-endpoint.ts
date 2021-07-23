@@ -48,17 +48,17 @@ export class LockEvidenceEndpoint implements IWebServiceEndpoint {
   }*/
 
   public getPath(): string {
-    const apiPath = OAS.paths["/api/v2/phase2/lockevidence"];
+    const apiPath = OAS.paths["/api/v1/phase2/lockevidence"];
     return apiPath.post["x-hyperledger-cactus"].http.path;
   }
 
   public getVerbLowerCase(): string {
-    const apiPath = OAS.paths["/api/v2/phase2/lockevidence"];
+    const apiPath = OAS.paths["/api/v1/phase2/lockevidence"];
     return apiPath.post["x-hyperledger-cactus"].http.verbLowerCase;
   }
 
   public getOperationId(): string {
-    return OAS.paths["/api/v2/phase2/lockevidence"].post.operationId;
+    return OAS.paths["/api/v1/phase2/lockevidence"].post.operationId;
   }
 
   getAuthorizationOptionsProvider(): IAsyncProvider<IEndpointAuthzOptions> {

@@ -400,7 +400,8 @@
                 "type": "object",
                 "required": [
                     "functionOutput",
-                    "success"
+                    "success",
+                    "transactionId"
                 ],
                 "properties": {
                     "functionOutput": {
@@ -410,6 +411,18 @@
                     "success": {
                         "type": "boolean",
                         "nullable": false
+                    },
+                    "transactionId":{
+                        "type": "string",
+                        "nullable": false
+                    }
+                }
+            },
+            "GetTransactionReceiptResponse": {
+                "type": "object",
+                "properties": {
+                    "ok":{
+                        "type": "string"
                     }
                 }
             },
@@ -849,6 +862,45 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/RunTransactionResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-fabric/get-transaction-receipt-by-txid": {
+            "post": {
+                "x-hyperledger-cactus": {
+                    "http": {
+                        "verbLowerCase": "post",
+                        "path": "/api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-fabric/get-transaction-receipt-by-txid"
+                    }
+                },
+                "operationId": "getTransactionReceiptByTxIDV1",
+                "summary": "get a transaction receipt by tx id on a Fabric ledger.",
+                "description": "",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RunTransactionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetTransactionReceiptResponse"
                                 }
                             }
                         }

@@ -72,6 +72,7 @@ import {
   ChainCodeLifeCycleCommandResponses,
   FabricSigningCredential,
   DefaultEventHandlerStrategy,
+  GetTransactionReceiptResponse,
 } from "./generated/openapi/typescript-axios/index";
 
 import {
@@ -90,6 +91,7 @@ import { sourceLangToRuntimeLang } from "./peer/source-lang-to-runtime-lang";
 import FabricCAServices from "fabric-ca-client";
 import { createGateway } from "./common/create-gateway";
 import { Endorser } from "fabric-common";
+import { GetTransactionReceiptByTxIDEndpointV1 } from "./get-transaction-receipt/get-transaction-receipt-by-txid-endpoint-v1";
 
 /**
  * Constant value holding the default $GOPATH in the Fabric CLI container as
@@ -791,6 +793,14 @@ export class PluginLedgerConnectorFabric
       const endpoint = new RunTransactionEndpointV1(opts);
       endpoints.push(endpoint);
     }
+    {
+      const opts: IRunTransactionEndpointV1Options = {
+        connector: this,
+        logLevel: this.opts.logLevel,
+      };
+      const endpoint = new GetTransactionReceiptByTxIDEndpointV1(opts);
+      endpoints.push(endpoint);
+    }
 
     {
       const opts: IGetPrometheusExporterMetricsEndpointV1Options = {
@@ -911,6 +921,7 @@ export class PluginLedgerConnectorFabric
 
       let out: Buffer;
       let success: boolean;
+      let transactionId = "";
       switch (invocationType) {
         case FabricContractInvocationType.Call: {
           out = await contract.evaluateTransaction(fnName, ...params);
@@ -949,6 +960,7 @@ export class PluginLedgerConnectorFabric
             tx.setEndorsingPeers(endorsers);
           }
           out = await tx.submit(...params);
+          transactionId = tx.getTransactionId();
           success = true;
           break;
         }
@@ -996,6 +1008,7 @@ export class PluginLedgerConnectorFabric
       const res: RunTransactionResponse = {
         functionOutput: outUtf8,
         success,
+        transactionId: transactionId,
       };
       this.log.debug(`transact() response: %o`, res);
       this.prometheusExporter.addCurrentTransaction();
@@ -1005,6 +1018,29 @@ export class PluginLedgerConnectorFabric
       this.log.error(`transact() crashed: `, ex);
       throw new Error(`${fnTag} Unable to run transaction: ${ex.message}`);
     }
+  }
+  public async getTransactionReceiptByTxID(
+    req: RunTransactionRequest,
+  ): Promise<GetTransactionReceiptResponse> {
+    const fnTag = `${this.className}#getTransactionReceiptByTxID()`;
+    if (req.contractName != "qscc") {
+      throw new Error(`${fnTag}, contract name should be qscc`);
+    }
+    if (req.methodName != "GetBlockByTxID") {
+      throw new Error(`${fnTag}, method name should be getBlockByTxID`);
+    }
+    if (req.invocationType != FabricContractInvocationType.Call) {
+      throw new Error(
+        `${fnTag}, invocation type should be FabricContractInvocationType.Call`,
+      );
+    }
+    if (req.params.length != 2) {
+      throw new Error(`${fnTag}, should have 2 params`);
+    }
+
+    const res = this.transact(req);
+    this.log.warn(res);
+    return { ok: "res" };
   }
 
   /**

@@ -92,7 +92,7 @@ import FabricCAServices from "fabric-ca-client";
 import { createGateway } from "./common/create-gateway";
 import { Endorser } from "fabric-common";
 import { GetTransactionReceiptByTxIDEndpointV1 } from "./get-transaction-receipt/get-transaction-receipt-by-txid-endpoint-v1";
-
+const { BlockDecoder } = require("fabric-common");
 /**
  * Constant value holding the default $GOPATH in the Fabric CLI container as
  * observed on fabric deployments that are produced by the official examples
@@ -1023,6 +1023,7 @@ export class PluginLedgerConnectorFabric
     req: RunTransactionRequest,
   ): Promise<GetTransactionReceiptResponse> {
     const fnTag = `${this.className}#getTransactionReceiptByTxID()`;
+
     if (req.contractName != "qscc") {
       throw new Error(`${fnTag}, contract name should be qscc`);
     }
@@ -1037,9 +1038,21 @@ export class PluginLedgerConnectorFabric
     if (req.params.length != 2) {
       throw new Error(`${fnTag}, should have 2 params`);
     }
+    const gateway = await this.createGateway(req);
+    const network = await gateway.getNetwork(req.channelName);
+    // const channel = network.getChannel();
+    // const endorsers = channel.getEndorsers();
+    const contract = network.getContract(req.contractName);
 
-    const res = this.transact(req);
-    this.log.warn(res);
+    const out: Buffer = await contract.evaluateTransaction(
+      req.methodName,
+      ...req.params,
+    );
+    //const res = await this.transact(req);
+    this.log.warn(out);
+    this.log.warn("hope not error");
+    this.log.warn(BlockDecoder.decode(out));
+
     return { ok: "res" };
   }
 

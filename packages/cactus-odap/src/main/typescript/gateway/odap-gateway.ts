@@ -13,6 +13,7 @@ import {
   ICactusPlugin,
   IPluginWebService,
   IWebServiceEndpoint,
+  Configuration,
 } from "@hyperledger/cactus-core-api";
 import {
   CommitFinalMessage,
@@ -29,12 +30,12 @@ import {
   TransferCommenceResponseMessage,
   TransferCompleteMessage,
   TransferCompletMessageResponse,
-} from "../generated/openapi/typescript-axios";
+  DefaultApi as OdapApi,
+} from "../public-api";
 import { v4 as uuidV4 } from "uuid";
 import { time } from "console";
 import { SHA256 } from "crypto-js";
 import secp256k1 from "secp256k1";
-import { DefaultApi as OdapGatewayApi } from "../generated/openapi/typescript-axios/api";
 import { CommitFinalEndpoint } from "../web-services/commit-final-endpoint";
 import { CommitPrepareEndpoint } from "../web-services/commite-prepare-endpoint";
 import { LockEvidenceEndpoint } from "../web-services/lock-evidence-endpoint";
@@ -756,9 +757,10 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService{
   }
   public async SendClientRequest(req: SendClientRequestMessage): Promise<void> {
     const fntag = "${this.className()}#sendClientRequest()";
-    const odapServerGateway = this.pluginRegistry.plugins.find(
-      (plugin) => plugin.getInstanceId() == req.serverGatewayInstanceID,
-    ) as OdapGateway;
+    const odapServerApiConfig = new Configuration({
+      basePath: req.serverGatewayConfiguration.apiHost,
+    });
+    const odapServerApiClient = new OdapApi(odapServerApiConfig);
     const initializationRequestMessage: InitializationRequestMessage = {
       version: req.version,
       loggingProfile: req.loggingProfile,
@@ -776,19 +778,20 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService{
       JSON.stringify(initializationRequestMessage),
       dummyPrivKeyStr,
     );
-    t.doesNotThrow(
-      async () =>
-        await odapGateWay.initiateTransfer(initializationRequestMessage),
-      "does not throw if initial transfer proccessed",
-    );*/
+   */
     initializationRequestMessage.initializationRequestMessageSignature = "";
     const initializeReqSignature = await this.odapGatewaySign(
       JSON.stringify(initializationRequestMessage),
     );
     initializationRequestMessage.initializationRequestMessageSignature = initializeReqSignature;
-    const initializeReqAck: InitialMessageAck = await odapServerGateway.initiateTransfer(
+
+    const transferInitiationRes = await odapServerApiClient.apiV1Phase1TransferInitiation(
       initializationRequestMessage,
     );
+    const initializeReqAck: InitialMessageAck = transferInitiationRes.data;
+    if (transferInitiationRes.status != 200) {
+      throw new Error(`${fntag}, send transfer initiation failed`);
+    }
     initializationRequestMessage.initializationRequestMessageSignature = initializeReqSignature;
     const initializationMsgHash = SHA256(
       JSON.stringify(initializationRequestMessage),
@@ -824,9 +827,15 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService{
     const transferCommenceReqHash = SHA256(
       JSON.stringify(transferCommenceReq),
     ).toString();
-    const transferCommenceAck: TransferCommenceResponseMessage = await odapServerGateway.lockEvidenceTransferCommence(
+
+    const transferCommenceRes = await odapServerApiClient.apiV1Phase2TransferCommence(
       transferCommenceReq,
     );
+    if (transferCommenceRes.status != 200) {
+      throw new Error(`${fntag}, send transfer commence failed`);
+    }
+    const transferCommenceAck: TransferCommenceResponseMessage =
+      transferCommenceRes.data;
     if (transferCommenceReqHash != transferCommenceAck.hashCommenceRequest) {
       throw new Error(
         `${fntag}, transfer commence req hash not match from transfer commence ack`,
@@ -890,7 +899,13 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService{
     const lockEvidenceReqHash = SHA256(
       JSON.stringify(lockEvidenceReq),
     ).toString();
-    const lockEvidenceAck = await odapServerGateway.lockEvidence(lockEvidenceReq);
+    const lockEvidenceRes = await odapServerApiClient.apiV1Phase2LockEvidence(
+      lockEvidenceReq,
+    );
+    if (lockEvidenceRes.status != 200) {
+      throw new Error(`${fntag}, send lock evidence failed`);
+    }
+    const lockEvidenceAck: LockEvidenceResponseMessage = lockEvidenceRes.data;
     const lockEvidenceAckHash = SHA256(
       JSON.stringify(lockEvidenceAck),
     ).toString();
@@ -934,9 +949,13 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService{
       JSON.stringify(commitPrepareReq),
     ).toString();
 
-    const commitPrepareAck: CommitPreparationResponse = await odapServerGateway.CommitPrepare(
+    const commitPrepareRes = await odapServerApiClient.apiV1Phase3CommitPreparation(
       commitPrepareReq,
     );
+    if (commitPrepareRes.status != 200) {
+      throw new Error(`${fntag}, send commit prepare failed`);
+    }
+    const commitPrepareAck: CommitPreparationResponse = commitPrepareRes.data;
     const commitPrepareAckHash = SHA256(
       JSON.stringify(commitPrepareAck),
     ).toString();
@@ -979,9 +998,13 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService{
     const commitFinalReqHash = SHA256(
       JSON.stringify(commitFinalReq),
     ).toString();
-    const commitFinalAck: CommitFinalResponseMessage = await odapServerGateway.CommitFinal(
+    const commitFinalRes = await odapServerApiClient.apiV1Phase3CommitFinal(
       commitFinalReq,
     );
+    if (commitFinalRes.status != 200) {
+      throw new Error(`${fntag}, send commit final failed`);
+    }
+    const commitFinalAck: CommitFinalResponseMessage = commitFinalRes.data;
     const commitFinalAckHash = SHA256(
       JSON.stringify(commitFinalAck),
     ).toString();
@@ -1009,6 +1032,6 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService{
     transferCompleteReq.clientSignature = await this.odapGatewaySign(
       JSON.stringify(transferCompleteReq),
     );
-    await odapServerGateway.TransferComplete(transferCompleteReq);
+    await odapServerApiClient.apiV1Phase3TransferComplete(transferCompleteReq);
   }
 }

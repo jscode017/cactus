@@ -125,6 +125,7 @@ test("run send client request via openapi", async (t: Test) => {
   const odapServerGatewayInstanceID = uuidv4();
   // the block below adds the server odap gateway to the plugin registry
   let odapServerGatewayPubKey: string;
+  let odapServerGatewayApiHost: string;
   {
     const expressApp = express();
     expressApp.use(bodyParser.json({ limit: "250mb" }));
@@ -137,10 +138,10 @@ test("run send client request via openapi", async (t: Test) => {
     const addressInfo = (await Servers.listen(listenOptions)) as AddressInfo;
     test.onFinish(async () => await Servers.shutdown(server));
     const { address, port } = addressInfo;
-    const apiHost = `http://${address}:${port}`;
-    t.comment(
-      `Metrics URL: ${apiHost}/api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-fabric/get-prometheus-exporter-metrics`,
-    );
+    odapServerGatewayApiHost = `http://${address}:${port}`;
+    /*t.comment(
+      `Metrics URL: ${odapServerGatewayApiHost}/api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-fabric/get-prometheus-exporter-metrics`,
+    );*/
     const odapPluginOptions: OdapGatewayConstructorOptions = {
       name: "cactus-plugin#odapGateway",
       dltIDs: ["dummy"],
@@ -151,7 +152,6 @@ test("run send client request via openapi", async (t: Test) => {
     odapServerGatewayPubKey = plugin.pubKey;
     await plugin.getOrCreateWebServices();
     await plugin.registerWebServices(expressApp);
-    clientOdapGateway.pluginRegistry.add(plugin);
   }
   {
     const expressApp = express();
@@ -168,9 +168,9 @@ test("run send client request via openapi", async (t: Test) => {
     const apiHost = `http://${address}:${port}`;
     const apiConfig = new Configuration({ basePath: apiHost });
     const apiClient = new OdapApi(apiConfig);
-    t.comment(
+    /*t.comment(
       `Metrics URL: ${apiHost}/api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-fabric/get-prometheus-exporter-metrics`,
-    );
+    );*/
     await clientOdapGateway.getOrCreateWebServices();
     await clientOdapGateway.registerWebServices(expressApp);
     let dummyPrivKeyBytes = randomBytes(32);
@@ -180,7 +180,9 @@ test("run send client request via openapi", async (t: Test) => {
     const dummyPubKeyBytes = secp256k1.publicKeyCreate(dummyPrivKeyBytes);
     const dummyPubKey = clientOdapGateway.bufArray2HexStr(dummyPubKeyBytes);
     const odapClientRequest: SendClientRequestMessage = {
-      serverGatewayInstanceID: odapServerGatewayInstanceID,
+      serverGatewayConfiguration: {
+        apiHost: odapServerGatewayApiHost,
+      },
       version: "0.0.0",
       loggingProfile: "dummy",
       accessControlProfile: "dummy",

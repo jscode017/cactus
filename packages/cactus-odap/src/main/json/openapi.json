@@ -724,11 +724,20 @@
                     "serverDltSystem": {
                         "type":"string"
                     },
-                    "serverGatewayInstanceID": {
-                        "type":"string"
+                    "serverGatewayConfiguration": {
+                        "type":"object",
+                        "properties": {
+                            "apiHost":{
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "apiHost"
+                        ]
                     }
                 },
                 "required": [
+                    "serverGatewayConfiguration",
                     "version",
                     "loggingProfile",
                     "accessControlProfile",

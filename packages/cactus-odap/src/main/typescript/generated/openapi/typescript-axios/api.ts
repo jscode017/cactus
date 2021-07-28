@@ -943,10 +943,23 @@ export interface SendClientRequestMessage {
     serverDltSystem: string;
     /**
      * 
-     * @type {string}
+     * @type {SendClientRequestMessageServerGatewayConfiguration}
      * @memberof SendClientRequestMessage
      */
-    serverGatewayInstanceID: string;
+    serverGatewayConfiguration: SendClientRequestMessageServerGatewayConfiguration;
+}
+/**
+ * 
+ * @export
+ * @interface SendClientRequestMessageServerGatewayConfiguration
+ */
+export interface SendClientRequestMessageServerGatewayConfiguration {
+    /**
+     * 
+     * @type {string}
+     * @memberof SendClientRequestMessageServerGatewayConfiguration
+     */
+    apiHost: string;
 }
 /**
  * 

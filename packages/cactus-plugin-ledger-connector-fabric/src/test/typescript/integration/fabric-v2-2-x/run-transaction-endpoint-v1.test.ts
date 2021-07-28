@@ -226,7 +226,7 @@ test(testCase, async (t: Test) => {
     t.equal(asset277.owner, assetOwner, `Asset has expected owner OK`);
   }
 
-  {
+  /*{
     const res = await apiClient.getPrometheusMetricsV1();
     const promMetricsOutput =
       "# HELP " +
@@ -246,7 +246,7 @@ test(testCase, async (t: Test) => {
       res.data.includes(promMetricsOutput),
       "Total Transaction Count of 4 recorded as expected. RESULT OK",
     );
-  }
+  }*/
 
   {
     const req: RunTransactionRequest = {

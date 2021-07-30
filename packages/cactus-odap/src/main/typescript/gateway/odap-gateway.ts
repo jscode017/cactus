@@ -10,6 +10,16 @@ import {
   LoggerProvider,
 } from "@hyperledger/cactus-common";
 import {
+  PluginLedgerConnectorBesu,
+  DefaultApi as BesuApi,
+} from "@hyperledger/cactus-plugin-ledger-connector-besu";
+
+import {
+  PluginLedgerConnectorFabric,
+  DefaultApi as FabricApi,
+  DefaultEventHandlerStrategy,
+} from "@hyperledger/cactus-plugin-ledger-connector-fabric";
+import {
   ICactusPlugin,
   IPluginWebService,
   IWebServiceEndpoint,
@@ -107,7 +117,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService{
   pubKey: string;
   privKey: string;
   public static readonly CLASS_NAME = "OdapGateWay";
-
+  public fabrciApi
   private readonly log: Logger;
   private readonly instanceId: string;
 

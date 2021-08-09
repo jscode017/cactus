@@ -421,9 +421,32 @@
             "GetTransactionReceiptResponse": {
                 "type": "object",
                 "properties": {
-                    "ok":{
-                        "type": "string"
-                    }
+                   "blockNumber":{
+                       "type":"string"
+                   },
+                   "channelID":{
+                       "type": "string"
+                   },
+                   "transactionCreator":{},
+                   "transactionEndorsement":{
+                       "type":"array",
+                       "items":{}
+                   },
+                   "chainCodeName":{
+                       "type":"string"
+                   },
+                   "chainCodeVersion":{
+                       "type":"string"
+                   },
+                   "responseStatus":{
+                       "type":"string"
+                   },
+                   "rwsetKey":{
+                   },
+                   "rwsetWriteData":{
+                       "type": "string"
+                   },
+                   "blockMeteData":{}
                 }
             },
             "DeploymentTargetOrganization": {

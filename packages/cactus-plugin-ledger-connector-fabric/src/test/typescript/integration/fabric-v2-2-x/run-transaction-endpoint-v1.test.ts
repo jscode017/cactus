@@ -203,6 +203,8 @@ test(testCase, async (t: Test) => {
       params: [channelName, res.data.transactionId],
     } as RunTransactionRequest);
     t.ok(res2);
+    log.warn("after after after");
+    log.warn(res2.data);
   }
 
   {

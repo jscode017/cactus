@@ -93,6 +93,7 @@ import { createGateway } from "./common/create-gateway";
 import { Endorser } from "fabric-common";
 import { GetTransactionReceiptByTxIDEndpointV1 } from "./get-transaction-receipt/get-transaction-receipt-by-txid-endpoint-v1";
 import { common } from "fabric-protos";
+import { getTransactionReceiptForLockContractByTxID, IGetTransactionReceiptByTxIDOptions } from "./common/get-transaction-receipt-by-tx-id";
 const { BlockDecoder } = require("fabric-common");
 /**
  * Constant value holding the default $GOPATH in the Fabric CLI container as
@@ -1023,193 +1024,13 @@ export class PluginLedgerConnectorFabric
   public async getTransactionReceiptByTxID(
     req: RunTransactionRequest,
   ): Promise<GetTransactionReceiptResponse> {
-    const fnTag = `${this.className}#getTransactionReceiptByTxID()`;
-
-    if (req.contractName != "qscc") {
-      throw new Error(`${fnTag}, contract name should be qscc`);
-    }
-    if (req.methodName != "GetBlockByTxID") {
-      throw new Error(`${fnTag}, method name should be getBlockByTxID`);
-    }
-    if (req.invocationType != FabricContractInvocationType.Call) {
-      throw new Error(
-        `${fnTag}, invocation type should be FabricContractInvocationType.Call`,
-      );
-    }
-    if (req.params.length != 2) {
-      throw new Error(`${fnTag}, should have 2 params`);
-    }
     const gateway = await this.createGateway(req);
-    const network = await gateway.getNetwork(req.channelName);
-    // const channel = network.getChannel();
-    // const endorsers = channel.getEndorsers();
-    const contract = network.getContract(req.contractName);
-
-    const out: Buffer = await contract.evaluateTransaction(
-      req.methodName,
-      ...req.params,
-    );
-    const reqTxID = req.params[1];
-    //const res = await this.transact(req);
-    //this.log.warn(out);
-    this.log.warn("hope not error");
-    //this.log.warn(BlockDecoder.decode(out));
-    const block: common.Block = BlockDecoder.decode(out);
-    const blockJson = JSON.parse(JSON.stringify(block));
-    this.log.warn(blockJson);
-    this.log.warn("block number");
-    this.log.warn(blockJson.header.number);
-    //TODO: return block number
-    const txIDs = [];
-    if (block.data != undefined && block.data.data != undefined) {
-      const blockDatas = block.data.data;
-      this.log.warn("tranversing block datas");
-      for (let i = 0; i < blockDatas.length; i++) {
-        const blockData = JSON.parse(JSON.stringify(blockDatas[i]));
-        this.log.warn("blockdata tranverse");
-        if (
-          blockData.payload == undefined ||
-          blockData.payload.header == undefined ||
-          blockData.payload.header.channel_header == undefined
-        )
-          continue;
-
-        const payloadChannelHeader = blockData.payload.header.channel_header;
-        if (payloadChannelHeader.tx_id != undefined) {
-          txIDs.push(payloadChannelHeader.tx_id);
-          if (payloadChannelHeader.tx_id != reqTxID) continue;
-          this.log.warn("printing txid---");
-          this.log.warn(payloadChannelHeader.tx_id);
-          this.log.warn(blockData);
-          this.log.warn("payloadchannelheader");
-          this.log.warn(payloadChannelHeader);
-          //TODO: get payloadChannelHeader channel_id
-          this.log.warn("payloadchannel data");
-          this.log.warn(blockData.payload.data);
-          if (
-            blockData.payload.data == undefined ||
-            blockData.payload.data.actions == undefined
-          ) {
-            continue;
-          }
-          const payloadDataActions = blockData.payload.data.actions;
-          this.log.warn("actions");
-          this.log.warn(payloadDataActions);
-          if (
-            payloadDataActions[0].header == undefined ||
-            payloadDataActions[0].payload == undefined
-          )
-            continue;
-          const actionsHeader = payloadDataActions[0].header;
-          const actionsPayload = payloadDataActions[0].payload;
-          this.log.warn("actionsHeader");
-          //TODO: get actionsHeader.creator for transaction creator
-          this.log.warn(actionsHeader);
-          this.log.warn("actionsPayload");
-          this.log.warn(actionsPayload);
-          if (actionsPayload.chaincode_proposal_payload == undefined) continue;
-          const chainCodeProposal = actionsPayload.chaincode_proposal_payload;
-          this.log.warn("chain code proposal");
-          this.log.warn(chainCodeProposal);
-          if (
-            chainCodeProposal.input == undefined ||
-            chainCodeProposal.input.chaincode_spec == undefined ||
-            chainCodeProposal.input.chaincode_spec.chaincode_id == undefined
-          )
-            continue;
-          const chainCodeID =
-            chainCodeProposal.input.chaincode_spec.chaincode_id;
-          this.log.warn("chainCodeID");
-          this.log.warn(chainCodeID);
-          //TODO: RETURN BACK CHAINCODEID
-          if (
-            actionsPayload.action == undefined ||
-            actionsPayload.action.proposal_response_payload == undefined ||
-            actionsPayload.action.endorsements == undefined
-          )
-            continue;
-          const proposalResponsePayload =
-            actionsPayload.action.proposal_response_payload;
-          const actionEndorsement = actionsPayload.action.endorsements;
-
-          this.log.warn("actionEndorsement");
-          this.log.warn(actionEndorsement);
-          //TODO return this Endorsement array
-          this.log.warn("proposal response payload");
-          this.log.warn(proposalResponsePayload);
-          if (proposalResponsePayload.extension == undefined) continue;
-
-          const responseExtension = proposalResponsePayload.extension;
-          if (responseExtension.chaincode_id == undefined) continue;
-          const extensionChainCodeID = responseExtension.chaincode_id;
-          this.log.warn("chaincode name and version");
-          //TODO: return chaincode name and version
-          this.log.warn(extensionChainCodeID.name);
-          this.log.warn(extensionChainCodeID.version);
-
-          if (
-            responseExtension.response == undefined ||
-            responseExtension.response.payload == undefined ||
-            responseExtension.response.status == undefined
-          )
-            continue;
-          const responseStatus = responseExtension.response.status;
-          this.log.warn("responseStatus");
-          this.log.warn(responseStatus);
-          //TODO: return responseStatus
-          const extensionResponsePayload = responseExtension.response.payload;
-          this.log.warn("extensionResponsePayload");
-          this.log.warn(extensionResponsePayload);
-          //this.log.warn(JSON.stringify(responseExtension, null, 4));
-          if (
-            responseExtension.results == undefined ||
-            responseExtension.results.ns_rwset == undefined ||
-            responseExtension.results.ns_rwset.length < 2
-          ) {
-            continue;
-          }
-          const extensionNsRwset = responseExtension.results.ns_rwset[1];
-          if (extensionNsRwset.rwset == undefined) continue;
-
-          const rwset = extensionNsRwset.rwset;
-          if (rwset.writes == undefined) continue;
-          const rwsetWrite = rwset.writes;
-          this.log.warn("rwsetWrite");
-          this.log.warn(rwsetWrite);
-          if (rwsetWrite[0].key == undefined) continue;
-          const rwsetKey = rwsetWrite[0].key;
-          this.log.warn("rwsetKey");
-          this.log.warn(rwsetKey);
-          //TODO: return rwsetKey
-          if (
-            rwsetWrite[0].value == undefined ||
-            rwsetWrite[0].value.data == undefined
-          )
-            continue;
-          const rwSetWriteData = rwsetWrite[0].value.data;
-          this.log.warn("rwSetWriteData");
-          this.log.warn(rwSetWriteData);
-          this.log.warn(typeof rwSetWriteData[0]);
-          // eslint-disable-next-line prefer-spread
-          const rwSetWriteDataStr = String.fromCharCode.apply(
-            String,
-            rwSetWriteData,
-          );
-          this.log.warn("rwSetWriteDataStr");
-          this.log.warn(rwSetWriteDataStr);
-          //TODO: return rwSetWriteDataStr
-          break;
-        }
-      }
-      //TODO: return txIDs
-    }
-    if (block.metadata != undefined && block.metadata.metadata != undefined) {
-      const metadata = block.metadata.metadata;
-      this.log.warn("metadata");
-      this.log.warn(JSON.stringify(metadata));
-      //TODO: return metadata
-    }
-    return { ok: "res" };
+    const options: IGetTransactionReceiptByTxIDOptions = {
+      channelName: req.channelName,
+      params: req.params,
+      gateway: gateway,
+    };
+    return await getTransactionReceiptForLockContractByTxID(options);
   }
 
   /**

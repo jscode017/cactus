@@ -672,7 +672,61 @@ export interface GetTransactionReceiptResponse {
      * @type {string}
      * @memberof GetTransactionReceiptResponse
      */
-    ok?: string;
+    blockNumber?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetTransactionReceiptResponse
+     */
+    channelID?: string;
+    /**
+     * 
+     * @type {any}
+     * @memberof GetTransactionReceiptResponse
+     */
+    transactionCreator?: any | null;
+    /**
+     * 
+     * @type {Array<any>}
+     * @memberof GetTransactionReceiptResponse
+     */
+    transactionEndorsement?: Array<any>;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetTransactionReceiptResponse
+     */
+    chainCodeName?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetTransactionReceiptResponse
+     */
+    chainCodeVersion?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetTransactionReceiptResponse
+     */
+    responseStatus?: string;
+    /**
+     * 
+     * @type {any}
+     * @memberof GetTransactionReceiptResponse
+     */
+    rwsetKey?: any | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetTransactionReceiptResponse
+     */
+    rwsetWriteData?: string;
+    /**
+     * 
+     * @type {any}
+     * @memberof GetTransactionReceiptResponse
+     */
+    blockMeteData?: any | null;
 }
 /**
  * 

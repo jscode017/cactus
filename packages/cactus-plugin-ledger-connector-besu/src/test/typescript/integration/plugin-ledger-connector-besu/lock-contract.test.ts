@@ -11,11 +11,14 @@ import {
 } from "../../../../main/typescript/public-api";
 import { PluginKeychainMemory } from "@hyperledger/cactus-plugin-keychain-memory";
 import { BesuTestLedger } from "@hyperledger/cactus-test-tooling";
-import { LogLevelDesc } from "@hyperledger/cactus-common";
+import { LoggerProvider, LogLevelDesc } from "@hyperledger/cactus-common";
 import LockAssetContractJson from "../../../solidity/hello-world-contract/LockAsset.json";
 import Web3 from "web3";
 import { PluginImportType } from "@hyperledger/cactus-core-api";
-
+import ts from "typescript";
+const level = "INFO";
+const label = "lock-contact test";
+const log = LoggerProvider.getOrCreate({ level, label });
 test("deploys contract via .json file", async (t: Test) => {
   const logLevel: LogLevelDesc = "TRACE";
   const besuTestLedger = new BesuTestLedger();
@@ -119,94 +122,80 @@ test("deploys contract via .json file", async (t: Test) => {
       "contractAddress typeof string OK",
     );
 
-    const {
-      callOutput: unLockedAssetAfterCreate,
-    } = await connector.invokeContract({
+    const { callOutput: createRes } = await connector.invokeContract({
       contractName,
       keychainId: keychainPlugin.getKeychainId(),
-      invocationType: EthContractInvocationType.Call,
+      invocationType: EthContractInvocationType.Send,
       methodName: "createAsset",
-      params: [100],
+      params: ["asset1", 5],
       signingCredential: {
         ethAccount: testEthAccount.address,
         secret: besuKeyPair.privateKey,
         type: Web3SigningCredentialType.PrivateKeyHex,
       },
     });
-    t2.ok(unLockedAssetAfterCreate, "create Asset() output is truthy");
-    t2.equals(parseInt(unLockedAssetAfterCreate, 10), 100, "create Asset Ok");
-    const {
-      callOutput: { unLockedAssetAfterLock, lockedAssetAfterLock },
-    } = await connector.invokeContract({
+    t2.ok(createRes, "create Asset() output is truthy");
+    t2.equals(createRes, true, "create Asset Ok");
+    log.warn("create ok");
+    const { callOutput: lockRes } = await connector.invokeContract({
       contractName,
       keychainId: keychainPlugin.getKeychainId(),
       invocationType: EthContractInvocationType.Call,
       methodName: "lockAsset",
-      params: [30],
+      params: ["asset1"],
       signingCredential: {
         ethAccount: testEthAccount.address,
         secret: besuKeyPair.privateKey,
         type: Web3SigningCredentialType.PrivateKeyHex,
       },
     });
-    t2.ok(unLockedAssetAfterLock, "lock Asset() output is truthy");
-    t2.ok(lockedAssetAfterLock, "lock Asset() output is truthy");
-    t2.equal(
-      parseInt(unLockedAssetAfterLock, 10),
-      70,
-      "unlocked asset num equals after lock",
-    );
-    t2.equal(
-      parseInt(lockedAssetAfterLock, 10),
-      30,
-      "locked asset num equals after lock",
-    );
-    const {
-      callOutput: { unLockedAssetAfterUnLock, lockedAssetAfterUnLock },
-    } = await connector.invokeContract({
+    log.warn("checking lock res");
+    t2.ok(lockRes, "lock Asset() output is truthy");
+    t2.equals(lockRes, true, "lock Asset Ok");
+    const { callOutput: unLockRes } = await connector.invokeContract({
       contractName,
       keychainId: keychainPlugin.getKeychainId(),
-      invocationType: EthContractInvocationType.Call,
+      invocationType: EthContractInvocationType.Send,
       methodName: "unLockAsset",
-      params: [5],
+      params: ["asset1"],
       signingCredential: {
         ethAccount: testEthAccount.address,
         secret: besuKeyPair.privateKey,
         type: Web3SigningCredentialType.PrivateKeyHex,
       },
     });
-    t2.ok(unLockedAssetAfterLock, "unlock Asset() output is truthy");
-    t2.ok(lockedAssetAfterLock, "unlock Asset() output is truthy");
-    t2.equal(
-      parseInt(unLockedAssetAfterUnLock, 10),
-      75,
-      "unlocked asset num equals after lock",
-    );
-    t2.equal(
-      parseInt(lockedAssetAfterUnLock, 10),
-      25,
-      "locked asset num equals after lock",
-    );
-    const {
-      callOutput: { lockedAssetAfterDelete },
-    } = await connector.invokeContract({
+    t2.ok(unLockRes, "unlock Asset() output is truthy");
+    t2.equals(unLockRes, true, "unlock Asset Ok");
+    const { callOutput: lockRes2 } = await connector.invokeContract({
       contractName,
       keychainId: keychainPlugin.getKeychainId(),
-      invocationType: EthContractInvocationType.Call,
-      methodName: "deleteAsset",
-      params: [5],
+      invocationType: EthContractInvocationType.Send,
+      methodName: "lockAsset",
+      params: ["asset1"],
       signingCredential: {
         ethAccount: testEthAccount.address,
         secret: besuKeyPair.privateKey,
         type: Web3SigningCredentialType.PrivateKeyHex,
       },
     });
-    t2.ok(lockedAssetAfterLock, "unlock Asset() output is truthy");
-    t2.equal(
-      parseInt(lockedAssetAfterUnLock, 10),
-      20,
-      "locked asset num equals after delete",
-    );
+    t2.ok(lockRes2, "lock Asset() again output is truthy");
+    t2.equals(lockRes2, true, "lock Asset again Ok");
+    log.warn("asset is locked again");
+    const { callOutput: deleteRes } = await connector.invokeContract({
+      contractName,
+      keychainId: keychainPlugin.getKeychainId(),
+      invocationType: EthContractInvocationType.Send,
+      methodName: "deleteAsset",
+      params: ["asset1"],
+      signingCredential: {
+        ethAccount: testEthAccount.address,
+        secret: besuKeyPair.privateKey,
+        type: Web3SigningCredentialType.PrivateKeyHex,
+      },
+    });
+    console.log(deleteRes);
+    t2.ok(deleteRes, "delete Asset() output is truthy");
+    t2.equals(deleteRes, true, "delete Asset Ok");
   });
   t.end();
 });

@@ -73,6 +73,8 @@
     "@hyperledger/cactus-common": "0.6.0",
     "@hyperledger/cactus-core": "0.6.0",
     "@hyperledger/cactus-core-api": "0.6.0",
+    "@hyperledger/cactus-plugin-ledger-connector-besu": "^0.7.0",
+    "@hyperledger/cactus-plugin-ledger-connector-fabric": "^0.7.0",
     "@hyperledger/cactus-plugin-object-store-ipfs": "^0.6.0",
     "axios": "0.21.1",
     "crypto-js": "4.0.0",

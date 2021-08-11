@@ -6,50 +6,55 @@
 // *****************************************************************************
 
 pragma solidity >=0.7.0;
-struct Assets{
-    uint lockAssetNum;
-    uint unLockAssetNum;
+struct Asset{
+    address creator;
+    bool isLock;
+    uint size;
 }
+//TODO: DETEMINE CALLDATA VS MEMORY
 contract LockAsset {
-
-  mapping (address => Assets) assets;
-  function createAsset(uint num) public returns (uint){
-      //default is 0
-      assets[msg.sender].unLockAssetNum += num;
-      return assets[msg.sender].unLockAssetNum;
+  //
+  mapping (string => Asset) assets;
+  function createAsset(string calldata id, uint size) public returns (bool){
+      require(size>0);
+      //bool assetIsNew
+      Asset storage asset = assets[id];
+      //asset.size = size;
+      asset.creator = msg.sender;
+      //asset.isLock = false;
+      //assets[id] = asset;
+      return true;
   }
-  function getLockedAsset() public view returns (uint)
+  /*function getAsset(string calldata _id) public view returns (Asset memory)
   {
-      return assets[msg.sender].lockAssetNum;
-  }
-  function getUnLockedAsset() public view returns (uint)
-  {
-      return assets[msg.sender].unLockAssetNum;
-  }
+      return assets[_id];
+  }*/
 
-  function lockAsset(uint num) public returns(uint, uint){
-      if(assets[msg.sender].unLockAssetNum<num){
-        return (assets[msg.sender].unLockAssetNum, assets[msg.sender].lockAssetNum);
+  //Don't care if it is already locked
+  function lockAsset(string calldata id) public returns(bool){
+      bool assetExsist = assets[id].size>0;
+      //require(assetExsist);
+      if (!assetExsist){
+          return true;
       }
-      assets[msg.sender].unLockAssetNum -= num;
-      assets[msg.sender].lockAssetNum += num;
-      return (assets[msg.sender].unLockAssetNum, assets[msg.sender].lockAssetNum);
+      assets[id].isLock = true;
+      return true;
   }
-  function unLockAsset(uint num) public returns(uint, uint){
-      if(assets[msg.sender].lockAssetNum<num){
-        return (assets[msg.sender].unLockAssetNum, assets[msg.sender].lockAssetNum);
-      }
-      assets[msg.sender].unLockAssetNum += num;
-      assets[msg.sender].lockAssetNum -= num;
-      return (assets[msg.sender].unLockAssetNum, assets[msg.sender].lockAssetNum);
+  //Don't care if it is already unlocked
+  function unLockAsset(string calldata id) public returns(bool){
+      //bool assetExsist = assets[msg.sender][_id].size>0;
+      //require(assetExsist);
+      assets[id].isLock = false;
+      return true;
   }
-  function deleteAsset(uint num) public returns(uint){
+  function deleteAsset(string calldata id) public returns(bool){
+      //bool assetExsist = assets[msg.sender][_id].size>0;
+      //require(assetExsist);
       //an asset could only be deleted if it is already locked
-      if(assets[msg.sender].lockAssetNum<num){
-          return assets[msg.sender].lockAssetNum;
-      }
-      assets[msg.sender].lockAssetNum -= num;
-      return assets[msg.sender].lockAssetNum;
+      //bool assetIsLocked = assets[msg.sender][_id].isLock;
+      //require(assetIsLocked);
+      delete assets[id];
+      return true;
   }
 
 }

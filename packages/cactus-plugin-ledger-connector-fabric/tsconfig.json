@@ -15,6 +15,7 @@
   "exclude": [
     "./src/test/typescript/fixtures/go/basic-asset-transfer/chaincode-typescript/**/*.ts",
     "./src/test/typescript/fixtures/go/lock/chaincode-typescript/src/*.ts",
+    "./src/test/typescript/fixtures/go/lock-asset/chaincode-typescript/src/*.ts",
     "./src/test/typescript/integration/fabric-v2-2-x/deploy-lock.test.ts"
   ],
   "references": [

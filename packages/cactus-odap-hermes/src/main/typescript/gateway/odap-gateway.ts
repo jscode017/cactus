@@ -55,8 +55,18 @@ import { TransferCompleteEndpoint } from "../web-services/transfer-complete";
 import { ApiV1Phase1TransferInitiation } from "../web-services/transfer-initiation-endpoint";
 import { SendClientRequestEndpoint } from "../web-services/send-client-request";
 import { PluginRegistry } from "@hyperledger/cactus-core";
-import { DefaultApi as FabricApi } from "@hyperledger/cactus-plugin-ledger-connector-fabric";
-import { DefaultApi as BesuApi } from "@hyperledger/cactus-plugin-ledger-connector-besu";
+import {
+  DefaultApi as FabricApi,
+  FabricContractInvocationType,
+  FabricSigningCredential,
+  RunTransactionRequest as FabricRunTransactionRequest,
+} from "@hyperledger/cactus-plugin-ledger-connector-fabric";
+import {
+  DefaultApi as BesuApi,
+  Web3SigningCredential,
+  EthContractInvocationType,
+  InvokeContractV1Request as BesuInvokeContractV1Request,
+} from "@hyperledger/cactus-plugin-ledger-connector-besu";
 const log = LoggerProvider.getOrCreate({
   level: "INFO",
   label: "odap-logger",
@@ -105,14 +115,32 @@ interface SessionData {
   serverSignatureForCommitFinal?: string;
   commitFinalReqHash?: string;
   commitFinalAckHash?: string;
+
+  isFabricAssetDeleted?: boolean;
+  isFabricAssetLocked?: boolean;
+  isBesuAssetCreated?: boolean;
+  fabricAssetID?: string;
+  fabricAssetSize?: number;
+
+  besuAssetID?: string;
 }
 export interface OdapGatewayConstructorOptions {
   name: string;
   dltIDs: string[];
   instanceId: string;
   ipfsPath?: string;
-  fabircPath?: string;
+
+  fabricPath?: string;
   besuPath?: string;
+  fabricSigningCredential?: FabricSigningCredential;
+  fabricChannelName?: string;
+  fabricContractName?: string;
+  besuContractName?: string;
+  besuWeb3SigningCredential?: Web3SigningCredential;
+  besuKeychainId?: string;
+
+  fabricAssetID?: string;
+  besuAssetID?: string;
 }
 export interface OdapGatewayKeyPairs {
   publicKey: Uint8Array;
@@ -141,6 +169,19 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
   //map[]object, object refer to a state
   //of a specific comminications
   private supportedDltIDs: string[];
+
+  private fabricAssetLocked: boolean;
+  private fabricAssetDeleted: boolean;
+  private besuAssetCreated: boolean;
+  private fabricSigningCredential?: FabricSigningCredential;
+  private fabricChannelName?: string;
+  private fabricContractName?: string;
+  private besuContractName?: string;
+  private besuWeb3SigningCredential?: Web3SigningCredential;
+  private besuKeychainId?: string;
+
+  private fabricAssetID?: string;
+  private besuAssetID?: string;
   public constructor(options: OdapGatewayConstructorOptions) {
     const fnTag = `${this.className}#constructor()`;
     Checks.truthy(options, `${fnTag} arg options`);
@@ -158,6 +199,10 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     this.pubKey = this.bufArray2HexStr(keyPairs.publicKey);
     this.privKey = this.bufArray2HexStr(keyPairs.privateKey);
 
+    this.fabricAssetDeleted = false;
+    this.fabricAssetLocked = false;
+    this.besuAssetCreated = false;
+
     this.pluginRegistry = new PluginRegistry();
     if (options.ipfsPath != undefined) {
       {
@@ -166,11 +211,25 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         this.ipfsApi = apiClient;
       }
     }
-    if (options.fabircPath != undefined) {
+    if (options.fabricPath != undefined) {
       {
         const config = new Configuration({ basePath: options.fabricPath });
         const apiClient = new FabricApi(config);
         this.fabricApi = apiClient;
+        const notEnoughFabricParams: boolean =
+          options.fabricSigningCredential == undefined ||
+          options.fabricChannelName == undefined ||
+          options.fabricContractName == undefined ||
+          options.fabricAssetID != undefined;
+        if (notEnoughFabricParams) {
+          throw new Error(
+            `${fnTag}, fabric params missing should have: signing credentials, contract name, channel name, asset ID`,
+          );
+        }
+        this.fabricSigningCredential = options.fabricSigningCredential;
+        this.fabricChannelName = options.fabricChannelName;
+        this.fabricContractName = options.fabricContractName;
+        this.fabricAssetID = options.fabricAssetID;
       }
     }
     if (options.besuPath != undefined) {
@@ -178,10 +237,60 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         const config = new Configuration({ basePath: options.besuPath });
         const apiClient = new BesuApi(config);
         this.besuApi = apiClient;
+        const notEnoughBesuParams: boolean =
+          options.besuContractName == undefined ||
+          options.besuWeb3SigningCredential == undefined ||
+          options.besuKeychainId == undefined ||
+          options.besuAssetID != undefined;
+        if (notEnoughBesuParams) {
+          throw new Error(
+            `${fnTag}, besu params missing should have: signing credentials, contract name, key chain ID, asset ID`,
+          );
+        }
+        this.besuContractName = options.besuContractName;
+        this.besuWeb3SigningCredential = options.besuWeb3SigningCredential;
+        this.besuKeychainId = options.besuKeychainId;
+        this.besuAssetID = options.besuAssetID;
       }
     }
   }
-
+  public async Revert(sessionID: string): Promise<void>{
+    const sessionData = this.sessions.get(sessionID);
+    if (sessionData == undefined) return;
+    if (sessionData.isFabricAssetDeleted) {
+      if (this.fabricApi == undefined) return;
+      await this.fabricApi.runTransactionV1({
+        signingCredential: this.fabricSigningCredential,
+        channelName: this.fabricChannelName,
+        contractName: this.fabricContractName,
+        invocationType: FabricContractInvocationType.Send,
+        methodName: "CreateAsset",
+        params: [sessionData.fabricAssetID, sessionData.fabricAssetSize],
+      } as FabricRunTransactionRequest);
+    } else if (sessionData.isFabricAssetLocked) {
+      if (this.fabricApi == undefined) return;
+      await this.fabricApi.runTransactionV1({
+        signingCredential: this.fabricSigningCredential,
+        channelName: this.fabricChannelName,
+        contractName: this.fabricContractName,
+        invocationType: FabricContractInvocationType.Send,
+        methodName: "UnLockAsset",
+        params: [sessionData.fabricAssetID],
+      } as FabricRunTransactionRequest);
+    } else if (sessionData.isBesuAssetCreated) {
+      if (this.besuApi == undefined) return;
+      await this.besuApi.invokeContractV1({
+        contractName: this.besuContractName,
+        invocationType: EthContractInvocationType.Send,
+        methodName: "deleteAsset",
+        gas: 1000000,
+        params: [sessionData.besuAssetID],
+        signingCredential: this.besuWeb3SigningCredential,
+        keychainId: this.besuKeychainId,
+      } as BesuInvokeContractV1Request);
+    }
+    return;
+  }
   public get className(): string {
     return OdapGateway.CLASS_NAME;
   }
@@ -392,9 +501,26 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     log.info(
       `server gate way receive commit final request: ${JSON.stringify(req)}`,
     );
+    const fnTag = `${this.className}, CommitFinal()`;
     const hashCommitFinal = SHA256(JSON.stringify(req)).toString();
     await this.checkValidCommitFinalRequest(req, req.sessionID);
+    if (this.besuApi != undefined) {
+      await this.besuApi.invokeContractV1({
+        contractName: this.besuContractName,
+        invocationType: EthContractInvocationType.Send,
+        methodName: "deleteAsset",
+        gas: 1000000,
+        params: [this.besuAssetID],
+        signingCredential: this.besuWeb3SigningCredential,
+        keychainId: this.besuKeychainId,
+      } as BesuInvokeContractV1Request);
 
+      const sessionData = this.sessions.get(req.sessionID);
+      if (sessionData == undefined) {
+        throw new Error(`${fnTag}, session data undefined`);
+      }
+      sessionData.isBesuAssetCreated = true;
+    }
     const ack: CommitFinalResponseMessage = {
       messageType: "urn:ietf:odap:msgtype:commit-final-msg",
       serverIdentityPubkey: req.serverIdentityPubkey,
@@ -971,6 +1097,21 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const commenceAckHash = SHA256(
       JSON.stringify(transferCommenceAck),
     ).toString();
+    if (this.fabricApi != undefined) {
+      await this.fabricApi.runTransactionV1({
+        signingCredential: this.fabricSigningCredential,
+        channelName: this.fabricChannelName,
+        contractName: this.fabricContractName,
+        invocationType: FabricContractInvocationType.Send,
+        methodName: "LockAsset",
+        params: [this.fabricAssetID],
+      } as FabricRunTransactionRequest);
+      const sessionData = this.sessions.get(sessionID);
+      if (sessionData == undefined) {
+        throw new Error(`${fnTag}, session data undefined`);
+      }
+      sessionData.isFabricAssetLocked = true;
+    }
     const lockEvidenceReq: LockEvidenceMessage = {
       sessionID: sessionID,
       messageType: "urn:ietf:odap:msgtype:lock-evidence-req-msg",
@@ -1071,6 +1212,21 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
 
     //TODO: verify signature
 
+    if (this.fabricApi != undefined) {
+      await this.fabricApi.runTransactionV1({
+        signingCredential: this.fabricSigningCredential,
+        channelName: this.fabricChannelName,
+        contractName: this.fabricContractName,
+        invocationType: FabricContractInvocationType.Send,
+        methodName: "DeleteAsset",
+        params: [this.fabricAssetID],
+      } as FabricRunTransactionRequest);
+      const sessionData = this.sessions.get(sessionID);
+      if (sessionData == undefined) {
+        throw new Error(`${fnTag}, session data undefined`);
+      }
+      sessionData.isFabricAssetDeleted = true;
+    }
     const commitFinalReq: CommitFinalMessage = {
       sessionID: sessionID,
       messageType: "urn:ietf:odap:msgtype:commit-final-msg",

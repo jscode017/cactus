@@ -122,7 +122,7 @@ test("deploys contract via .json file", async (t: Test) => {
       "contractAddress typeof string OK",
     );
 
-    const { callOutput: createRes } = await connector.invokeContract({
+    const { success: createRes } = await connector.invokeContract({
       contractName,
       keychainId: keychainPlugin.getKeychainId(),
       invocationType: EthContractInvocationType.Send,
@@ -133,14 +133,15 @@ test("deploys contract via .json file", async (t: Test) => {
         secret: besuKeyPair.privateKey,
         type: Web3SigningCredentialType.PrivateKeyHex,
       },
+      gas: 1000000,
     });
     t2.ok(createRes, "create Asset() output is truthy");
     t2.equals(createRes, true, "create Asset Ok");
     log.warn("create ok");
-    const { callOutput: lockRes } = await connector.invokeContract({
+    const { success: lockRes } = await connector.invokeContract({
       contractName,
       keychainId: keychainPlugin.getKeychainId(),
-      invocationType: EthContractInvocationType.Call,
+      invocationType: EthContractInvocationType.Send,
       methodName: "lockAsset",
       params: ["asset1"],
       signingCredential: {
@@ -148,11 +149,12 @@ test("deploys contract via .json file", async (t: Test) => {
         secret: besuKeyPair.privateKey,
         type: Web3SigningCredentialType.PrivateKeyHex,
       },
+      gas: 1000000,
     });
     log.warn("checking lock res");
     t2.ok(lockRes, "lock Asset() output is truthy");
     t2.equals(lockRes, true, "lock Asset Ok");
-    const { callOutput: unLockRes } = await connector.invokeContract({
+    const { success: unLockRes } = await connector.invokeContract({
       contractName,
       keychainId: keychainPlugin.getKeychainId(),
       invocationType: EthContractInvocationType.Send,
@@ -163,10 +165,11 @@ test("deploys contract via .json file", async (t: Test) => {
         secret: besuKeyPair.privateKey,
         type: Web3SigningCredentialType.PrivateKeyHex,
       },
+      gas: 1000000,
     });
     t2.ok(unLockRes, "unlock Asset() output is truthy");
     t2.equals(unLockRes, true, "unlock Asset Ok");
-    const { callOutput: lockRes2 } = await connector.invokeContract({
+    const { success: lockRes2 } = await connector.invokeContract({
       contractName,
       keychainId: keychainPlugin.getKeychainId(),
       invocationType: EthContractInvocationType.Send,
@@ -177,11 +180,12 @@ test("deploys contract via .json file", async (t: Test) => {
         secret: besuKeyPair.privateKey,
         type: Web3SigningCredentialType.PrivateKeyHex,
       },
+      gas: 1000000,
     });
     t2.ok(lockRes2, "lock Asset() again output is truthy");
     t2.equals(lockRes2, true, "lock Asset again Ok");
     log.warn("asset is locked again");
-    const { callOutput: deleteRes } = await connector.invokeContract({
+    const { success: deleteRes } = await connector.invokeContract({
       contractName,
       keychainId: keychainPlugin.getKeychainId(),
       invocationType: EthContractInvocationType.Send,
@@ -192,6 +196,7 @@ test("deploys contract via .json file", async (t: Test) => {
         secret: besuKeyPair.privateKey,
         type: Web3SigningCredentialType.PrivateKeyHex,
       },
+      gas: 1000000,
     });
     console.log(deleteRes);
     t2.ok(deleteRes, "delete Asset() output is truthy");

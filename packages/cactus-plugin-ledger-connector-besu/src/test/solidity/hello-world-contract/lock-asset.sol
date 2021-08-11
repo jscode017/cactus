@@ -15,46 +15,36 @@ struct Asset{
 contract LockAsset {
   //
   mapping (string => Asset) assets;
-  function createAsset(string calldata id, uint size) public returns (bool){
+  function createAsset( string calldata id, uint size) public{
       require(size>0);
-      //bool assetIsNew
-      Asset storage asset = assets[id];
-      //asset.size = size;
-      asset.creator = msg.sender;
-      //asset.isLock = false;
-      //assets[id] = asset;
-      return true;
+      assets[id].size= size;
+      assets[id].creator = msg.sender;
+      assets[id].isLock = false;
   }
-  /*function getAsset(string calldata _id) public view returns (Asset memory)
+  function getAsset(string calldata id) public view returns (Asset memory)
   {
-      return assets[_id];
-  }*/
+      return assets[id];
+  }
 
   //Don't care if it is already locked
-  function lockAsset(string calldata id) public returns(bool){
+  function lockAsset(string calldata id) public{
       bool assetExsist = assets[id].size>0;
-      //require(assetExsist);
-      if (!assetExsist){
-          return true;
-      }
+      require(assetExsist);
       assets[id].isLock = true;
-      return true;
   }
   //Don't care if it is already unlocked
-  function unLockAsset(string calldata id) public returns(bool){
-      //bool assetExsist = assets[msg.sender][_id].size>0;
-      //require(assetExsist);
+  function unLockAsset(string calldata id) public{
+      bool assetExsist = assets[id].size>0;
+      require(assetExsist);
       assets[id].isLock = false;
-      return true;
   }
-  function deleteAsset(string calldata id) public returns(bool){
-      //bool assetExsist = assets[msg.sender][_id].size>0;
-      //require(assetExsist);
+  function deleteAsset(string calldata id) public {
+      bool assetExsist = assets[id].size>0;
+      require(assetExsist);
       //an asset could only be deleted if it is already locked
-      //bool assetIsLocked = assets[msg.sender][_id].isLock;
-      //require(assetIsLocked);
+      bool assetIsLocked = assets[id].isLock;
+      require(assetIsLocked);
       delete assets[id];
-      return true;
   }
 
 }

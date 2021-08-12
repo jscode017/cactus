@@ -56,7 +56,7 @@ export interface AssetProfile {
      * @type {string}
      * @memberof AssetProfile
      */
-    ExpirationDate?: string;
+    ExpirationDate: string;
     /**
      * 
      * @type {string}
@@ -454,10 +454,10 @@ export interface InitializationRequestMessage {
     credentialProfile?: CredentialProfile;
     /**
      * 
-     * @type {InitializationRequestMessagePayloadProfile}
+     * @type {PayloadProfile}
      * @memberof InitializationRequestMessage
      */
-    payloadProfile: InitializationRequestMessagePayloadProfile;
+    payloadProfile: PayloadProfile;
     /**
      * 
      * @type {string}
@@ -576,25 +576,6 @@ export enum InitializationRequestMessageEscrowTypeEnum {
     Burn = 'BURN'
 }
 
-/**
- * 
- * @export
- * @interface InitializationRequestMessagePayloadProfile
- */
-export interface InitializationRequestMessagePayloadProfile {
-    /**
-     * 
-     * @type {AssetProfile}
-     * @memberof InitializationRequestMessagePayloadProfile
-     */
-    assetProfile?: AssetProfile;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitializationRequestMessagePayloadProfile
-     */
-    capabilities?: string;
-}
 /**
  * 
  * @export
@@ -761,10 +742,10 @@ export interface OdapMessage {
     CredentialBlock?: Array<any>;
     /**
      * 
-     * @type {object}
+     * @type {PayloadProfile}
      * @memberof OdapMessage
      */
-    CredentialsProfile?: object;
+    CredentialsProfile?: PayloadProfile;
     /**
      * 
      * @type {object}
@@ -842,6 +823,25 @@ export enum OdapMessageActionResponseResponseCodeEnum {
 /**
  * 
  * @export
+ * @interface PayloadProfile
+ */
+export interface PayloadProfile {
+    /**
+     * 
+     * @type {AssetProfile}
+     * @memberof PayloadProfile
+     */
+    assetProfile: AssetProfile;
+    /**
+     * 
+     * @type {string}
+     * @memberof PayloadProfile
+     */
+    capabilities?: string;
+}
+/**
+ * 
+ * @export
  * @interface SendClientRequestMessage
  */
 export interface SendClientRequestMessage {
@@ -883,10 +883,10 @@ export interface SendClientRequestMessage {
     assetProfile: AssetProfile;
     /**
      * 
-     * @type {object}
+     * @type {PayloadProfile}
      * @memberof SendClientRequestMessage
      */
-    payLoadProfile: object;
+    payLoadProfile: PayloadProfile;
     /**
      * 
      * @type {string}

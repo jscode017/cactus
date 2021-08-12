@@ -173,7 +173,8 @@ test(testCase, async (t: Test) => {
     }
     const dummyPubKeyBytes = secp256k1.publicKeyCreate(dummyPrivKeyBytes);
     const dummyPubKey = clientOdapGateway.bufArray2HexStr(dummyPubKeyBytes);
-    const assetProfile: AssetProfile = {};
+    const expiryDate = new Date("23/25/2060").toString();
+    const assetProfile: AssetProfile = { ExpirationDate: expiryDate };
     const odapClientRequest: SendClientRequestMessage = {
       serverGatewayConfiguration: {
         apiHost: odapServerGatewayApiHost,

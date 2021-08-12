@@ -40,7 +40,18 @@
                 ]
             },  
             "PayloadProfile":{
-                "type":"object"
+                "type":"object",
+                "properties": {
+                    "assetProfile":{
+                        "$ref":"#/components/schemas/AssetProfile"
+                    },
+                    "capabilities":{
+                        "type":"string"
+                    }
+                },
+                "required": [
+                    "assetProfile"
+                ]
             },
             "ApplicationProfile":{
                 "type":"object"
@@ -91,7 +102,10 @@
                         "type": "array",
                         "items": {}
                     }
-                }
+                },
+                "required": [
+                    "ExpirationDate"
+                ]
             },
             "LoggingProfile":{
                 "type":"array",
@@ -184,15 +198,7 @@
                         "$ref":"#/components/schemas/CredentialProfile"
                     },
                     "payloadProfile":{
-                        "type":"object",
-                        "properties": {
-                            "assetProfile":{
-                                "$ref":"#/components/schemas/AssetProfile"
-                            },
-                            "capabilities":{
-                                "type":"string"
-                            }
-                        }
+                        "$ref":  "#/components/schemas/PayloadProfile"
                     },
                     "applicationProfile":{
                         "type": "string"

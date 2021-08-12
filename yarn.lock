@@ -1950,56 +1950,6 @@
   resolved "https://registry.npmjs.org/@hutson/parse-repository-url/-/parse-repository-url-3.0.2.tgz"
   integrity sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q==
 
-"@hyperledger/cactus-common@0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@hyperledger/cactus-common/-/cactus-common-0.7.0.tgz#77b100bcb79f657a22e82cb0c4ad844670c88f99"
-  integrity sha512-ptZUrddg8k8tpWxnbCMomhqNUlc6wIIRhZQ/jSyDySeelTdb7Q1SBNkyClja7kBjTAtxsLAYekQaAHh39yUBww==
-  dependencies:
-    json-stable-stringify "1.0.1"
-    key-encoder "2.0.3"
-    loglevel "1.7.1"
-    loglevel-plugin-prefix "0.8.4"
-    secp256k1 "4.0.2"
-    sha3 "2.1.3"
-
-"@hyperledger/cactus-core-api@0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@hyperledger/cactus-core-api/-/cactus-core-api-0.7.0.tgz#8258af86e3dcfc8a0aa3347016c2dc2b1bd97af6"
-  integrity sha512-IAFN7Gq/E7gTHNRMuqk3jIAiwd+XSrM02CyM3iM9tfHcPUshZc+vOrhiL7PPhQ49xvn3EiDxs0rZ3eZlStuzWA==
-  dependencies:
-    "@hyperledger/cactus-common" "0.7.0"
-    axios "0.21.1"
-
-"@hyperledger/cactus-core@0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@hyperledger/cactus-core/-/cactus-core-0.7.0.tgz#e81aacb1c5f9b2edaabae0f6fe06b5b5606c29aa"
-  integrity sha512-+pBjQy0VwJozIZ7HY02Ab8fxHx1nGrjgV9O/VTa/8qBy/L1Rw7w6Bf9njsq8My74PoD0vX6tPWD0u561z2dOrQ==
-  dependencies:
-    "@hyperledger/cactus-common" "0.7.0"
-    "@hyperledger/cactus-core-api" "0.7.0"
-    express "4.17.1"
-    express-jwt-authz "2.4.1"
-    typescript-optional "2.0.1"
-
-"@hyperledger/cactus-plugin-ledger-connector-besu@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@hyperledger/cactus-plugin-ledger-connector-besu/-/cactus-plugin-ledger-connector-besu-0.7.0.tgz#341529491dec67b06b9e7a6ab113f0acf17e2600"
-  integrity sha512-m49VPQ2sXNlmM+DxVRoh5AmCyia1V2WhLoLBGqvqAl16pJNxGQ3ILm53YWyGoeRyW61N0Vf5QadFeovKzuUJLw==
-  dependencies:
-    "@hyperledger/cactus-common" "0.7.0"
-    "@hyperledger/cactus-core" "0.7.0"
-    "@hyperledger/cactus-core-api" "0.7.0"
-    axios "0.21.1"
-    express "4.17.1"
-    joi "14.3.1"
-    openapi-types "7.0.1"
-    prom-client "13.1.0"
-    rxjs "6.6.7"
-    socket.io-client "4.0.1"
-    typescript-optional "2.0.1"
-    web3 "1.2.7"
-    web3-utils "1.2.7"
-
 "@ionic-native/core@5.34.0":
   version "5.34.0"
   resolved "https://registry.npmjs.org/@ionic-native/core/-/core-5.34.0.tgz"

@@ -242,25 +242,23 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       }
     }
     if (options.besuPath != undefined) {
-      {
-        const config = new Configuration({ basePath: options.besuPath });
-        const apiClient = new BesuApi(config);
-        this.besuApi = apiClient;
-        const notEnoughBesuParams: boolean =
-          options.besuContractName == undefined ||
-          options.besuWeb3SigningCredential == undefined ||
-          options.besuKeychainId == undefined ||
-          options.besuAssetID != undefined;
-        if (notEnoughBesuParams) {
-          throw new Error(
-            `${fnTag}, besu params missing should have: signing credentials, contract name, key chain ID, asset ID`,
-          );
-        }
-        this.besuContractName = options.besuContractName;
-        this.besuWeb3SigningCredential = options.besuWeb3SigningCredential;
-        this.besuKeychainId = options.besuKeychainId;
-        this.besuAssetID = options.besuAssetID;
+      const config = new Configuration({ basePath: options.besuPath });
+      const apiClient = new BesuApi(config);
+      this.besuApi = apiClient;
+      const notEnoughBesuParams: boolean =
+        options.besuContractName == undefined ||
+        options.besuWeb3SigningCredential == undefined ||
+        options.besuKeychainId == undefined ||
+        options.besuAssetID == undefined;
+      if (notEnoughBesuParams) {
+        throw new Error(
+          `${fnTag}, besu params missing should have: signing credentials, contract name, key chain ID, asset ID`,
+        );
       }
+      this.besuContractName = options.besuContractName;
+      this.besuWeb3SigningCredential = options.besuWeb3SigningCredential;
+      this.besuKeychainId = options.besuKeychainId;
+      this.besuAssetID = options.besuAssetID;
     }
   }
   public async Revert(sessionID: string): Promise<void> {
@@ -293,7 +291,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         invocationType: EthContractInvocationType.Send,
         methodName: "deleteAsset",
         gas: 1000000,
-        params: [sessionData.besuAssetID],
+        params: [this.besuAssetID],
         signingCredential: this.besuWeb3SigningCredential,
         keychainId: this.besuKeychainId,
       } as BesuInvokeContractV1Request);
@@ -524,18 +522,22 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const hashCommitFinal = SHA256(JSON.stringify(req)).toString();
     await this.checkValidCommitFinalRequest(req, req.sessionID);
     if (this.besuApi != undefined) {
-      await this.besuApi.invokeContractV1({
+      const besuCreateRes = await this.besuApi.invokeContractV1({
         contractName: this.besuContractName,
         invocationType: EthContractInvocationType.Send,
-        methodName: "deleteAsset",
+        methodName: "createAsset",
         gas: 1000000,
-        params: [this.besuAssetID],
+        params: [this.besuAssetID, 100], //the second is size, may need to pass this from client?
         signingCredential: this.besuWeb3SigningCredential,
         keychainId: this.besuKeychainId,
       } as BesuInvokeContractV1Request);
-
+      if (besuCreateRes.status != 200) {
+        await this.Revert(req.sessionID);
+        throw new Error(`${fnTag}, besu create asset error`);
+      }
       const sessionData = this.sessions.get(req.sessionID);
       if (sessionData == undefined) {
+        await this.Revert(req.sessionID);
         throw new Error(`${fnTag}, session data undefined`);
       }
       sessionData.isBesuAssetCreated = true;
@@ -612,6 +614,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const sessionData = this.sessions.get(sessionID);
     const fnTag = "${this.className()}#storeDataAfterInitializationRequest";
     if (sessionData == undefined) {
+      await this.Revert(sessionID);
       throw new Error(`${fnTag}, session data is undefined`);
     }
     sessionData.initializationMsgHash = SHA256(JSON.stringify(msg)).toString();
@@ -683,6 +686,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       sessionData.initializationMsgHash == req.hashPrevMessage;
     if (!isPrevMsgHash) {
       throw new Error(`${fnTag}, previous message hash not match`);
+      this.Revert(req.sessionID);
     }
 
     if (sessionData.assetProfile === undefined) {
@@ -736,6 +740,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const fnTag = "${this.className()}#checkValidLockEvidenceRequest()";
 
     if (req.messageType != "urn:ietf:odap:msgtype:lock-evidence-req-msg") {
+      await this.Revert(sessionID);
       throw new Error(`${fnTag}, wrong message type for lock evidence`);
     }
 
@@ -759,6 +764,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         clientPubkey,
       )
     ) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, signature verify failed`);
     }
 
@@ -766,10 +772,12 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       req.lockEvidenceClaim,
     );
     if (!isLockEvidenceClaimValid) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag} invalid of server identity pubkey`);
     }
     const sessionData = this.sessions.get(sessionID);
     if (sessionData === undefined) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, sessionID non exist`);
     }
 
@@ -777,6 +785,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       sessionData.commenceAckHash !== undefined &&
       sessionData.commenceAckHash == req.hashCommenceAckRequest;
     if (!isPrevAckHash) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, previous ack hash not match`);
     }
   }
@@ -793,11 +802,13 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
   ): Promise<void> {
     const fnTag = "${this.className}#()storeDataAfterLockEvidenceRequest";
     if (!this.sessions.has(sessionID)) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, sessionID not exist`);
     }
 
     const sessionData = this.sessions.get(sessionID);
     if (sessionData === undefined) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, session data undefined`);
     }
 
@@ -815,6 +826,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const fnTag = "${this.className()}#checkValidCommitPreparationRequest()";
 
     if (req.messageType != "urn:ietf:odap:msgtype:commit-prepare-msg") {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, wrong message type for commit prepare`);
     }
 
@@ -838,11 +850,13 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         clientPubkey,
       )
     ) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, signature verify failed`);
     }
 
     const sessionData = this.sessions.get(sessionID);
     if (sessionData === undefined) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, sessionID non exist`);
     }
 
@@ -850,6 +864,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       sessionData.lockEvidenceAckHash !== undefined &&
       sessionData.lockEvidenceAckHash == req.hashLockEvidenceAck;
     if (!isPrevAckHash) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, previous ack hash not match`);
     }
   }
@@ -860,11 +875,13 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
   ): Promise<void> {
     const fnTag = "${this.className}#()storeDataAfterCommitPreparationRequest";
     if (!this.sessions.has(sessionID)) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, sessionID not exist`);
     }
 
     const sessionData = this.sessions.get(sessionID);
     if (sessionData === undefined) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, session data undefined`);
     }
 
@@ -881,6 +898,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const fnTag = "${this.className()}#checkValidCommitFinalRequest()";
 
     if (req.messageType != "urn:ietf:odap:msgtype:commit-final-msg") {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, wrong message type for commit final`);
     }
 
@@ -904,11 +922,13 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         clientPubkey,
       )
     ) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, signature verify failed`);
     }
 
     const sessionData = this.sessions.get(sessionID);
     if (sessionData === undefined) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, sessionID non exist`);
     }
 
@@ -916,6 +936,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       sessionData.commitPrepareAckHash !== undefined &&
       sessionData.commitPrepareAckHash == req.hashCommitPrepareAck;
     if (!isPrevAckHash) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, previous ack hash not match`);
     }
   }
@@ -926,11 +947,13 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
   ): Promise<void> {
     const fnTag = "${this.className}#()storeDataAfterCommitFinalRequest";
     if (!this.sessions.has(sessionID)) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, sessionID not exist`);
     }
 
     const sessionData = this.sessions.get(sessionID);
     if (sessionData === undefined) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, session data undefined`);
     }
     sessionData.commitFinalClaim = req.commitFinalClaim;
@@ -950,6 +973,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     if (
       req.messageType != "urn:ietf:odap:msgtype:commit-transfer-complete-msg"
     ) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, wrong message type for transfer complete`);
     }
 
@@ -973,11 +997,13 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         clientPubkey,
       )
     ) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, signature verify failed`);
     }
 
     const sessionData = this.sessions.get(sessionID);
     if (sessionData === undefined) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, sessionID non exist`);
     }
 
@@ -985,6 +1011,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       sessionData.commitFinalAckHash !== undefined &&
       sessionData.commitFinalAckHash == req.hashCommitFinalAck;
     if (!isCommmitFinalAckHash) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, previous commit final ack hash not match`);
     }
 
@@ -992,6 +1019,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       sessionData.commenceReqHash !== undefined &&
       sessionData.commenceReqHash == req.hashTransferCommence;
     if (!isTransferCommenceHash) {
+      await this.Revert(req.sessionID);
       throw new Error(`${fnTag}, previous transfer commence hash not match`);
     }
   }
@@ -1074,11 +1102,13 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       transferCommenceReq,
     );
     if (transferCommenceRes.status != 200) {
+      await this.Revert(sessionID);
       throw new Error(`${fnTag}, send transfer commence failed`);
     }
     const transferCommenceAck: TransferCommenceResponseMessage =
       transferCommenceRes.data;
     if (transferCommenceReqHash != transferCommenceAck.hashCommenceRequest) {
+      await this.Revert(sessionID);
       throw new Error(
         `${fnTag}, transfer commence req hash not match from transfer commence ack`,
       );
@@ -1087,6 +1117,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       transferCommenceReq.serverIdentityPubkey !=
       transferCommenceAck.serverIdentityPubkey
     ) {
+      await this.Revert(sessionID);
       throw new Error(
         `${fnTag}, serverIdentity pub key not match from transfer commence ack`,
       );
@@ -1095,6 +1126,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       transferCommenceReq.clientIdentityPubkey !=
       transferCommenceAck.clientIdentityPubkey
     ) {
+      await this.Revert(sessionID);
       throw new Error(
         `${fnTag}, clientIdentity pub key not match from transfer commence ack`,
       );
@@ -1136,6 +1168,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       } as FabricRunTransactionRequest);
       const sessionData = this.sessions.get(sessionID);
       if (sessionData == undefined) {
+        await this.Revert(sessionID);
         throw new Error(`${fnTag}, session data undefined`);
       }
       sessionData.isFabricAssetLocked = true;
@@ -1160,6 +1193,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       lockEvidenceReq,
     );
     if (lockEvidenceRes.status != 200) {
+      await this.Revert(sessionID);
       throw new Error(`${fnTag}, send lock evidence failed`);
     }
     const lockEvidenceAck: LockEvidenceResponseMessage = lockEvidenceRes.data;
@@ -1168,6 +1202,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     ).toString();
 
     if (lockEvidenceReqHash != lockEvidenceAck.hashLockEvidenceRequest) {
+      await this.Revert(sessionID);
       throw new Error(
         `${fnTag}, lock evidence req hash not match from lock evidence ack`,
       );
@@ -1176,6 +1211,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       lockEvidenceReq.serverIdentityPubkey !=
       lockEvidenceAck.serverIdentityPubkey
     ) {
+      await this.Revert(sessionID);
       throw new Error(
         `${fnTag}, lock evidence serverIdentity pub key not match from lock evidence ack`,
       );
@@ -1185,6 +1221,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       lockEvidenceReq.clientIdentityPubkey !=
       lockEvidenceAck.clientIdentityPubkey
     ) {
+      await this.Revert(sessionID);
       throw new Error(
         `${fnTag}, lock evidence clientIdentity pub key not match from lock evidence ack`,
       );
@@ -1210,6 +1247,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       commitPrepareReq,
     );
     if (commitPrepareRes.status != 200) {
+      await this.Revert(sessionID);
       throw new Error(`${fnTag}, send commit prepare failed`);
     }
     const commitPrepareAck: CommitPreparationResponse = commitPrepareRes.data;
@@ -1217,6 +1255,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       JSON.stringify(commitPrepareAck),
     ).toString();
     if (commitPrepareHash != commitPrepareAck.hashCommitPrep) {
+      await this.Revert(sessionID);
       throw new Error(
         `${fnTag}, commit prepare hash not match from commit prepare ack`,
       );
@@ -1225,6 +1264,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       commitPrepareReq.serverIdentityPubkey !=
       commitPrepareAck.serverIdentityPubkey
     ) {
+      await this.Revert(sessionID);
       throw new Error(
         `${fnTag}, commit prepare serverIdentity pub key not match from commit prepare ack`,
       );
@@ -1233,6 +1273,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       commitPrepareReq.clientIdentityPubkey !=
       commitPrepareAck.clientIdentityPubkey
     ) {
+      await this.Revert(sessionID);
       throw new Error(
         `${fnTag}, commit prepare clientIdentity pub key not match from commit prepare ack`,
       );
@@ -1251,6 +1292,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       } as FabricRunTransactionRequest);
       const sessionData = this.sessions.get(sessionID);
       if (sessionData == undefined) {
+        await this.Revert(sessionID);
         throw new Error(`${fnTag}, session data undefined`);
       }
       sessionData.isFabricAssetDeleted = true;
@@ -1274,6 +1316,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       commitFinalReq,
     );
     if (commitFinalRes.status != 200) {
+      await this.Revert(sessionID);
       throw new Error(`${fnTag}, send commit final failed`);
     }
     const commitFinalAck: CommitFinalResponseMessage = commitFinalRes.data;
@@ -1281,6 +1324,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       JSON.stringify(commitFinalAck),
     ).toString();
     if (commitFinalReqHash != commitFinalAck.hashCommitFinal) {
+      await this.Revert(sessionID);
       throw new Error(
         `${fnTag}, commit final req hash not match from commit final ack`,
       );
@@ -1288,6 +1332,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     if (
       commitFinalReq.serverIdentityPubkey != commitFinalAck.serverIdentityPubkey
     ) {
+      await this.Revert(sessionID);
       throw new Error(
         `${fnTag}, commit final serverIdentity pub key not match from commit final ack`,
       );

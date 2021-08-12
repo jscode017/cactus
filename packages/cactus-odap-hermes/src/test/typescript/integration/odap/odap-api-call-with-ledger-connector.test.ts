@@ -1,5 +1,6 @@
 import http from "http";
 import fs from "fs-extra";
+import { Server as SocketIoServer } from "socket.io";
 import { AddressInfo } from "net";
 import secp256k1 from "secp256k1";
 import test, { Test } from "tape-promise/tape";
@@ -11,7 +12,10 @@ import bodyParser from "body-parser";
 import express from "express";
 import { DefaultApi as ObjectStoreIpfsApi } from "@hyperledger/cactus-plugin-object-store-ipfs";
 //import { PluginRegistry } from "@hyperledger/cactus-core";
-import { SendClientRequestMessage } from "../../../../main/typescript/generated/openapi/typescript-axios";
+import {
+  SendClientRequestMessage,
+  AssetProfile,
+} from "../../../../main/typescript/generated/openapi/typescript-axios";
 import {
   Checks,
   IListenOptions,
@@ -24,19 +28,25 @@ import {
   Containers,
   FabricTestLedgerV1,
   pruneDockerAllIfGithubAction,
+  GoIpfsTestContainer,
+  BesuTestLedger,
 } from "@hyperledger/cactus-test-tooling";
 import { PluginKeychainMemory } from "@hyperledger/cactus-plugin-keychain-memory";
 import {
   DefaultApi as OdapApi,
   //InitializationRequestMessage,
 } from "../../../../main/typescript/public-api";
+import LockAssetContractJson from "../../../solidity/lock-asset-contract/LockAsset.json";
 import { PluginRegistry } from "@hyperledger/cactus-core";
-import { Configuration } from "@hyperledger/cactus-core-api";
+import {
+  Configuration,
+  PluginImportType,
+  Constants,
+} from "@hyperledger/cactus-core-api";
 import {
   OdapGateway,
   OdapGatewayConstructorOptions,
 } from "../../../../main/typescript/gateway/odap-gateway";
-import { GoIpfsTestContainer } from "@hyperledger/cactus-test-tooling";
 import {
   ChainCodeProgrammingLanguage,
   DefaultEventHandlerStrategy,
@@ -47,7 +57,17 @@ import {
   DefaultApi as FabricApi,
 } from "@hyperledger/cactus-plugin-ledger-connector-fabric";
 import path from "path";
-
+import {
+  EthContractInvocationType,
+  Web3SigningCredentialType,
+  PluginLedgerConnectorBesu,
+  PluginFactoryLedgerConnector,
+  //Web3SigningCredentialCactusKeychainRef,
+  ReceiptType,
+  DefaultApi as BesuApi,
+  Web3SigningCredential,
+} from "@hyperledger/cactus-plugin-ledger-connector-besu";
+import Web3 from "web3";
 /**
  * Use this to debug issues with the fabric node SDK
  * ```sh
@@ -57,15 +77,20 @@ import path from "path";
 let ipfsApiHost: string;
 const testCase = "runs odap gateway tests via openApi";
 const logLevel: LogLevelDesc = "TRACE";
-let fabricLedger: FabricTestLedgerV1;
+//let fabricLedger: FabricTestLedgerV1;
 let ipfsContainer: GoIpfsTestContainer;
+let besuTestLedger: BesuTestLedger;
+let besuPath: string;
+let besuContractName: string;
+let besuWeb3SigningCredential: Web3SigningCredential;
+let besuKeychainId: string;
 test("BEFORE " + testCase, async (t: Test) => {
   test("BEFORE " + testCase, async (t: Test) => {
     const pruning = pruneDockerAllIfGithubAction({ logLevel });
     await t.doesNotReject(pruning, "Pruning didn't throw OK");
     t.end();
   });
-  {
+  /*{
     const channelId = "mychannel";
     const channelName = channelId;
 
@@ -349,7 +374,7 @@ test("BEFORE " + testCase, async (t: Test) => {
     t.comment(
       `BassicAssetTransfer.Create(): ${JSON.stringify(createRes.data)}`,
     );
-  }
+  }*/
   ipfsContainer = new GoIpfsTestContainer({ logLevel });
   t.ok(ipfsContainer, "GoIpfsTestContainer instance truthy OK");
   {
@@ -400,7 +425,127 @@ test("BEFORE " + testCase, async (t: Test) => {
     t.ok(theInstanceId, "theInstanceId truthy OK");
     t.equal(theInstanceId, instanceId, "instanceId === theInstanceId OK");
   }
-  t.end();
+  {
+    besuTestLedger = new BesuTestLedger();
+    await besuTestLedger.start();
+
+    const rpcApiHttpHost = await besuTestLedger.getRpcApiHttpHost();
+    const rpcApiWsHost = await besuTestLedger.getRpcApiWsHost();
+
+    /**
+     * Constant defining the standard 'dev' Besu genesis.json contents.
+     *
+     * @see https://github.com/hyperledger/besu/blob/1.5.1/config/src/main/resources/dev.json
+     */
+    const firstHighNetWorthAccount = besuTestLedger.getGenesisAccountPubKey();
+    const besuKeyPair = {
+      privateKey: besuTestLedger.getGenesisAccountPrivKey(),
+    };
+    //const contractName = "LockAsset";
+
+    const web3 = new Web3(rpcApiHttpHost);
+    const testEthAccount = web3.eth.accounts.create(uuidv4());
+
+    const keychainEntryKey = uuidv4();
+    const keychainEntryValue = testEthAccount.privateKey;
+    const keychainPlugin = new PluginKeychainMemory({
+      instanceId: uuidv4(),
+      keychainId: uuidv4(),
+      // pre-provision keychain with mock backend holding the private key of the
+      // test account that we'll reference while sending requests with the
+      // signing credential pointing to this keychain entry.
+      backend: new Map([[keychainEntryKey, keychainEntryValue]]),
+      logLevel,
+    });
+    keychainPlugin.set(
+      LockAssetContractJson.contractName,
+      LockAssetContractJson,
+    );
+    const factory = new PluginFactoryLedgerConnector({
+      pluginImportType: PluginImportType.Local,
+    });
+    const connector: PluginLedgerConnectorBesu = await factory.create({
+      rpcApiHttpHost,
+      rpcApiWsHost,
+      instanceId: uuidv4(),
+      pluginRegistry: new PluginRegistry({ plugins: [keychainPlugin] }),
+    });
+    const expressApp = express();
+    expressApp.use(bodyParser.json({ limit: "250mb" }));
+    const server = http.createServer(expressApp);
+    const listenOptions: IListenOptions = {
+      hostname: "localhost",
+      port: 0,
+      server,
+    };
+    const addressInfo = (await Servers.listen(listenOptions)) as AddressInfo;
+    const { port } = addressInfo;
+    test.onFinish(async () => await Servers.shutdown(server));
+
+    await connector.getOrCreateWebServices();
+    const wsApi = new SocketIoServer(server, {
+      path: Constants.SocketIoConnectionPathV1,
+    });
+    await connector.registerWebServices(expressApp, wsApi);
+    const apiUrl = `http://localhost:${port}`;
+    // eslint-disable-next-line prefer-const
+    besuPath = apiUrl;
+    await connector.transact({
+      web3SigningCredential: {
+        ethAccount: firstHighNetWorthAccount,
+        secret: besuKeyPair.privateKey,
+        type: Web3SigningCredentialType.PrivateKeyHex,
+      },
+      consistencyStrategy: {
+        blockConfirmations: 0,
+        receiptType: ReceiptType.NodeTxPoolAck,
+      },
+      transactionConfig: {
+        from: firstHighNetWorthAccount,
+        to: testEthAccount.address,
+        value: 10e9,
+        gas: 1000000,
+      },
+    });
+
+    const balance = await web3.eth.getBalance(testEthAccount.address);
+    t.ok(balance, "Retrieved balance of test account OK");
+    t.equals(parseInt(balance, 10), 10e9, "Balance of test account is OK");
+    // eslint-disable-next-line prefer-const
+    besuWeb3SigningCredential = {
+      ethAccount: firstHighNetWorthAccount,
+      secret: besuKeyPair.privateKey,
+      type: Web3SigningCredentialType.PrivateKeyHex,
+    };
+    const deployOut = await connector.deployContract({
+      keychainId: keychainPlugin.getKeychainId(),
+      contractName: LockAssetContractJson.contractName,
+      contractAbi: LockAssetContractJson.abi,
+      constructorArgs: [],
+      web3SigningCredential: besuWeb3SigningCredential,
+      bytecode: LockAssetContractJson.bytecode,
+      gas: 1000000,
+    });
+    besuKeychainId = keychainPlugin.getKeychainId();
+    besuContractName = LockAssetContractJson.contractName;
+    t.ok(deployOut, "deployContract() output is truthy OK");
+    t.ok(
+      deployOut.transactionReceipt,
+      "deployContract() output.transactionReceipt is truthy OK",
+    );
+    t.ok(
+      deployOut.transactionReceipt.contractAddress,
+      "deployContract() output.transactionReceipt.contractAddress is truthy OK",
+    );
+
+    const contractAddress: string = deployOut.transactionReceipt
+      .contractAddress as string;
+    t.ok(
+      typeof contractAddress === "string",
+      "contractAddress typeof string OK",
+    );
+    t.end();
+  }
 });
 
 test(testCase, async (t: Test) => {
@@ -408,14 +553,16 @@ test(testCase, async (t: Test) => {
   test.onFinish(async () => {
     await ipfsContainer.stop();
     await ipfsContainer.destroy();
+    await besuTestLedger.stop();
+    await besuTestLedger.destroy();
   });
-  const tearDown = async () => {
+  /*const tearDown = async () => {
     await fabricLedger.stop();
     await fabricLedger.destroy();
     await pruneDockerAllIfGithubAction({ logLevel });
   };
 
-  test.onFinish(tearDown);
+  test.onFinish(tearDown);*/
   const odapClientGateWayPluginID = uuidv4();
   const odapPluginOptions: OdapGatewayConstructorOptions = {
     name: "cactus-plugin#odapGateway",
@@ -423,7 +570,6 @@ test(testCase, async (t: Test) => {
     instanceId: odapClientGateWayPluginID,
     ipfsPath: ipfsApiHost,
   };
-
   const clientOdapGateway = new OdapGateway(odapPluginOptions);
 
   const odapServerGatewayInstanceID = uuidv4();
@@ -451,6 +597,11 @@ test(testCase, async (t: Test) => {
       dltIDs: ["dummy"],
       instanceId: odapServerGatewayInstanceID,
       ipfsPath: ipfsApiHost,
+      besuAssetID: "dont-care-now",
+      besuPath: besuPath,
+      besuWeb3SigningCredential: besuWeb3SigningCredential,
+      besuContractName: besuContractName,
+      besuKeychainId: besuKeychainId,
     };
 
     const plugin = new OdapGateway(odapPluginOptions);
@@ -484,6 +635,8 @@ test(testCase, async (t: Test) => {
     }
     const dummyPubKeyBytes = secp256k1.publicKeyCreate(dummyPrivKeyBytes);
     const dummyPubKey = clientOdapGateway.bufArray2HexStr(dummyPubKeyBytes);
+    const expiryDate = new Date("23/25/2060").toString();
+    const assetProfile: AssetProfile = { ExpirationDate: expiryDate };
     const odapClientRequest: SendClientRequestMessage = {
       serverGatewayConfiguration: {
         apiHost: odapServerGatewayApiHost,
@@ -493,10 +646,10 @@ test(testCase, async (t: Test) => {
       accessControlProfile: "dummy",
       applicationProfile: "dummy",
       payLoadProfile: {
-        assetProfile: "dummy",
+        assetProfile: assetProfile,
         capabilities: "",
       },
-      assetProfile: "dummy",
+      assetProfile: assetProfile,
       assetControlProfile: "dummy",
       beneficiaryPubkey: dummyPubKey,
       clientDltSystem: "dummy",

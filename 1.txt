@@ -1,0 +1,348 @@
+TAP version 13
+ok 1 - packages/cactus-odap-hermes/src/test/typescript/integration/odap/odap-api-call-with-ledger-connector.test.ts # time=25910.317ms {
+    # BEFORE runs odap gateway tests via openApi
+    [2021-08-12T11:22:54.058Z] DEBUG (GoIpfsTestContainer): Created instance of GoIpfsTestContainer OK
+    ok 1 GoIpfsTestContainer instance truthy OK
+    [2021-08-12T11:22:56.560Z] DEBUG (GoIpfsTestContainer): Starting ipfs/go-ipfs:v0.8.0 with options:  {
+      ExposedPorts: { '4001/tcp': {}, '5001/tcp': {}, '8080/tcp': {} },
+      Env: [],
+      Healthcheck: {
+        Test: [
+          'CMD-SHELL',
+          "wget -O- --post-data='' --header='Content-Type:application/json' 'http://127.0.0.1:5001/api/v0/commands'"
+        ],
+        Interval: 1000000000,
+        Timeout: 3000000000,
+        Retries: 99,
+        StartPeriod: 1000000000
+      },
+      HostConfig: { PublishAllPorts: true }
+    }
+    [2021-08-12T11:22:56.965Z] DEBUG (GoIpfsTestContainer): Started ipfs/go-ipfs:v0.8.0 successfully. ID=6c4cdd8121d19679046c532a94700f4556be91e126d71eebc405facf588031ea
+    [2021-08-12T11:22:56.970Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'Changing user to ipfs\r\n'
+    [2021-08-12T11:22:57.049Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'ipfs version 0.8.0\r\n'
+    [2021-08-12T11:22:57.155Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'generating ED25519 keypair...done\r\n' +
+      'peer identity: 12D3KooWRW53Aeh8VrdyFYQKdGPgw9rbyX23YqTRGrjyT8yjuygE\r\n'
+    [2021-08-12T11:22:57.155Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'initializing IPFS node at /data/ipfs\r\n'
+    [2021-08-12T11:22:57.260Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'to get started, enter:\r\n' +
+      '\r\n' +
+      '\tipfs cat /ipfs/QmQPeNsJPyVWPFDVHb77w8G42Fvo15z4bG2X8D2GhfbSXc/readme\r\n' +
+      '\r\n'
+    [2021-08-12T11:22:57.568Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'Initializing daemon...\r\n' +
+      'go-ipfs version: 0.8.0-ce693d7\r\n' +
+      'Repo version: 11\r\n' +
+      'System version: amd64/linux\r\n' +
+      'Golang version: go1.14.4\r\n'
+    [2021-08-12T11:22:57.589Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] '2021/08/12 11:22:57 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 2048 kiB, got: 416 kiB). See https://github.com/lucas-clemente/quic-go/wiki/UDP-Receive-Buffer-Size for details.\r\n'
+    [2021-08-12T11:22:57.855Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'Swarm listening on /ip4/127.0.0.1/tcp/4001\r\n' +
+      'Swarm listening on /ip4/127.0.0.1/udp/4001/quic\r\n' +
+      'Swarm listening on /ip4/172.17.0.2/tcp/4001\r\n' +
+      'Swarm listening on /ip4/172.17.0.2/udp/4001/quic\r\n' +
+      'Swarm listening on /p2p-circuit\r\n' +
+      'Swarm announcing /ip4/127.0.0.1/tcp/4001\r\n' +
+      'Swarm announcing /ip4/127.0.0.1/udp/4001/quic\r\n' +
+      'Swarm announcing /ip4/172.17.0.2/tcp/4001\r\n' +
+      'Swarm announcing /ip4/172.17.0.2/udp/4001/quic\r\n' +
+      'API server listening on /ip4/0.0.0.0/tcp/5001\r\n' +
+      'WebUI: http://0.0.0.0:5001/webui\r\n'
+    [2021-08-12T11:22:57.856Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'Gateway (readonly) server listening on /ip4/0.0.0.0/tcp/8080\r\n' +
+      'Daemon is ready\r\n'
+    ok 2 Container returned by start() truthy OK
+    ok 3 Started GoIpfsTestContainer OK
+    ok 4 ObjectStoreIpfsApi truthy OK
+    # Go IPFS Test Container API URL: http://127.0.0.1:55129
+    # Go IPFS Test Container Gateway URL: http://127.0.0.1:55128
+    [2021-08-12T11:23:00.250Z] INFO (PluginObjectStoreIpfs): Created PluginObjectStoreIpfs. InstanceID=01e89b27-ec84-40ab-a933-db9e390afeaa
+    [2021-08-12T11:23:00.250Z] INFO (PluginObjectStoreIpfs): Installing web services for plugin @hyperledger/cactus-plugin-object-store-ipfs...
+    [2021-08-12T11:23:00.251Z] DEBUG (GetObjectEndpointV1): Instantiated GetObjectEndpointV1 OK
+    [2021-08-12T11:23:00.251Z] DEBUG (SetObjectEndpointV1): Instantiated SetObjectEndpointV1 OK
+    [2021-08-12T11:23:00.251Z] DEBUG (HasObjectEndpointV1): Instantiated HasObjectEndpointV1 OK
+    [2021-08-12T11:23:00.251Z] INFO (PluginObjectStoreIpfs): Installed web services for plugin @hyperledger/cactus-plugin-object-store-ipfs OK {
+      endpoints: [
+        GetObjectEndpointV1 {
+          options: [Object],
+          plugin: [PluginObjectStoreIpfs],
+          log: [Logger]
+        },
+        SetObjectEndpointV1 {
+          options: [Object],
+          plugin: [PluginObjectStoreIpfs],
+          log: [Logger]
+        },
+        HasObjectEndpointV1 {
+          options: [Object],
+          plugin: [PluginObjectStoreIpfs],
+          log: [Logger]
+        }
+      ]
+    }
+    [2021-08-12T11:23:00.251Z] INFO (PluginObjectStoreIpfs): Installing web services for plugin @hyperledger/cactus-plugin-object-store-ipfs...
+    [2021-08-12T11:23:00.251Z] DEBUG (GetObjectEndpointV1): Instantiated GetObjectEndpointV1 OK
+    [2021-08-12T11:23:00.252Z] DEBUG (SetObjectEndpointV1): Instantiated SetObjectEndpointV1 OK
+    [2021-08-12T11:23:00.252Z] DEBUG (HasObjectEndpointV1): Instantiated HasObjectEndpointV1 OK
+    [2021-08-12T11:23:00.252Z] INFO (PluginObjectStoreIpfs): Installed web services for plugin @hyperledger/cactus-plugin-object-store-ipfs OK {
+      endpoints: [
+        GetObjectEndpointV1 {
+          options: [Object],
+          plugin: [PluginObjectStoreIpfs],
+          log: [Logger]
+        },
+        SetObjectEndpointV1 {
+          options: [Object],
+          plugin: [PluginObjectStoreIpfs],
+          log: [Logger]
+        },
+        HasObjectEndpointV1 {
+          options: [Object],
+          plugin: [PluginObjectStoreIpfs],
+          log: [Logger]
+        }
+      ]
+    }
+    ok 5 packageName truthy OK
+    ok 6 theInstanceId truthy OK
+    ok 7 instanceId === theInstanceId OK
+    [2021-08-12T11:23:08.875Z] INFO (PluginKeychainMemory): Created PluginKeychainMemory. KeychainID=44f75b48-10b2-4d3f-927f-bf914b7d9e8b
+    ok 8 Retrieved balance of test account OK
+    ok 9 Balance of test account is OK
+    ok 10 deployContract() output is truthy OK
+    ok 11 deployContract() output.transactionReceipt is truthy OK
+    ok 12 deployContract() output.transactionReceipt.contractAddress is truthy OK
+    ok 13 contractAddress typeof string OK
+    # runs odap gateway tests via openApi
+    registering express
+    getting authorized provider
+    registering express
+    getting authorized provider
+    [2021-08-12T11:23:10.226Z] DEBUG (js-object-signer): Message to sign: "{\"version\":\"0.0.0\",\"loggingProfile\":\"dummy\",\"accessControlProfile\":\"dummy\",\"applicationProfile\":\"dummy\",\"payloadProfile\":{\"assetProfile\":{\"ExpirationDate\":\"Invalid Date\"},\"capabilities\":\"\"},\"initializationRequestMessageSignature\":\"\",\"sourceGatewayPubkey\":\"0202de80cfc76d4a07223c8c34232ea09b15d0f9236085d741d5d1b20efe5363f0\",\"sourceGateWayDltSystem\":\"dummy\",\"recipientGateWayPubkey\":\"039be052dd3404edbadaa8d35f4c0ee1c3c96fc9260c994fb35babd1b164a70af9\",\"recipientGateWayDltSystem\":\"dummy\"}"
+    try in handle request
+    [2021-08-12T11:23:10.230Z] INFO (odap-logger): server gate way receive initiate transfer request: {"version":"0.0.0","loggingProfile":"dummy","accessControlProfile":"dummy","applicationProfile":"dummy","payloadProfile":{"assetProfile":{"ExpirationDate":"Invalid Date"},"capabilities":""},"initializationRequestMessageSignature":"c8c8751e417b615791323f15e17e504180465dcb2a1e56008de0e036f31607d5077e886c27070b124a85fd29510d636e0259a9f22e633fda4548797690ccfca1","sourceGatewayPubkey":"0202de80cfc76d4a07223c8c34232ea09b15d0f9236085d741d5d1b20efe5363f0","sourceGateWayDltSystem":"dummy","recipientGateWayPubkey":"039be052dd3404edbadaa8d35f4c0ee1c3c96fc9260c994fb35babd1b164a70af9","recipientGateWayDltSystem":"dummy"}
+    [2021-08-12T11:23:10.230Z] INFO (OdapGateWay): <initiateTransfer, 0, init, 0202de80cfc76d4a07223c8c34232ea09b15d0f9236085d741d5d1b20efe5363f0->039be052dd3404edbadaa8d35f4c0ee1c3c96fc9260c994fb35babd1b164a70af9>
+    [2021-08-12T11:23:10.233Z] DEBUG (SetObjectEndpointV1): POST /api/v1/plugins/@hyperledger/cactus-plugin-object-store-ipfs/set-object {
+      key: '5013e36b-feee-4939-8053-6a766cf50024-0',
+      value: 'initiateTransfer, initiateTransfer, init, 0202de80cfc76d4a07223c8c34232ea09b15d0f9236085d741d5d1b20efe5363f0->039be052dd3404edbadaa8d35f4c0ee1c3c96fc9260c994fb35babd1b164a70af9'
+    }
+    [2021-08-12T11:23:10.233Z] DEBUG (PluginObjectStoreIpfs): Seting object /8c8c3974-e0b2-4598-9dc4-3c0d9fccf899/282c5c8d-983e-4196-9828-0d50aeb2802e/5013e36b-feee-4939-8053-6a766cf50024-0 in IPFS...
+    [2021-08-12T11:23:10.287Z] DEBUG (js-object-signer): Message to sign: "{\"sessionID\":\"5013e36b-feee-4939-8053-6a766cf50024\",\"messageType\":\"urn:ietf:odap:msgtype:transfer-commence-msg\",\"originatorPubkey\":\"03cf944f061eba3bad93f2fc6a3971156ca224070602eb43ad4bf91fe2d83a6cdf\",\"beneficiaryPubkey\":\"03cf944f061eba3bad93f2fc6a3971156ca224070602eb43ad4bf91fe2d83a6cdf\",\"clientIdentityPubkey\":\"0202de80cfc76d4a07223c8c34232ea09b15d0f9236085d741d5d1b20efe5363f0\",\"serverIdentityPubkey\":\"dummy\",\"hashPrevMessage\":\"b526c21151d4b17e28638c80b6feb19a5111a63ea23406ae39cfb8b2d178c487\",\"hashAssetProfile\":\"76ecba7225d6f9e9a30a7c143a8aab089e6e7eea9e3ecd142c479796f76bfe75\",\"senderDltSystem\":\"dummy\",\"recipientDltSystem\":\"dummy\",\"clientSignature\":\"\"}"
+    [2021-08-12T11:23:10.291Z] INFO (odap-logger): server gate way receive lock evidence transfer commence request: {"sessionID":"5013e36b-feee-4939-8053-6a766cf50024","messageType":"urn:ietf:odap:msgtype:transfer-commence-msg","originatorPubkey":"03cf944f061eba3bad93f2fc6a3971156ca224070602eb43ad4bf91fe2d83a6cdf","beneficiaryPubkey":"03cf944f061eba3bad93f2fc6a3971156ca224070602eb43ad4bf91fe2d83a6cdf","clientIdentityPubkey":"0202de80cfc76d4a07223c8c34232ea09b15d0f9236085d741d5d1b20efe5363f0","serverIdentityPubkey":"dummy","hashPrevMessage":"b526c21151d4b17e28638c80b6feb19a5111a63ea23406ae39cfb8b2d178c487","hashAssetProfile":"76ecba7225d6f9e9a30a7c143a8aab089e6e7eea9e3ecd142c479796f76bfe75","senderDltSystem":"dummy","recipientDltSystem":"dummy","clientSignature":"77562aa132279aaf711310abd1015f7cefdbcd1b98245885e6ce55cb517490dd50efc381b2c224b883caab5b82e9850ec1cb683dca59c81c4507d2400535281a"}
+    [2021-08-12T11:23:10.291Z] INFO (odap-logger): {"sessionID":"5013e36b-feee-4939-8053-6a766cf50024","messageType":"urn:ietf:odap:msgtype:transfer-commence-msg","originatorPubkey":"03cf944f061eba3bad93f2fc6a3971156ca224070602eb43ad4bf91fe2d83a6cdf","beneficiaryPubkey":"03cf944f061eba3bad93f2fc6a3971156ca224070602eb43ad4bf91fe2d83a6cdf","clientIdentityPubkey":"0202de80cfc76d4a07223c8c34232ea09b15d0f9236085d741d5d1b20efe5363f0","serverIdentityPubkey":"dummy","hashPrevMessage":"b526c21151d4b17e28638c80b6feb19a5111a63ea23406ae39cfb8b2d178c487","hashAssetProfile":"76ecba7225d6f9e9a30a7c143a8aab089e6e7eea9e3ecd142c479796f76bfe75","senderDltSystem":"dummy","recipientDltSystem":"dummy","clientSignature":"77562aa132279aaf711310abd1015f7cefdbcd1b98245885e6ce55cb517490dd50efc381b2c224b883caab5b82e9850ec1cb683dca59c81c4507d2400535281a"}
+    [2021-08-12T11:23:10.292Z] DEBUG (js-object-signer): Message to sign: "{\"messageType\":\"urn:ietf:odap:msgtype:transfer-commenceack-msg\",\"clientIdentityPubkey\":\"0202de80cfc76d4a07223c8c34232ea09b15d0f9236085d741d5d1b20efe5363f0\",\"serverIdentityPubkey\":\"dummy\",\"hashCommenceRequest\":\"7e16575c25c239485abfb985229e46011877e1a5e4d5a475d483fc6ba83281c0\",\"serverSignature\":\"\"}"
+    [2021-08-12T11:23:10.294Z] DEBUG (js-object-signer): Message to sign: "{\"sessionID\":\"5013e36b-feee-4939-8053-6a766cf50024\",\"messageType\":\"urn:ietf:odap:msgtype:lock-evidence-req-msg\",\"clientIdentityPubkey\":\"0202de80cfc76d4a07223c8c34232ea09b15d0f9236085d741d5d1b20efe5363f0\",\"serverIdentityPubkey\":\"03cf944f061eba3bad93f2fc6a3971156ca224070602eb43ad4bf91fe2d83a6cdf\",\"clientSignature\":\"\",\"hashCommenceAckRequest\":\"ebe86c70a2f4b3bb30a55eb10d9e0f963c0b9a58483f51dd72af494cf0448d69\",\"lockEvidenceClaim\":\" \",\"lockEvidenceExpiration\":\" \"}"
+    [2021-08-12T11:23:10.297Z] INFO (odap-logger): server gate way receive lock evidence request: {"sessionID":"5013e36b-feee-4939-8053-6a766cf50024","messageType":"urn:ietf:odap:msgtype:lock-evidence-req-msg","clientIdentityPubkey":"0202de80cfc76d4a07223c8c34232ea09b15d0f9236085d741d5d1b20efe5363f0","serverIdentityPubkey":"03cf944f061eba3bad93f2fc6a3971156ca224070602eb43ad4bf91fe2d83a6cdf","clientSignature":"296599d02216be6b304553733a257917cd652fc0943b36723624bb5f697c549e61bd95b467e06d8799da1059a54997a9756ddca6699985cd6d21b9276d1de64e","hashCommenceAckRequest":"ebe86c70a2f4b3bb30a55eb10d9e0f963c0b9a58483f51dd72af494cf0448d69","lockEvidenceClaim":" ","lockEvidenceExpiration":" "}
+    [2021-08-12T11:23:10.298Z] DEBUG (js-object-signer): Message to sign: "{\"messageType\":\"urn:ietf:odap:msgtype:lock-evidence-req-msg\",\"clientIdentityPubkey\":\"0202de80cfc76d4a07223c8c34232ea09b15d0f9236085d741d5d1b20efe5363f0\",\"serverIdentityPubkey\":\"03cf944f061eba3bad93f2fc6a3971156ca224070602eb43ad4bf91fe2d83a6cdf\",\"hashLockEvidenceRequest\":\"d5cba8d52771ae41e359a875edd68f73c1dd43fedcc4b874bfe2520a3dfdc41d\",\"serverSignature\":\"\"}"
+    [2021-08-12T11:23:10.300Z] DEBUG (js-object-signer): Message to sign: "{\"sessionID\":\"5013e36b-feee-4939-8053-6a766cf50024\",\"messageType\":\"urn:ietf:odap:msgtype:commit-prepare-msg\",\"clientIdentityPubkey\":\"0202de80cfc76d4a07223c8c34232ea09b15d0f9236085d741d5d1b20efe5363f0\",\"serverIdentityPubkey\":\"03cf944f061eba3bad93f2fc6a3971156ca224070602eb43ad4bf91fe2d83a6cdf\",\"clientSignature\":\"\",\"hashLockEvidenceAck\":\"aebdff4385212794206a31c30631d68a2885352129724ef48116cefa32cc03dd\"}"
+    [2021-08-12T11:23:10.303Z] INFO (odap-logger): server gate way receive commit prepare request: {"sessionID":"5013e36b-feee-4939-8053-6a766cf50024","messageType":"urn:ietf:odap:msgtype:commit-prepare-msg","clientIdentityPubkey":"0202de80cfc76d4a07223c8c34232ea09b15d0f9236085d741d5d1b20efe5363f0","serverIdentityPubkey":"03cf944f061eba3bad93f2fc6a3971156ca224070602eb43ad4bf91fe2d83a6cdf","clientSignature":"4672a526fa5243e8a73d95eba19f21f23139c12f3d00f136831e9f1799671928765de901c9c315f3ab14371fd301b5ced00015bbfd1447b24d970db08f21d7de","hashLockEvidenceAck":"aebdff4385212794206a31c30631d68a2885352129724ef48116cefa32cc03dd"}
+    [2021-08-12T11:23:10.305Z] DEBUG (js-object-signer): Message to sign: "{\"sessionID\":\"5013e36b-feee-4939-8053-6a766cf50024\",\"messageType\":\"urn:ietf:odap:msgtype:commit-final-msg\",\"clientIdentityPubkey\":\"0202de80cfc76d4a07223c8c34232ea09b15d0f9236085d741d5d1b20efe5363f0\",\"serverIdentityPubkey\":\"03cf944f061eba3bad93f2fc6a3971156ca224070602eb43ad4bf91fe2d83a6cdf\",\"clientSignature\":\"\",\"hashCommitPrepareAck\":\"0bad4f25d3f21c65ee3cd663e146f533b5d2287fa98cb44744c54e569da471d3\",\"commitFinalClaim\":\"\"}"
+    [2021-08-12T11:23:10.308Z] INFO (odap-logger): server gate way receive commit final request: {"sessionID":"5013e36b-feee-4939-8053-6a766cf50024","messageType":"urn:ietf:odap:msgtype:commit-final-msg","clientIdentityPubkey":"0202de80cfc76d4a07223c8c34232ea09b15d0f9236085d741d5d1b20efe5363f0","serverIdentityPubkey":"03cf944f061eba3bad93f2fc6a3971156ca224070602eb43ad4bf91fe2d83a6cdf","clientSignature":"24d1d449b9b3dd25ff9f2f98987b2508a6b673e7d457e13911d1f246e44e52b03505cc5ece6279154b95ebb81f4309e6d15b717d6500843ebc10791f6b396859","hashCommitPrepareAck":"0bad4f25d3f21c65ee3cd663e146f533b5d2287fa98cb44744c54e569da471d3","commitFinalClaim":""}
+    [2021-08-12T11:23:11.218Z] DEBUG (js-object-signer): Message to sign: "{\"sessionID\":\"5013e36b-feee-4939-8053-6a766cf50024\",\"messageType\":\"urn:ietf:odap:msgtype:commit-transfer-complete-msg\",\"clientIdentityPubkey\":\"0202de80cfc76d4a07223c8c34232ea09b15d0f9236085d741d5d1b20efe5363f0\",\"serverIdentityPubkey\":\"03cf944f061eba3bad93f2fc6a3971156ca224070602eb43ad4bf91fe2d83a6cdf\",\"clientSignature\":\"\",\"hashTransferCommence\":\"7e16575c25c239485abfb985229e46011877e1a5e4d5a475d483fc6ba83281c0\",\"hashCommitFinalAck\":\"136412354725b367c419af320be20e972ded5ce3615c1871b7a2248fb72075e4\"}"
+    [2021-08-12T11:23:11.221Z] INFO (odap-logger): server gate way receive transfer complete request: {"sessionID":"5013e36b-feee-4939-8053-6a766cf50024","messageType":"urn:ietf:odap:msgtype:commit-transfer-complete-msg","clientIdentityPubkey":"0202de80cfc76d4a07223c8c34232ea09b15d0f9236085d741d5d1b20efe5363f0","serverIdentityPubkey":"03cf944f061eba3bad93f2fc6a3971156ca224070602eb43ad4bf91fe2d83a6cdf","clientSignature":"ddc6116009643c61bff8294a6a6c0cf0aa68765e649d7ce4a12d04a16bcbaa2d0e1a524c4382b5d9e4e25186ef9443484c0c9e7632c790026f0c3a4669fa9696","hashTransferCommence":"7e16575c25c239485abfb985229e46011877e1a5e4d5a475d483fc6ba83281c0","hashCommitFinalAck":"136412354725b367c419af320be20e972ded5ce3615c1871b7a2248fb72075e4"}
+    [2021-08-12T11:23:11.222Z] INFO (odap-logger): transfer is complete
+    ok 14 should be truthy
+    # BEFORE runs odap gateway tests via openApi
+    ok 15 Pruning didn't throw OK
+    
+    [2021-08-12T11:23:11.268Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] '\r\nReceived interrupt signal, shutting down...\r\n'
+    [2021-08-12T11:23:11.271Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] '(Hit ctrl-c again to force-shutdown the daemon.)\r\n'
+    1..15
+    # tests 15
+    # pass  15
+    
+    # ok
+}
+
+1..1
+# time=25935.816ms
+---------------------------------------|---------|----------|---------|---------|-------------------
+File                                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+---------------------------------------|---------|----------|---------|---------|-------------------
+All files                              |   42.95 |    23.32 |   35.79 |   42.41 |                   
+ ...ect-store-ipfs/src/main/typescript |   62.63 |    70.59 |   52.38 |   63.83 |                   
+  i-ipfs-http-client.ts                |      75 |    97.14 |     100 |      75 | 10                
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  plugin-factory-object-store.ts       |      75 |      100 |       0 |      75 | 17                
+  plugin-object-store-ipfs.ts          |   58.54 |     12.5 |   56.25 |   60.26 | ...61,176,184-188 
+  public-api.ts                        |    87.5 |      100 |   33.33 |   85.71 | 15                
+ ...generated/openapi/typescript-axios |   51.01 |    26.58 |   37.14 |   47.69 |                   
+  api.ts                               |   41.33 |    19.05 |   28.57 |   40.91 | ...92-322,343-355 
+  base.ts                              |   76.92 |    66.67 |      50 |      75 | 67-69             
+  common.ts                            |   65.31 |    27.08 |      60 |    57.5 | ...9,78-82,94-100 
+  configuration.ts                     |      10 |        0 |       0 |      10 | 78-99             
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+ ...s/src/main/typescript/web-services |   76.77 |       50 |   93.33 |   76.77 |                   
+  get-object-endpoint-v1.ts            |    69.7 |       50 |      90 |    69.7 | 87-97             
+  has-object-endpoint-v1.ts            |    69.7 |       50 |      90 |    69.7 | 87-97             
+  set-object-endpoint-v1.ts            |   90.91 |       50 |     100 |   90.91 | 95-97             
+ .../cactus-common/src/main/typescript |    45.6 |    23.38 |   39.58 |   43.75 |                   
+  bools.ts                             |     100 |      100 |     100 |     100 |                   
+  checks.ts                            |      50 |       60 |     100 |      50 | 17-18,36-37       
+  coded-error.ts                       |      20 |        0 |       0 |      25 | 7-12              
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  js-object-signer.ts                  |   51.61 |    33.33 |      50 |   51.61 | 34,37,63-102      
+  key-converter.ts                     |   12.24 |     7.69 |   14.29 |    12.5 | 15-125            
+  objects.ts                           |    6.25 |        0 |       0 |    6.67 | 33-63             
+  public-api.ts                        |     100 |      100 |   45.45 |     100 |                   
+  secp256k1-keys.ts                    |     100 |      100 |     100 |     100 |                   
+  servers.ts                           |   56.82 |    33.33 |      50 |   60.98 | 25,30,87-114      
+  strings.ts                           |   28.57 |        0 |       0 |   28.57 | 9-19              
+ ...common/src/main/typescript/logging |   75.76 |    45.45 |   57.14 |   75.76 |                   
+  logger-provider.ts                   |   71.43 |    42.86 |   33.33 |   71.43 | 26-29             
+  logger.ts                            |   78.95 |       50 |   63.64 |   78.95 | 42-50,63          
+ ...actus-core-api/src/main/typescript |     100 |      100 |   33.33 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  public-api.ts                        |     100 |      100 |   33.33 |     100 |                   
+ ...generated/openapi/typescript-axios |   83.33 |    63.64 |      80 |   85.11 |                   
+  api.ts                               |     100 |      100 |     100 |     100 |                   
+  base.ts                              |   38.46 |        0 |       0 |   41.67 | 52-55,67-69       
+  configuration.ts                     |     100 |       50 |     100 |     100 | 77-99             
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+ ...ore-api/src/main/typescript/plugin |      75 |        0 |      50 |      75 |                   
+  i-cactus-plugin.ts                   |      50 |        0 |       0 |      50 | 76                
+  plugin-factory.ts                    |     100 |      100 |     100 |     100 |                   
+ ...rc/main/typescript/plugin/keychain |     100 |      100 |     100 |     100 |                   
+  is-i-plugin-keychain.ts              |     100 |      100 |     100 |     100 |                   
+ ...ain/typescript/plugin/object-store |      50 |        0 |       0 |      50 |                   
+  is-i-plugin-object-store.ts          |      50 |        0 |       0 |      50 | 4                 
+ ...main/typescript/plugin/web-service |      60 |        0 |       0 |      60 |                   
+  i-endpoint-authz-options.ts          |   66.67 |        0 |       0 |   66.67 | 33                
+  i-plugin-web-service.ts              |      50 |        0 |       0 |      50 | 22                
+ ...es/cactus-core/src/main/typescript |   41.57 |     37.5 |   24.14 |      40 |                   
+  ...ensus-has-transaction-finality.ts |      25 |        0 |       0 |      25 | 10-27             
+  consortium-repository.ts             |   15.79 |        0 |       0 |   16.67 | 28-62             
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  plugin-registry.ts                   |   41.18 |    46.15 |   29.41 |   41.18 | ...-87,94,102-135 
+  public-api.ts                        |     100 |      100 |      40 |     100 |                   
+ ...e/src/main/typescript/web-services |   54.84 |       25 |      20 |   54.84 |                   
+  authorization-options-provider.ts    |      25 |        0 |       0 |      25 | 30-57             
+  register-web-service-endpoint.ts     |   86.67 |       50 |     100 |   86.67 | 30-33             
+ ...us-odap-hermes/src/main/typescript |   78.57 |    68.75 |      75 |   83.33 |                   
+  public-api.js                        |   78.57 |    68.75 |      75 |   83.33 | 15-16             
+ ...hermes/src/main/typescript/gateway |   76.64 |    49.44 |   82.86 |   77.47 |                   
+  odap-gateway.ts                      |   76.64 |    49.44 |   82.86 |   77.47 | ...1278,1285,1292 
+ ...generated/openapi/typescript-axios |   81.53 |    45.38 |   64.62 |   82.43 |                   
+  api.ts                               |   90.86 |    65.57 |   70.59 |    94.3 | 1492-1555         
+  base.ts                              |   76.92 |    66.67 |      50 |      75 | 67-69             
+  common.ts                            |   63.27 |    20.83 |      50 |      55 | ...9,78-82,94-100 
+  configuration.ts                     |      10 |        0 |       0 |      10 | 78-99             
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+ ...s/src/main/typescript/web-services |   90.45 |    16.67 |      90 |   90.45 |                   
+  commit-final-endpoint.ts             |   90.32 |    16.67 |      90 |   90.32 | 61,93-94          
+  commite-prepare-endpoint.ts          |   90.32 |    16.67 |      90 |   90.32 | 61,93-94          
+  lock-evidence-endpoint.ts            |   90.32 |    16.67 |      90 |   90.32 | 61,93-94          
+  ...nce-transfer-commence-endpoint.ts |   90.32 |    16.67 |      90 |   90.32 | 61,95-96          
+  send-client-request.ts               |   90.32 |    16.67 |      90 |   90.32 | 63,96-97          
+  transfer-complete.ts                 |   90.32 |    16.67 |      90 |   90.32 | 61,93-94          
+  transfer-initiation-endpoint.ts      |   91.18 |    16.67 |      90 |   91.18 | 61,96-97          
+ ...eychain-memory/src/main/typescript |      65 |    57.14 |   41.18 |   64.41 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  plugin-factory-keychain.ts           |      80 |        0 |       0 |      80 | 24                
+  plugin-keychain-memory.ts            |    58.7 |    66.67 |   46.15 |    58.7 | ...12-116,133-134 
+  public-api.ts                        |    87.5 |      100 |   33.33 |   85.71 | 15                
+ ...generated/openapi/typescript-axios |   35.85 |        0 |       0 |   28.57 |                   
+  api.ts                               |   31.25 |        0 |       0 |   25.93 | ...43,153-162,182 
+  base.ts                              |   38.46 |        0 |       0 |   41.67 | 52-55,67-69       
+  common.ts                            |   40.82 |        0 |       0 |    27.5 | ...16,126,134-136 
+  configuration.ts                     |      10 |        0 |       0 |      10 | 78-99             
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+ ...pt/get-prometheus-exporter-metrics |   14.81 |        0 |       0 |   14.81 |                   
+  ...s-exporter-metrics-endpoint-v1.ts |   14.81 |        0 |       0 |   14.81 | 33-92             
+ ...ain/typescript/prometheus-exporter |      75 |       50 |      60 |      75 |                   
+  data-fetcher.ts                      |     100 |      100 |     100 |     100 |                   
+  metrics.ts                           |     100 |      100 |     100 |     100 |                   
+  prometheus-exporter.ts               |   64.29 |       50 |      50 |   64.29 | 26-35             
+ ...connector-besu/src/main/typescript |   56.17 |       36 |   34.21 |    55.9 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  model-type-guards.ts                 |      80 |       40 |      50 |      80 | 10                
+  plugin-factory-ledger-connector.ts   |     100 |      100 |     100 |     100 |                   
+  plugin-ledger-connector-besu.ts      |   53.64 |    35.24 |   34.48 |   53.49 | ...26,698,704-837 
+  public-api.ts                        |   91.67 |      100 |   16.67 |   90.91 | 21                
+ ...esu/src/main/typescript/api-client |   29.73 |        0 |       0 |   29.73 |                   
+  besu-api-client.ts                   |   29.73 |        0 |       0 |   29.73 | 28-67             
+ ...generated/openapi/typescript-axios |   30.85 |    19.12 |   19.75 |   29.39 |                   
+  api.ts                               |   21.27 |    15.38 |   14.93 |   21.72 | ...1804,1828-1840 
+  base.ts                              |   76.92 |    66.67 |      50 |      75 | 67-69             
+  common.ts                            |   63.27 |    20.83 |      50 |      55 | ...9,78-82,94-100 
+  configuration.ts                     |      10 |        0 |       0 |      10 | 78-99             
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+ ...ain/typescript/prometheus-exporter |      90 |       50 |      80 |      90 |                   
+  data-fetcher.ts                      |     100 |      100 |     100 |     100 |                   
+  metrics.ts                           |     100 |      100 |     100 |     100 |                   
+  prometheus-exporter.ts               |   84.62 |       50 |      75 |   84.62 | 26-29             
+ ...u/src/main/typescript/web-services |   65.36 |    18.52 |   77.19 |   65.36 |                   
+  ...act-solidity-bytecode-endpoint.ts |   71.88 |    16.67 |   81.82 |   71.88 | 65,90-98          
+  get-balance-endpoint.ts              |   71.88 |    16.67 |   81.82 |   71.88 | 62,87-95          
+  get-besu-record-endpoint-v1.ts       |   71.88 |    16.67 |   81.82 |   71.88 | 63,88-96          
+  get-block-v1-endpoint-.ts            |   71.88 |    16.67 |   81.82 |   71.88 | 62,87-95          
+  get-past-logs-endpoint.ts            |   71.88 |    16.67 |   81.82 |   71.88 | 62,87-95          
+  ...s-exporter-metrics-endpoint-v1.ts |   62.07 |      100 |    87.5 |   62.07 | 79-91             
+  get-transaction-endpoint.ts          |   71.88 |    16.67 |   81.82 |   71.88 | 62,87-95          
+  invoke-contract-endpoint.ts          |   90.63 |    16.67 |   90.91 |   90.63 | 62,94-95          
+  run-transaction-endpoint.ts          |   71.88 |    16.67 |   81.82 |   71.88 | 62,87-95          
+  sign-transaction-endpoint-v1.ts      |   55.26 |       50 |      80 |   55.26 | 74,85-106         
+  watch-blocks-v1-endpoint.ts          |   14.29 |        0 |       0 |   14.29 | 26-73             
+ ...nnector-fabric/src/main/typescript |    9.17 |        0 |       0 |    8.99 |                   
+  chain-code-compiler.ts               |   10.42 |        0 |       0 |   10.42 | 70-170            
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  plugin-factory-ledger-connector.ts   |      75 |      100 |       0 |      75 | 18                
+  plugin-ledger-connector-fabric.ts    |    6.08 |        0 |       0 |    6.09 | 144-1067          
+  public-api.ts                        |      90 |      100 |       0 |   88.89 | 16                
+ ...-fabric/src/main/typescript/common |   15.15 |        0 |       0 |   15.15 |                   
+  create-gateway.ts                    |   15.15 |        0 |       0 |   15.15 | 28-91             
+ ...rc/main/typescript/deploy-contract |   17.14 |        0 |       0 |   17.14 |                   
+  deploy-contract-endpoint-v1.ts       |   17.14 |        0 |       0 |   17.14 | 35-98             
+ ...pescript/deploy-contract-go-source |   17.14 |        0 |       0 |   17.14 |                   
+  ...contract-go-source-endpoint-v1.ts |   17.14 |        0 |       0 |   17.14 | 35-98             
+ ...generated/openapi/typescript-axios |   30.77 |     8.51 |    8.89 |   27.33 |                   
+  api.ts                               |   25.93 |    22.22 |    12.9 |   25.77 | ...1035,1056-1091 
+  base.ts                              |   38.46 |        0 |       0 |   41.67 | 52-55,67-69       
+  common.ts                            |   40.82 |        0 |       0 |    27.5 | ...16,126,134-136 
+  configuration.ts                     |      10 |        0 |       0 |      10 | 78-99             
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+ ...pt/get-prometheus-exporter-metrics |   14.81 |        0 |       0 |   14.81 |                   
+  ...s-exporter-metrics-endpoint-v1.ts |   14.81 |        0 |       0 |   14.81 | 33-92             
+ ...or-fabric/src/main/typescript/peer |   28.57 |        0 |       0 |   28.57 |                   
+  source-lang-to-runtime-lang.ts       |   28.57 |        0 |       0 |   28.57 | 9-18              
+ ...ain/typescript/prometheus-exporter |    37.5 |        0 |       0 |    37.5 |                   
+  metrics.ts                           |     100 |      100 |     100 |     100 |                   
+  prometheus-exporter.ts               |   23.08 |        0 |       0 |   23.08 | 11-37             
+ ...rc/main/typescript/run-transaction |    12.9 |        0 |       0 |    12.9 |                   
+  run-transaction-endpoint-v1.ts       |    12.9 |        0 |       0 |    12.9 | 31-97             
+ ...s-test-tooling/src/main/typescript |   98.72 |        0 |    5.56 |   98.63 |                   
+  i-key-pair.ts                        |      50 |        0 |       0 |      50 | 9                 
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  public-api.ts                        |     100 |      100 |    5.66 |     100 |                   
+ ...t-tooling/src/main/typescript/besu |   46.34 |    39.53 |   46.43 |   45.68 |                   
+  besu-mp-test-ledger.ts               |   10.26 |        0 |       0 |   10.26 | 39-197            
+  besu-test-ledger.ts                  |    63.1 |    53.97 |   72.22 |   62.42 | ...87,396,402,425 
+ ...cript/cactus-keychain-vault-server |   17.02 |        0 |       0 |   17.02 |                   
+  cactus-keychain-vault-server.ts      |   17.02 |        0 |       0 |   17.02 | 42-135            
+ ...tooling/src/main/typescript/common |   23.22 |    23.08 |   27.27 |   22.14 |                   
+  containers.ts                        |   25.42 |    26.79 |   33.33 |   24.26 | ...16-519,540-615 
+  streams.ts                           |     3.7 |        0 |       0 |     3.7 | 19-75             
+ ...-tooling/src/main/typescript/corda |     8.7 |        0 |       0 |    8.81 |                   
+  corda-test-ledger.ts                 |    8.13 |        0 |       0 |    8.23 | 78-412            
+  sample-cordapp-enum.ts               |     100 |      100 |     100 |     100 |                   
+ ...rc/main/typescript/corda-connector |   11.49 |        0 |       0 |   11.63 |                   
+  corda-connector-container.ts         |   11.49 |        0 |       0 |   11.63 | 68-239            
+ ...tooling/src/main/typescript/fabric |    6.99 |        0 |       0 |    7.07 |                   
+  fabric-test-ledger-v1.ts             |    6.99 |        0 |       0 |    7.07 | 79-530            
+ ...src/main/typescript/github-actions |   76.92 |    66.67 |     100 |   76.92 |                   
+  is-running-in-github-action.ts       |     100 |      100 |     100 |     100 |                   
+  prune-docker-all-if-github-action.ts |   66.67 |       50 |     100 |   66.67 | 21-26             
+ ...ooling/src/main/typescript/go-ipfs |   87.32 |    74.07 |   88.24 |   87.32 |                   
+  go-ipfs-test-container.ts            |   87.32 |    74.07 |   88.24 |   87.32 | ...31,154,189-190 
+ ...ling/src/main/typescript/http-echo |       8 |        0 |       0 |    8.25 |                   
+  http-echo-container.ts               |       8 |        0 |       0 |    8.25 | 38-243            
+ ...oling/src/main/typescript/keycloak |    7.64 |        0 |       0 |    7.86 |                   
+  keycloak-container.ts                |    7.64 |        0 |       0 |    7.86 | 48-352            
+ ...ing/src/main/typescript/localstack |      16 |        0 |       0 |      16 |                   
+  localstack-container.ts              |      16 |        0 |       0 |      16 | 41-149            
+ ...g/src/main/typescript/openethereum |   16.28 |        0 |       0 |   16.28 |                   
+  openethereum-test-ledger.ts          |   16.28 |        0 |       0 |   16.28 | 60-242            
+ ...tooling/src/main/typescript/quorum |    6.92 |        0 |       0 |    7.05 |                   
+  quorum-test-ledger.ts                |    6.92 |        0 |       0 |    7.05 | 58-408            
+ ...rc/main/typescript/rustc-container |   15.48 |        0 |       0 |   15.48 |                   
+  rustc-build-cmd.ts                   |     100 |      100 |     100 |     100 |                   
+  rustc-container.ts                   |   14.46 |        0 |       0 |   14.46 | 62-217            
+ .../main/typescript/vault-test-server |   17.31 |        0 |       0 |   17.31 |                   
+  vault-test-server.ts                 |   17.31 |        0 |       0 |   17.31 | 44-154            
+---------------------------------------|---------|----------|---------|---------|-------------------

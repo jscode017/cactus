@@ -5,6 +5,7 @@ import { OdapGateway } from "../../../../main/typescript/gateway/odap-gateway";
 import {
   //LockEvidenceMessage,
   TransferCommenceMessage,
+  AssetProfile,
 } from "../../../../main/typescript/generated/openapi/typescript-axios/api";
 import { v4 as uuidV4 } from "uuid";
 import { SHA256 } from "crypto-js";
@@ -25,13 +26,15 @@ test("dummy test for transfer commence flow", async (t: Test) => {
   const dummyPubKeyBytes = secp256k1.publicKeyCreate(dummyPrivKeyBytes);
   const dummyPubKey = odapGateWay.bufArray2HexStr(dummyPubKeyBytes);
   const dummyHash = SHA256("dummy").toString();
+  const assetProfile: AssetProfile = {};
+  const assetProfileHash = SHA256(JSON.stringify(assetProfile)).toString();
   const sessionData = {
     initializationMsgHash: dummyHash,
     clientIdentityPubkey: dummyPubKey,
     serverIdentityPubkey: dummyPubKey,
     recipientGateWayDltSystem: "dummy",
     sourceGateWayDltSystem: "dummy",
-    assetProfile: "dummy",
+    assetProfile: assetProfile,
   };
   const sessionID = uuidV4();
 
@@ -45,7 +48,7 @@ test("dummy test for transfer commence flow", async (t: Test) => {
     clientIdentityPubkey: dummyPubKey,
     serverIdentityPubkey: dummyPubKey,
     hashPrevMessage: dummyHash,
-    hashAssetProfile: dummyHash,
+    hashAssetProfile: assetProfileHash,
     senderDltSystem: "dummy",
     recipientDltSystem: "dummy",
     clientSignature: "",

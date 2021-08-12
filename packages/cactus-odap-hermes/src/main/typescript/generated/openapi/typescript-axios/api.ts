@@ -584,10 +584,10 @@ export enum InitializationRequestMessageEscrowTypeEnum {
 export interface InitializationRequestMessagePayloadProfile {
     /**
      * 
-     * @type {string}
+     * @type {AssetProfile}
      * @memberof InitializationRequestMessagePayloadProfile
      */
-    assetProfile?: string;
+    assetProfile?: AssetProfile;
     /**
      * 
      * @type {string}
@@ -877,10 +877,10 @@ export interface SendClientRequestMessage {
     applicationProfile: string;
     /**
      * 
-     * @type {string}
+     * @type {AssetProfile}
      * @memberof SendClientRequestMessage
      */
-    assetProfile: string;
+    assetProfile: AssetProfile;
     /**
      * 
      * @type {object}

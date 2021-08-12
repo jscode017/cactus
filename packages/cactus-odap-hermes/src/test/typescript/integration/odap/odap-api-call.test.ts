@@ -10,7 +10,10 @@ import bodyParser from "body-parser";
 import express from "express";
 import { DefaultApi as ObjectStoreIpfsApi } from "@hyperledger/cactus-plugin-object-store-ipfs";
 //import { PluginRegistry } from "@hyperledger/cactus-core";
-import { SendClientRequestMessage } from "../../../../main/typescript/generated/openapi/typescript-axios";
+import {
+  SendClientRequestMessage,
+  AssetProfile,
+} from "../../../../main/typescript/generated/openapi/typescript-axios";
 import {
   IListenOptions,
   LogLevelDesc,
@@ -170,6 +173,7 @@ test(testCase, async (t: Test) => {
     }
     const dummyPubKeyBytes = secp256k1.publicKeyCreate(dummyPrivKeyBytes);
     const dummyPubKey = clientOdapGateway.bufArray2HexStr(dummyPubKeyBytes);
+    const assetProfile: AssetProfile = {};
     const odapClientRequest: SendClientRequestMessage = {
       serverGatewayConfiguration: {
         apiHost: odapServerGatewayApiHost,
@@ -179,10 +183,10 @@ test(testCase, async (t: Test) => {
       accessControlProfile: "dummy",
       applicationProfile: "dummy",
       payLoadProfile: {
-        assetProfile: "dummy",
+        assetProfile: assetProfile,
         capabilities: "",
       },
-      assetProfile: "dummy",
+      assetProfile: assetProfile,
       assetControlProfile: "dummy",
       beneficiaryPubkey: dummyPubKey,
       clientDltSystem: "dummy",

@@ -6,7 +6,10 @@ import { v4 as uuidV4 } from "uuid";
 
 } from "../../../../main/typescript/public-api";*/
 import { OdapGateway } from "../../../../main/typescript/gateway/odap-gateway";
-import { InitializationRequestMessage } from "../../../../main/typescript/public-api";
+import {
+  InitializationRequestMessage,
+  AssetProfile,
+} from "../../../../main/typescript/public-api";
 test("dummy test for transfer initiation flow", async (t: Test) => {
   /*
     run a gateway(now only call function)
@@ -25,14 +28,14 @@ test("dummy test for transfer initiation flow", async (t: Test) => {
   }
   const dummyPubKeyBytes = secp256k1.publicKeyCreate(dummyPrivKeyBytes);
   const dummyPubKey = odapGateWay.bufArray2HexStr(dummyPubKeyBytes);
-
+  const assetProfile: AssetProfile = {};
   const initializationRequestMessage: InitializationRequestMessage = {
     version: "0.0.0",
     loggingProfile: "dummy",
     accessControlProfile: "dummy",
     applicationProfile: "dummy",
     payloadProfile: {
-      assetProfile: "dummy",
+      assetProfile: assetProfile,
       capabilities: "",
     },
     initializationRequestMessageSignature: "",

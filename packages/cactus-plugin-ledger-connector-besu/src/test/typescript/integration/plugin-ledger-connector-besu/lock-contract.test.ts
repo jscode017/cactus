@@ -15,7 +15,6 @@ import { LoggerProvider, LogLevelDesc } from "@hyperledger/cactus-common";
 import LockAssetContractJson from "../../../solidity/hello-world-contract/LockAsset.json";
 import Web3 from "web3";
 import { PluginImportType } from "@hyperledger/cactus-core-api";
-import ts from "typescript";
 const level = "INFO";
 const label = "lock-contact test";
 const log = LoggerProvider.getOrCreate({ level, label });

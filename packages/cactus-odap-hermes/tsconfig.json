@@ -11,5 +11,8 @@
   },
   "include": [
     "./src"
+  ],
+  "exclude":[
+    "./src/test/typescript/fabric-contracts/lock-asset/chaincode-typescript./**/*.ts"
   ]
 }

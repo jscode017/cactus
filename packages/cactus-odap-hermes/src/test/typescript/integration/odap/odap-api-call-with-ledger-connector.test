@@ -1,0 +1,519 @@
+import http from "http";
+import fs from "fs-extra";
+import { AddressInfo } from "net";
+import secp256k1 from "secp256k1";
+import test, { Test } from "tape-promise/tape";
+import { v4 as uuidv4 } from "uuid";
+import { randomBytes } from "crypto";
+import { PluginObjectStoreIpfs } from "@hyperledger/cactus-plugin-object-store-ipfs";
+import { create } from "ipfs-http-client";
+import bodyParser from "body-parser";
+import express from "express";
+import { DefaultApi as ObjectStoreIpfsApi } from "@hyperledger/cactus-plugin-object-store-ipfs";
+//import { PluginRegistry } from "@hyperledger/cactus-core";
+import { SendClientRequestMessage } from "../../../../main/typescript/generated/openapi/typescript-axios";
+import {
+  Checks,
+  IListenOptions,
+  LogLevelDesc,
+  Servers,
+} from "@hyperledger/cactus-common";
+import { DiscoveryOptions } from "fabric-network";
+
+import {
+  Containers,
+  FabricTestLedgerV1,
+  pruneDockerAllIfGithubAction,
+} from "@hyperledger/cactus-test-tooling";
+import { PluginKeychainMemory } from "@hyperledger/cactus-plugin-keychain-memory";
+import {
+  DefaultApi as OdapApi,
+  //InitializationRequestMessage,
+} from "../../../../main/typescript/public-api";
+import { PluginRegistry } from "@hyperledger/cactus-core";
+import { Configuration } from "@hyperledger/cactus-core-api";
+import {
+  OdapGateway,
+  OdapGatewayConstructorOptions,
+} from "../../../../main/typescript/gateway/odap-gateway";
+import { GoIpfsTestContainer } from "@hyperledger/cactus-test-tooling";
+import {
+  ChainCodeProgrammingLanguage,
+  DefaultEventHandlerStrategy,
+  FabricContractInvocationType,
+  FileBase64,
+  IPluginLedgerConnectorFabricOptions,
+  PluginLedgerConnectorFabric,
+  DefaultApi as FabricApi,
+} from "@hyperledger/cactus-plugin-ledger-connector-fabric";
+import path from "path";
+
+/**
+ * Use this to debug issues with the fabric node SDK
+ * ```sh
+ * export HFC_LOGGING='{"debug":"console","info":"console"}'
+ * ```
+ */
+let ipfsApiHost: string;
+const testCase = "runs odap gateway tests via openApi";
+const logLevel: LogLevelDesc = "TRACE";
+let fabricLedger: FabricTestLedgerV1;
+let ipfsContainer: GoIpfsTestContainer;
+test("BEFORE " + testCase, async (t: Test) => {
+  test("BEFORE " + testCase, async (t: Test) => {
+    const pruning = pruneDockerAllIfGithubAction({ logLevel });
+    await t.doesNotReject(pruning, "Pruning didn't throw OK");
+    t.end();
+  });
+  {
+    const channelId = "mychannel";
+    const channelName = channelId;
+
+    test.onFailure(async () => {
+      await Containers.logDiagnostics({ logLevel });
+    });
+
+    const ledger = new FabricTestLedgerV1({
+      emitContainerLogs: true,
+      publishAllPorts: true,
+      // imageName: "faio2x",
+      // imageVersion: "latest",
+      imageName: "ghcr.io/hyperledger/cactus-fabric2-all-in-one",
+      imageVersion: "2021-04-20-nodejs",
+      envVars: new Map([["FABRIC_VERSION", "2.2.0"]]),
+      logLevel,
+    });
+    const connectionProfile = await ledger.getConnectionProfileOrg1();
+    t.ok(connectionProfile, "getConnectionProfileOrg1() out truthy OK");
+    fabricLedger = ledger;
+    const enrollAdminOut = await ledger.enrollAdmin();
+    const adminWallet = enrollAdminOut[1];
+    const [userIdentity] = await ledger.enrollUser(adminWallet);
+    const sshConfig = await ledger.getSshConfig();
+
+    const keychainInstanceId = uuidv4();
+    const keychainId = uuidv4();
+    const keychainEntryKey = "user2";
+    const keychainEntryValue = JSON.stringify(userIdentity);
+
+    const keychainPlugin = new PluginKeychainMemory({
+      instanceId: keychainInstanceId,
+      keychainId,
+      logLevel,
+      backend: new Map([
+        [keychainEntryKey, keychainEntryValue],
+        ["some-other-entry-key", "some-other-entry-value"],
+      ]),
+    });
+
+    const pluginRegistry = new PluginRegistry({ plugins: [keychainPlugin] });
+
+    const discoveryOptions: DiscoveryOptions = {
+      enabled: true,
+      asLocalhost: true,
+    };
+
+    // This is the directory structure of the Fabirc 2.x CLI container (fabric-tools image)
+    // const orgCfgDir = "/fabric-samples/test-network/organizations/";
+    const orgCfgDir =
+      "/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations/";
+
+    // these below mirror how the fabric-samples sets up the configuration
+    const org1Env = {
+      CORE_LOGGING_LEVEL: "debug",
+      FABRIC_LOGGING_SPEC: "debug",
+      CORE_PEER_LOCALMSPID: "Org1MSP",
+
+      ORDERER_CA: `${orgCfgDir}ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem`,
+
+      FABRIC_CFG_PATH: "/etc/hyperledger/fabric",
+      CORE_PEER_TLS_ENABLED: "true",
+      CORE_PEER_TLS_ROOTCERT_FILE: `${orgCfgDir}peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt`,
+      CORE_PEER_MSPCONFIGPATH: `${orgCfgDir}peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp`,
+      CORE_PEER_ADDRESS: "peer0.org1.example.com:7051",
+      ORDERER_TLS_ROOTCERT_FILE: `${orgCfgDir}ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem`,
+    };
+
+    // these below mirror how the fabric-samples sets up the configuration
+    const org2Env = {
+      CORE_LOGGING_LEVEL: "debug",
+      FABRIC_LOGGING_SPEC: "debug",
+      CORE_PEER_LOCALMSPID: "Org2MSP",
+
+      FABRIC_CFG_PATH: "/etc/hyperledger/fabric",
+      CORE_PEER_TLS_ENABLED: "true",
+      ORDERER_CA: `${orgCfgDir}ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem`,
+
+      CORE_PEER_ADDRESS: "peer0.org2.example.com:9051",
+      CORE_PEER_MSPCONFIGPATH: `${orgCfgDir}peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp`,
+      CORE_PEER_TLS_ROOTCERT_FILE: `${orgCfgDir}peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt`,
+      ORDERER_TLS_ROOTCERT_FILE: `${orgCfgDir}ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem`,
+    };
+
+    const pluginOptions: IPluginLedgerConnectorFabricOptions = {
+      instanceId: uuidv4(),
+      dockerBinary: "/usr/local/bin/docker",
+      peerBinary: "/fabric-samples/bin/peer",
+      goBinary: "/usr/local/go/bin/go",
+      pluginRegistry,
+      cliContainerEnv: org1Env,
+      sshConfig,
+      logLevel,
+      connectionProfile,
+      discoveryOptions,
+      eventHandlerOptions: {
+        strategy: DefaultEventHandlerStrategy.NetworkScopeAllfortx,
+        commitTimeout: 300,
+      },
+    };
+    const plugin = new PluginLedgerConnectorFabric(pluginOptions);
+
+    const expressApp = express();
+    expressApp.use(bodyParser.json({ limit: "250mb" }));
+    const server = http.createServer(expressApp);
+    const listenOptions: IListenOptions = {
+      hostname: "localhost",
+      port: 0,
+      server,
+    };
+    const addressInfo = (await Servers.listen(listenOptions)) as AddressInfo;
+    const { port } = addressInfo;
+    test.onFinish(async () => await Servers.shutdown(server));
+
+    await plugin.getOrCreateWebServices();
+    await plugin.registerWebServices(expressApp);
+    const apiUrl = `http://localhost:${port}`;
+
+    const config = new Configuration({ basePath: apiUrl });
+
+    const apiClient = new FabricApi(config);
+
+    const contractName = "basic-asset-transfer-2";
+
+    const contractRelPath =
+      "../fabric-contract/lock-asset/chaincode-typescript";
+    const contractDir = path.join(__dirname, contractRelPath);
+
+    // ├── package.json
+    // ├── src
+    // │   ├── assetTransfer.ts
+    // │   ├── asset.ts
+    // │   └── index.ts
+    // ├── tsconfig.json
+    // └── tslint.json
+    const sourceFiles: FileBase64[] = [];
+    {
+      const filename = "./tslint.json";
+      const relativePath = "./";
+      const filePath = path.join(contractDir, relativePath, filename);
+      const buffer = await fs.readFile(filePath);
+      sourceFiles.push({
+        body: buffer.toString("base64"),
+        filepath: relativePath,
+        filename,
+      });
+    }
+    {
+      const filename = "./tsconfig.json";
+      const relativePath = "./";
+      const filePath = path.join(contractDir, relativePath, filename);
+      const buffer = await fs.readFile(filePath);
+      sourceFiles.push({
+        body: buffer.toString("base64"),
+        filepath: relativePath,
+        filename,
+      });
+    }
+    {
+      const filename = "./package.json";
+      const relativePath = "./";
+      const filePath = path.join(contractDir, relativePath, filename);
+      const buffer = await fs.readFile(filePath);
+      sourceFiles.push({
+        body: buffer.toString("base64"),
+        filepath: relativePath,
+        filename,
+      });
+    }
+    {
+      const filename = "./index.ts";
+      const relativePath = "./src/";
+      const filePath = path.join(contractDir, relativePath, filename);
+      const buffer = await fs.readFile(filePath);
+      sourceFiles.push({
+        body: buffer.toString("base64"),
+        filepath: relativePath,
+        filename,
+      });
+    }
+    {
+      const filename = "./asset.ts";
+      const relativePath = "./src/";
+      const filePath = path.join(contractDir, relativePath, filename);
+      const buffer = await fs.readFile(filePath);
+      sourceFiles.push({
+        body: buffer.toString("base64"),
+        filepath: relativePath,
+        filename,
+      });
+    }
+    {
+      const filename = "./assetTransfer.ts";
+      const relativePath = "./src/";
+      const filePath = path.join(contractDir, relativePath, filename);
+      const buffer = await fs.readFile(filePath);
+      sourceFiles.push({
+        body: buffer.toString("base64"),
+        filepath: relativePath,
+        filename,
+      });
+    }
+
+    const res = await apiClient.deployContractV1({
+      channelId,
+      ccVersion: "1.0.0",
+      // constructorArgs: { Args: ["john", "99"] },
+      sourceFiles,
+      ccName: contractName,
+      targetOrganizations: [org1Env, org2Env],
+      caFile: `${orgCfgDir}ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem`,
+      ccLabel: "basic-asset-transfer-2",
+      ccLang: ChainCodeProgrammingLanguage.Typescript,
+      ccSequence: 1,
+      orderer: "orderer.example.com:7050",
+      ordererTLSHostnameOverride: "orderer.example.com",
+      connTimeout: 60,
+    });
+
+    const { packageIds, lifecycle, success } = res.data;
+    t.equal(res.status, 200, "res.status === 200 OK");
+    t.true(success, "res.data.success === true");
+
+    const {
+      approveForMyOrgList,
+      installList,
+      queryInstalledList,
+      commit,
+      packaging,
+      queryCommitted,
+    } = lifecycle;
+
+    Checks.truthy(packageIds, `packageIds truthy OK`);
+    Checks.truthy(
+      Array.isArray(packageIds),
+      `Array.isArray(packageIds) truthy OK`,
+    );
+    Checks.truthy(approveForMyOrgList, `approveForMyOrgList truthy OK`);
+    Checks.truthy(
+      Array.isArray(approveForMyOrgList),
+      `Array.isArray(approveForMyOrgList) truthy OK`,
+    );
+    Checks.truthy(installList, `installList truthy OK`);
+    Checks.truthy(
+      Array.isArray(installList),
+      `Array.isArray(installList) truthy OK`,
+    );
+    Checks.truthy(queryInstalledList, `queryInstalledList truthy OK`);
+    Checks.truthy(
+      Array.isArray(queryInstalledList),
+      `Array.isArray(queryInstalledList) truthy OK`,
+    );
+    Checks.truthy(commit, `commit truthy OK`);
+    Checks.truthy(packaging, `packaging truthy OK`);
+    Checks.truthy(queryCommitted, `queryCommitted truthy OK`);
+
+    // FIXME - without this wait it randomly fails with an error claiming that
+    // the endorsement was impossible to be obtained. The fabric-samples script
+    // does the same thing, it just waits 10 seconds for good measure so there
+    // might not be a way for us to avoid doing this, but if there is a way we
+    // absolutely should not have timeouts like this, anywhere...
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+
+    const assetId = uuidv4();
+
+    // CreateAsset(id string, color string, size int, owner string, appraisedValue int)
+    const createRes = await apiClient.runTransactionV1({
+      contractName,
+      channelName,
+      params: [assetId, "19"],
+      methodName: "CreateAsset",
+      invocationType: FabricContractInvocationType.Send,
+      signingCredential: {
+        keychainId,
+        keychainRef: keychainEntryKey,
+      },
+    });
+    t.ok(createRes, "setRes truthy OK");
+    t.true(createRes.status > 199, "createRes status > 199 OK");
+    t.true(createRes.status < 300, "createRes status < 300 OK");
+    t.comment(
+      `BassicAssetTransfer.Create(): ${JSON.stringify(createRes.data)}`,
+    );
+  }
+  ipfsContainer = new GoIpfsTestContainer({ logLevel });
+  t.ok(ipfsContainer, "GoIpfsTestContainer instance truthy OK");
+  {
+    const container = await ipfsContainer.start();
+    t.ok(container, "Container returned by start() truthy OK");
+    t.ok(container, "Started GoIpfsTestContainer OK");
+
+    const expressApp = express();
+    expressApp.use(bodyParser.json({ limit: "250mb" }));
+    const server = http.createServer(expressApp);
+    const listenOptions: IListenOptions = {
+      hostname: "0.0.0.0",
+      port: 0,
+      server,
+    };
+    const addressInfo = (await Servers.listen(listenOptions)) as AddressInfo;
+    test.onFinish(async () => await Servers.shutdown(server));
+    const { address, port } = addressInfo;
+    const apiHost = `http://${address}:${port}`;
+    ipfsApiHost = apiHost;
+    const config = new Configuration({ basePath: apiHost });
+    const apiClient = new ObjectStoreIpfsApi(config);
+    t.ok(apiClient, "ObjectStoreIpfsApi truthy OK");
+
+    const ipfsApiUrl = await ipfsContainer.getApiUrl();
+    const ipfsGatewayUrl = await ipfsContainer.getWebGatewayUrl();
+    t.comment(`Go IPFS Test Container API URL: ${ipfsApiUrl}`);
+    t.comment(`Go IPFS Test Container Gateway URL: ${ipfsGatewayUrl}`);
+
+    const ipfsClientOrOptions = create({
+      url: ipfsApiUrl,
+    });
+    const instanceId = uuidv4();
+    const plugin = new PluginObjectStoreIpfs({
+      parentDir: `/${uuidv4()}/${uuidv4()}/`,
+      logLevel,
+      instanceId,
+      ipfsClientOrOptions,
+    });
+
+    await plugin.getOrCreateWebServices();
+    await plugin.registerWebServices(expressApp);
+
+    const packageName = plugin.getPackageName();
+    t.ok(packageName, "packageName truthy OK");
+
+    const theInstanceId = plugin.getInstanceId();
+    t.ok(theInstanceId, "theInstanceId truthy OK");
+    t.equal(theInstanceId, instanceId, "instanceId === theInstanceId OK");
+  }
+  t.end();
+});
+
+test(testCase, async (t: Test) => {
+  //const logLevel: LogLevelDesc = "TRACE";
+  test.onFinish(async () => {
+    await ipfsContainer.stop();
+    await ipfsContainer.destroy();
+  });
+  const tearDown = async () => {
+    await fabricLedger.stop();
+    await fabricLedger.destroy();
+    await pruneDockerAllIfGithubAction({ logLevel });
+  };
+
+  test.onFinish(tearDown);
+  const odapClientGateWayPluginID = uuidv4();
+  const odapPluginOptions: OdapGatewayConstructorOptions = {
+    name: "cactus-plugin#odapGateway",
+    dltIDs: ["dummy"],
+    instanceId: odapClientGateWayPluginID,
+    ipfsPath: ipfsApiHost,
+  };
+
+  const clientOdapGateway = new OdapGateway(odapPluginOptions);
+
+  const odapServerGatewayInstanceID = uuidv4();
+  // the block below adds the server odap gateway to the plugin registry
+  let odapServerGatewayPubKey: string;
+  let odapServerGatewayApiHost: string;
+  {
+    const expressApp = express();
+    expressApp.use(bodyParser.json({ limit: "250mb" }));
+    const server = http.createServer(expressApp);
+    const listenOptions: IListenOptions = {
+      hostname: "localhost",
+      port: 0,
+      server,
+    };
+    const addressInfo = (await Servers.listen(listenOptions)) as AddressInfo;
+    test.onFinish(async () => await Servers.shutdown(server));
+    const { address, port } = addressInfo;
+    odapServerGatewayApiHost = `http://${address}:${port}`;
+    /*t.comment(
+      `Metrics URL: ${odapServerGatewayApiHost}/api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-fabric/get-prometheus-exporter-metrics`,
+    );*/
+    const odapPluginOptions: OdapGatewayConstructorOptions = {
+      name: "cactus-plugin#odapGateway",
+      dltIDs: ["dummy"],
+      instanceId: odapServerGatewayInstanceID,
+      ipfsPath: ipfsApiHost,
+    };
+
+    const plugin = new OdapGateway(odapPluginOptions);
+    odapServerGatewayPubKey = plugin.pubKey;
+    await plugin.getOrCreateWebServices();
+    await plugin.registerWebServices(expressApp);
+  }
+  {
+    const expressApp = express();
+    expressApp.use(bodyParser.json({ limit: "250mb" }));
+    const server = http.createServer(expressApp);
+    const listenOptions: IListenOptions = {
+      hostname: "localhost",
+      port: 0,
+      server,
+    };
+    const addressInfo = (await Servers.listen(listenOptions)) as AddressInfo;
+    test.onFinish(async () => await Servers.shutdown(server));
+    const { address, port } = addressInfo;
+    const apiHost = `http://${address}:${port}`;
+    const apiConfig = new Configuration({ basePath: apiHost });
+    const apiClient = new OdapApi(apiConfig);
+    /*t.comment(
+      `Metrics URL: ${apiHost}/api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-fabric/get-prometheus-exporter-metrics`,
+    );*/
+    await clientOdapGateway.getOrCreateWebServices();
+    await clientOdapGateway.registerWebServices(expressApp);
+    let dummyPrivKeyBytes = randomBytes(32);
+    while (!secp256k1.privateKeyVerify(dummyPrivKeyBytes)) {
+      dummyPrivKeyBytes = randomBytes(32);
+    }
+    const dummyPubKeyBytes = secp256k1.publicKeyCreate(dummyPrivKeyBytes);
+    const dummyPubKey = clientOdapGateway.bufArray2HexStr(dummyPubKeyBytes);
+    const odapClientRequest: SendClientRequestMessage = {
+      serverGatewayConfiguration: {
+        apiHost: odapServerGatewayApiHost,
+      },
+      version: "0.0.0",
+      loggingProfile: "dummy",
+      accessControlProfile: "dummy",
+      applicationProfile: "dummy",
+      payLoadProfile: {
+        assetProfile: "dummy",
+        capabilities: "",
+      },
+      assetProfile: "dummy",
+      assetControlProfile: "dummy",
+      beneficiaryPubkey: dummyPubKey,
+      clientDltSystem: "dummy",
+      clientIdentityPubkey: clientOdapGateway.pubKey,
+      originatorPubkey: dummyPubKey,
+      recipientGateWayDltSystem: "dummy",
+      recipientGateWayPubkey: odapServerGatewayPubKey,
+      serverDltSystem: "dummy",
+      serverIdentityPubkey: dummyPubKey,
+      sourceGateWayDltSystem: "dummy",
+    };
+    const res = await apiClient.apiV1SendClientRequest(odapClientRequest);
+    /*const odapConnector = pluginRegistry.plugins.find(
+      (plugin) => plugin.getInstanceId() == odapClientGateWayPluginID,
+    ) as ;*/
+    t.ok(res);
+    //t.equal(res.status, 200);
+  }
+  t.end();
+});

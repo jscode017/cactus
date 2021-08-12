@@ -42,6 +42,7 @@ import {
   TransferCompleteMessage,
   TransferCompletMessageResponse,
   DefaultApi as OdapApi,
+  AssetProfile,
 } from "../generated/openapi/typescript-axios";
 import { v4 as uuidV4 } from "uuid";
 import { time } from "console";
@@ -77,7 +78,7 @@ interface SessionData {
   loggingProfile?: string;
   accessControlProfile?: string;
   applicationProfile?: string;
-  assetProfile?: string;
+  assetProfile?: AssetProfile;
   initializationRequestMsgSignature?: string;
   sourceGateWayPubkey?: string;
   sourceGateWayDltSystem?: string;
@@ -254,7 +255,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       }
     }
   }
-  public async Revert(sessionID: string): Promise<void>{
+  public async Revert(sessionID: string): Promise<void> {
     const sessionData = this.sessions.get(sessionID);
     if (sessionData == undefined) return;
     if (sessionData.isFabricAssetDeleted) {
@@ -665,7 +666,9 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       throw new Error(`${fnTag}, assetProfile not sent from previous request`);
     }
 
-    const assetProfileHash = SHA256(sessionData.assetProfile).toString();
+    const assetProfileHash = SHA256(
+      JSON.stringify(sessionData.assetProfile),
+    ).toString();
     const isAssetProfileHashMatch = assetProfileHash === req.hashAssetProfile;
     if (!isAssetProfileHashMatch) {
       throw new Error(`${fnTag}, assetProfile hash not match`);
@@ -1018,7 +1021,9 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
 
     const sessionID = initializeReqAck.sessionID;
 
-    const hashAssetProfile = SHA256(req.assetProfile).toString();
+    const hashAssetProfile = SHA256(
+      JSON.stringify(req.assetProfile),
+    ).toString();
 
     const transferCommenceReq: TransferCommenceMessage = {
       sessionID: sessionID,

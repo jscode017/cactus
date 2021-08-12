@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import type { Server } from "http";
 import type { Server as SecureServer } from "https";
 import { Optional } from "typescript-optional";
@@ -8,6 +9,8 @@ import {
   Checks,
   //LogLevelDesc,
   LoggerProvider,
+  JsObjectSigner,
+  IJsObjectSignerOptions,
 } from "@hyperledger/cactus-common";
 import { DefaultApi as ObjectStoreIpfsApi } from "@hyperledger/cactus-plugin-object-store-ipfs";
 /*import {
@@ -170,7 +173,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
   //map[]object, object refer to a state
   //of a specific comminications
   private supportedDltIDs: string[];
-
+  private odapSigner: JsObjectSigner;
   private fabricAssetLocked: boolean;
   private fabricAssetDeleted: boolean;
   private besuAssetCreated: boolean;
@@ -199,7 +202,12 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const keyPairs: OdapGatewayKeyPairs = Secp256k1Keys.generateKeyPairsBuffer();
     this.pubKey = this.bufArray2HexStr(keyPairs.publicKey);
     this.privKey = this.bufArray2HexStr(keyPairs.privateKey);
-
+    const odapSignerOptions: IJsObjectSignerOptions = {
+      privateKey: this.privKey,
+      signatureFunc: this.odapSignatureFunc,
+      logLevel: "debug",
+    };
+    this.odapSigner = new JsObjectSigner(odapSignerOptions);
     this.fabricAssetDeleted = false;
     this.fabricAssetLocked = false;
     this.besuAssetCreated = false;
@@ -358,11 +366,21 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
   }
 
   public async odapGatewaySign(msg: string): Promise<string> {
-    const signObj = secp256k1.ecdsaSign(
+    /*const signObj = secp256k1.ecdsaSign(
       Buffer.from(SHA256(msg).toString(), `hex`),
       Buffer.from(this.privKey, `hex`),
     );
-    return this.bufArray2HexStr(signObj.signature);
+    return this.bufArray2HexStr(signObj.signature);*/
+    return this.odapSigner.sign(msg);
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public odapSignatureFunc(msg: any, pkey: any): any {
+    const signObj = secp256k1.ecdsaSign(
+      Buffer.from(SHA256(msg).toString(), `hex`),
+      Buffer.from(pkey, `hex`),
+    );
+    return Buffer.from(signObj.signature).toString("hex");
+    //return this.bufArray2HexStr(signObj.signature);
   }
   public async sign(msg: string, privKey: string): Promise<string> {
     const signature = secp256k1.ecdsaSign(

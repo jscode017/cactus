@@ -92,6 +92,7 @@
         "thream",
         "tlsca",
         "tlscacerts",
+        "txid",
         "txqueue",
         "Unmarshal",
         "uuidv",

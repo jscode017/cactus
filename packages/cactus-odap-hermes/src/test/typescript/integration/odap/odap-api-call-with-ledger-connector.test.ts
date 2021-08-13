@@ -1,5 +1,5 @@
 import http from "http";
-import fs from "fs-extra";
+//import fs from "fs-extra";
 import { Server as SocketIoServer } from "socket.io";
 import { AddressInfo } from "net";
 import secp256k1 from "secp256k1";
@@ -17,16 +17,16 @@ import {
   AssetProfile,
 } from "../../../../main/typescript/generated/openapi/typescript-axios";
 import {
-  Checks,
+  //Checks,
   IListenOptions,
   LogLevelDesc,
   Servers,
 } from "@hyperledger/cactus-common";
-import { DiscoveryOptions } from "fabric-network";
+//import { DiscoveryOptions } from "fabric-network";
 
 import {
-  Containers,
-  FabricTestLedgerV1,
+  //Containers,
+  //FabricTestLedgerV1,
   pruneDockerAllIfGithubAction,
   GoIpfsTestContainer,
   BesuTestLedger,
@@ -47,7 +47,7 @@ import {
   OdapGateway,
   OdapGatewayConstructorOptions,
 } from "../../../../main/typescript/gateway/odap-gateway";
-import {
+/*import {
   ChainCodeProgrammingLanguage,
   DefaultEventHandlerStrategy,
   FabricContractInvocationType,
@@ -55,16 +55,16 @@ import {
   IPluginLedgerConnectorFabricOptions,
   PluginLedgerConnectorFabric,
   DefaultApi as FabricApi,
-} from "@hyperledger/cactus-plugin-ledger-connector-fabric";
-import path from "path";
+} from "@hyperledger/cactus-plugin-ledger-connector-fabric";*/
+//import path from "path";
 import {
-  EthContractInvocationType,
+  //EthContractInvocationType,
   Web3SigningCredentialType,
   PluginLedgerConnectorBesu,
   PluginFactoryLedgerConnector,
   //Web3SigningCredentialCactusKeychainRef,
   ReceiptType,
-  DefaultApi as BesuApi,
+  //DefaultApi as BesuApi,
   Web3SigningCredential,
 } from "@hyperledger/cactus-plugin-ledger-connector-besu";
 import Web3 from "web3";

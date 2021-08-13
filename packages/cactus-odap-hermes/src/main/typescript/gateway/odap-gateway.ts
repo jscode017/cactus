@@ -390,6 +390,17 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
   public bufArray2HexStr(array: Uint8Array): string {
     return Buffer.from(array).toString("hex");
   }
+  public async publishOdapProof(ID: string, proof: string): Promise<void> {
+    if (this.ipfsApi == undefined) return;
+    const res = await this.ipfsApi.setObjectV1({
+      key: ID,
+      value: proof,
+    });
+    const resStatusOk = res.status > 199 && res.status < 300;
+    if (!resStatusOk) {
+      throw new Error("${fnTag}, error when logging to ipfs");
+    }
+  }
   public async odapLog(
     odapHermesLog: OdapHermesLog,
     ID: string,
@@ -535,6 +546,23 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         await this.Revert(req.sessionID);
         throw new Error(`${fnTag}, besu create asset error`);
       }
+      const besuCreateResDataJson = JSON.parse(
+        JSON.stringify(besuCreateRes.data),
+      );
+      if (besuCreateResDataJson.out == undefined) {
+        throw new Error(`${fnTag}, besu res data out undefined`);
+      }
+      if (besuCreateResDataJson.out.transactionReceipt == undefined) {
+        throw new Error(`${fnTag}, undefined besu transact receipt`);
+      }
+      this.log.warn(besuCreateResDataJson.out.transactionReceipt);
+      const besuCreateAssetReceipt =
+        besuCreateResDataJson.out.transactionReceipt;
+      const besuCreateProofID = `${req.sessionID}-proof-of-create`;
+      await this.publishOdapProof(
+        besuCreateProofID,
+        JSON.stringify(besuCreateAssetReceipt),
+      );
       const sessionData = this.sessions.get(req.sessionID);
       if (sessionData == undefined) {
         await this.Revert(req.sessionID);
@@ -1158,7 +1186,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       JSON.stringify(transferCommenceAck),
     ).toString();
     if (this.fabricApi != undefined) {
-      await this.fabricApi.runTransactionV1({
+      const lockRes = await this.fabricApi.runTransactionV1({
         signingCredential: this.fabricSigningCredential,
         channelName: this.fabricChannelName,
         contractName: this.fabricContractName,
@@ -1166,6 +1194,17 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         methodName: "LockAsset",
         params: [this.fabricAssetID],
       } as FabricRunTransactionRequest);
+      const receiptLockRes = await this.fabricApi.getTransactionReceiptByTxIDV1(
+        {
+          signingCredential: this.fabricSigningCredential,
+          channelName: this.fabricChannelName,
+          contractName: "qscc",
+          invocationType: FabricContractInvocationType.Call,
+          methodName: "GetBlockByTxID",
+          params: [this.fabricChannelName, lockRes.data.transactionId],
+        } as FabricRunTransactionRequest,
+      );
+      this.log.warn(receiptLockRes);
       const sessionData = this.sessions.get(sessionID);
       if (sessionData == undefined) {
         await this.Revert(sessionID);
@@ -1282,7 +1321,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     //TODO: verify signature
 
     if (this.fabricApi != undefined) {
-      await this.fabricApi.runTransactionV1({
+      const deleteRes = await this.fabricApi.runTransactionV1({
         signingCredential: this.fabricSigningCredential,
         channelName: this.fabricChannelName,
         contractName: this.fabricContractName,
@@ -1290,6 +1329,17 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         methodName: "DeleteAsset",
         params: [this.fabricAssetID],
       } as FabricRunTransactionRequest);
+      const receiptDeleteRes = await this.fabricApi.getTransactionReceiptByTxIDV1(
+        {
+          signingCredential: this.fabricSigningCredential,
+          channelName: this.fabricChannelName,
+          contractName: "qscc",
+          invocationType: FabricContractInvocationType.Call,
+          methodName: "GetBlockByTxID",
+          params: [this.fabricChannelName, deleteRes.data.transactionId],
+        } as FabricRunTransactionRequest,
+      );
+      this.log.warn(receiptDeleteRes);
       const sessionData = this.sessions.get(sessionID);
       if (sessionData == undefined) {
         await this.Revert(sessionID);

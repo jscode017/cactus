@@ -32,7 +32,7 @@ import {
   FabricSigningCredential,
 } from "../../../../main/typescript/public-api";
 
-import { K_CACTUS_FABRIC_TOTAL_TX_COUNT } from "../../../../main/typescript/prometheus-exporter/metrics";
+//import { K_CACTUS_FABRIC_TOTAL_TX_COUNT } from "../../../../main/typescript/prometheus-exporter/metrics";
 
 import { IPluginLedgerConnectorFabricOptions } from "../../../../main/typescript/plugin-ledger-connector-fabric";
 import { DiscoveryOptions } from "fabric-network";

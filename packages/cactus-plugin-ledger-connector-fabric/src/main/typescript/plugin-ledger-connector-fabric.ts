@@ -4,7 +4,7 @@ import { Server } from "http";
 import { Server as SecureServer } from "https";
 
 import { Certificate } from "@fidm/x509";
-import { Express, response } from "express";
+import { Express } from "express";
 import "multer";
 import temp from "temp";
 import {
@@ -92,9 +92,12 @@ import FabricCAServices from "fabric-ca-client";
 import { createGateway } from "./common/create-gateway";
 import { Endorser } from "fabric-common";
 import { GetTransactionReceiptByTxIDEndpointV1 } from "./get-transaction-receipt/get-transaction-receipt-by-txid-endpoint-v1";
-import { common } from "fabric-protos";
-import { getTransactionReceiptForLockContractByTxID, IGetTransactionReceiptByTxIDOptions } from "./common/get-transaction-receipt-by-tx-id";
-const { BlockDecoder } = require("fabric-common");
+//import { common } from "fabric-protos";
+import {
+  getTransactionReceiptForLockContractByTxID,
+  IGetTransactionReceiptByTxIDOptions,
+} from "./common/get-transaction-receipt-by-tx-id";
+//const { BlockDecoder } = require("fabric-common");
 /**
  * Constant value holding the default $GOPATH in the Fabric CLI container as
  * observed on fabric deployments that are produced by the official examples

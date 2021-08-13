@@ -103,7 +103,7 @@ export async function getTransactionReceiptForLockContractByTxID(
             chainCodeProposal.input.chaincode_spec.chaincode_id;
           log.warn("chainCodeID");
           log.warn(chainCodeID);
-          //TODO: RETURN BACK CHAINCODEID
+          //TODO: RETURN BACK CHAIN CODE ID
           transactReceipt.chainCodeID = chainCodeID;*/
         if (
           actionsPayload.action == undefined ||

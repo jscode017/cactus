@@ -430,7 +430,6 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const sessionID = uuidV4();
     const sessionData: SessionData = {};
     sessionData.step = 0;
-    this.sessions.set(sessionID, sessionData);
     await this.odapLog(
       {
         phase: "initiateTransfer",
@@ -441,6 +440,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       `${sessionID}-${sessionData.step.toString()}`,
     );
     sessionData.step++;
+    this.sessions.set(sessionID, sessionData);
     const recvTimestamp: string = time.toString();
     const InitializationRequestMessageHash = SHA256(
       JSON.stringify(req),
@@ -461,6 +461,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
   public async lockEvidenceTransferCommence(
     req: TransferCommenceMessage,
   ): Promise<TransferCommenceResponseMessage> {
+    const fnTag = `${this.className}#lockEvidenceTransferCommence()`;
     log.info(
       `server gate way receive lock evidence transfer commence request: ${JSON.stringify(
         req,
@@ -479,11 +480,29 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const serverSignature = await this.odapGatewaySign(JSON.stringify(ack));
     ack.serverSignature = serverSignature;
     await this.storeDataAfterTransferCommence(req, ack, req.sessionID);
+    const sessionData = this.sessions.get(req.sessionID);
+    if (sessionData == undefined) {
+      await this.Revert(req.sessionID);
+      throw new Error(`${fnTag}, sessionID is not valid`);
+    }
+    sessionData.step = 0;
+    await this.odapLog(
+      {
+        phase: "transfer-commence",
+        operation: "prepare-ack",
+        step: sessionData.step.toString(),
+        nodes: `${this.pubKey}->${req.clientIdentityPubkey}`,
+      },
+      `${req.sessionID}-${sessionData.step.toString()}`,
+    );
+    sessionData.step++;
+    this.sessions.set(req.sessionID, sessionData);
     return ack;
   }
   public async lockEvidence(
     req: LockEvidenceMessage,
   ): Promise<LockEvidenceResponseMessage> {
+    const fnTag = `${this.className}#lockEvidence()`;
     log.info(
       `server gate way receive lock evidence request: ${JSON.stringify(req)}`,
     );
@@ -499,13 +518,30 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     };
     const serverSignature = await this.odapGatewaySign(JSON.stringify(ack));
     ack.serverSignature = serverSignature;
-    //TODO: pass in a real sessionID
     await this.storeDataAfterLockEvidenceRequest(req, ack, req.sessionID);
+    const sessionData = this.sessions.get(req.sessionID);
+    if (sessionData == undefined) {
+      await this.Revert(req.sessionID);
+      throw new Error(`${fnTag}, sessionID is not valid`);
+    }
+    sessionData.step = 0;
+    await this.odapLog(
+      {
+        phase: "lock-evidence",
+        operation: "prepare-ack",
+        step: sessionData.step.toString(),
+        nodes: `${this.pubKey}->${req.clientIdentityPubkey}`,
+      },
+      `${req.sessionID}-${sessionData.step.toString()}`,
+    );
+    sessionData.step++;
+    this.sessions.set(req.sessionID, sessionData);
     return ack;
   }
   public async CommitPrepare(
     req: CommitPreparationMessage,
   ): Promise<CommitPreparationResponse> {
+    const fnTag = `${this.className}#CommitPrepare()`;
     log.info(
       `server gate way receive commit prepare request: ${JSON.stringify(req)}`,
     );
@@ -521,6 +557,23 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     };
     ack.serverSignature = await this.sign(JSON.stringify(ack), this.privKey);
     this.storeDataAfterCommitPreparationRequest(req, ack, req.sessionID);
+    const sessionData = this.sessions.get(req.sessionID);
+    if (sessionData == undefined) {
+      await this.Revert(req.sessionID);
+      throw new Error(`${fnTag}, sessionID is not valid`);
+    }
+    sessionData.step = 0;
+    await this.odapLog(
+      {
+        phase: "commit-prepare",
+        operation: "prepare-ack",
+        step: sessionData.step.toString(),
+        nodes: `${this.pubKey}->${req.clientIdentityPubkey}`,
+      },
+      `${req.sessionID}-${sessionData.step.toString()}`,
+    );
+    sessionData.step++;
+    this.sessions.set(req.sessionID, sessionData);
     return ack;
   }
 
@@ -530,7 +583,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     log.info(
       `server gate way receive commit final request: ${JSON.stringify(req)}`,
     );
-    const fnTag = `${this.className}, CommitFinal()`;
+    const fnTag = `${this.className}#commitFinal()`;
     const hashCommitFinal = SHA256(JSON.stringify(req)).toString();
     await this.checkValidCommitFinalRequest(req, req.sessionID);
     if (this.besuApi != undefined) {
@@ -581,6 +634,23 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
 
     ack.serverSignature = await this.sign(JSON.stringify(ack), this.privKey);
     this.storeDataAfterCommitFinalRequest(req, ack, req.sessionID);
+    const sessionData = this.sessions.get(req.sessionID);
+    if (sessionData == undefined) {
+      await this.Revert(req.sessionID);
+      throw new Error(`${fnTag}, sessionID is not valid`);
+    }
+    sessionData.step = 0;
+    await this.odapLog(
+      {
+        phase: "commit-final",
+        operation: "prepare-ack",
+        step: sessionData.step.toString(),
+        nodes: `${this.pubKey}->${req.clientIdentityPubkey}`,
+      },
+      `${req.sessionID}-${sessionData.step.toString()}`,
+    );
+    sessionData.step++;
+    this.sessions.set(req.sessionID, sessionData);
     return ack;
   }
 

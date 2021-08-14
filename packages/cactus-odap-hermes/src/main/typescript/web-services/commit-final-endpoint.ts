@@ -24,13 +24,13 @@ export interface ICommitFinalEndpointOptions {
   gateway: OdapGateway;
 }
 
-export class CommitFinalEndpoint implements IWebServiceEndpoint {
-  public static readonly CLASS_NAME = "CommitFinalEndpoint";
+export class CommitFinalEndpointV1 implements IWebServiceEndpoint {
+  public static readonly CLASS_NAME = "CommitFinalEndpointV1";
 
   private readonly log: Logger;
 
   public get className(): string {
-    return CommitFinalEndpoint.CLASS_NAME;
+    return CommitFinalEndpointV1.CLASS_NAME;
   }
 
   constructor(public readonly options: ICommitFinalEndpointOptions) {

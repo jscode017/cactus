@@ -24,13 +24,13 @@ export interface ICommitPrepareEndpointOptions {
   gateway: OdapGateway;
 }
 
-export class CommitPrepareEndpoint implements IWebServiceEndpoint {
-  public static readonly CLASS_NAME = "CommitPrepareEndpoint";
+export class CommitPrepareEndpointV1 implements IWebServiceEndpoint {
+  public static readonly CLASS_NAME = "CommitPrepareEndpointV1";
 
   private readonly log: Logger;
 
   public get className(): string {
-    return CommitPrepareEndpoint.CLASS_NAME;
+    return CommitPrepareEndpointV1.CLASS_NAME;
   }
 
   constructor(public readonly options: ICommitPrepareEndpointOptions) {

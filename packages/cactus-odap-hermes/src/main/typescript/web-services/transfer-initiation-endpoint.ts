@@ -24,13 +24,13 @@ export interface ITransferInitiationEndpointOptions {
   gateway: OdapGateway;
 }
 
-export class ApiV1Phase1TransferInitiation implements IWebServiceEndpoint {
-  public static readonly CLASS_NAME = "ApiV1Phase1TransferInitiation";
+export class TransferInitiationEndpointV1 implements IWebServiceEndpoint {
+  public static readonly CLASS_NAME = "TransferInitiationEndpointV1";
 
   private readonly log: Logger;
 
   public get className(): string {
-    return ApiV1Phase1TransferInitiation.CLASS_NAME;
+    return TransferInitiationEndpointV1.CLASS_NAME;
   }
 
   constructor(public readonly options: ITransferInitiationEndpointOptions) {

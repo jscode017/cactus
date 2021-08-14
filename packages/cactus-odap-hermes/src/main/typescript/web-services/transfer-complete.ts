@@ -24,13 +24,13 @@ export interface ITransferCompleteEndpointOptions {
   gateway: OdapGateway;
 }
 
-export class TransferCompleteEndpoint implements IWebServiceEndpoint {
-  public static readonly CLASS_NAME = "TransferCompleteEndpoint";
+export class TransferCompleteEndpointV1 implements IWebServiceEndpoint {
+  public static readonly CLASS_NAME = "TransferCompleteEndpointV1";
 
   private readonly log: Logger;
 
   public get className(): string {
-    return TransferCompleteEndpoint.CLASS_NAME;
+    return TransferCompleteEndpointV1.CLASS_NAME;
   }
 
   constructor(public readonly options: ITransferCompleteEndpointOptions) {

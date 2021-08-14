@@ -26,13 +26,13 @@ export interface ISendClientRequestEndpointOptions {
   gateway: OdapGateway;
 }
 
-export class SendClientRequestEndpoint implements IWebServiceEndpoint {
-  public static readonly CLASS_NAME = "SendClientRequestEndpoint";
+export class SendClientRequestEndpointV1 implements IWebServiceEndpoint {
+  public static readonly CLASS_NAME = "SendClientRequestEndpointV1";
 
   private readonly log: Logger;
 
   public get className(): string {
-    return SendClientRequestEndpoint.CLASS_NAME;
+    return SendClientRequestEndpointV1.CLASS_NAME;
   }
 
   constructor(public readonly options: ISendClientRequestEndpointOptions) {

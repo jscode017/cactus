@@ -24,13 +24,13 @@ export interface ILockEvidencePrepareEndpointOptions {
   gateway: OdapGateway;
 }
 
-export class LockEvidencePrepareEndpoint implements IWebServiceEndpoint {
-  public static readonly CLASS_NAME = "LockEvidencePrepareEndpoint";
+export class LockEvidencePrepareEndpointV1 implements IWebServiceEndpoint {
+  public static readonly CLASS_NAME = "LockEvidencePrepareEndpointV1";
 
   private readonly log: Logger;
 
   public get className(): string {
-    return LockEvidencePrepareEndpoint.CLASS_NAME;
+    return LockEvidencePrepareEndpointV1.CLASS_NAME;
   }
 
   constructor(public readonly options: ILockEvidencePrepareEndpointOptions) {

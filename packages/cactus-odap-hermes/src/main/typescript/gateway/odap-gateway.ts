@@ -51,13 +51,13 @@ import { v4 as uuidV4 } from "uuid";
 import { time } from "console";
 import { SHA256 } from "crypto-js";
 import secp256k1 from "secp256k1";
-import { CommitFinalEndpoint } from "../web-services/commit-final-endpoint";
-import { CommitPrepareEndpoint } from "../web-services/commite-prepare-endpoint";
-import { LockEvidenceEndpoint } from "../web-services/lock-evidence-endpoint";
-import { LockEvidencePrepareEndpoint } from "../web-services/lock-evidence-transfer-commence-endpoint";
-import { TransferCompleteEndpoint } from "../web-services/transfer-complete";
-import { ApiV1Phase1TransferInitiation } from "../web-services/transfer-initiation-endpoint";
-import { SendClientRequestEndpoint } from "../web-services/send-client-request";
+import { CommitFinalEndpointV1 } from "../web-services/commit-final-endpoint";
+import { CommitPrepareEndpointV1 } from "../web-services/commite-prepare-endpoint";
+import { LockEvidenceEndpointV1 } from "../web-services/lock-evidence-endpoint";
+import { LockEvidencePrepareEndpointV1 } from "../web-services/lock-evidence-transfer-commence-endpoint";
+import { TransferCompleteEndpointV1 } from "../web-services/transfer-complete";
+import { TransferInitiationEndpointV1 } from "../web-services/transfer-initiation-endpoint";
+import { SendClientRequestEndpointV1 } from "../web-services/send-client-request";
 import { PluginRegistry } from "@hyperledger/cactus-core";
 import {
   DefaultApi as FabricApi,
@@ -285,6 +285,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         params: [sessionData.fabricAssetID],
       } as FabricRunTransactionRequest);
     } else if (sessionData.isBesuAssetCreated) {
+      //DO we really need this?
       if (this.besuApi == undefined) return;
       await this.besuApi.invokeContractV1({
         contractName: this.besuContractName,
@@ -318,21 +319,21 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       return this.endpoints;
     }
 
-    const transferinitiation = new ApiV1Phase1TransferInitiation({
+    const transferinitiation = new TransferInitiationEndpointV1({
       gateway: this,
     });
-    const lockEvidencePreparation = new LockEvidencePrepareEndpoint({
+    const lockEvidencePreparation = new LockEvidencePrepareEndpointV1({
       gateway: this,
     });
-    const lockEvidence = new LockEvidenceEndpoint({ gateway: this });
-    const commitPreparation = new CommitPrepareEndpoint({
+    const lockEvidence = new LockEvidenceEndpointV1({ gateway: this });
+    const commitPreparation = new CommitPrepareEndpointV1({
       gateway: this,
     });
-    const commitFinal = new CommitFinalEndpoint({ gateway: this });
-    const transferComplete = new TransferCompleteEndpoint({
+    const commitFinal = new CommitFinalEndpointV1({ gateway: this });
+    const transferComplete = new TransferCompleteEndpointV1({
       gateway: this,
     });
-    const sendClientrequest = new SendClientRequestEndpoint({
+    const sendClientrequest = new SendClientRequestEndpointV1({
       gateway: this,
     });
     this.endpoints = [
@@ -714,7 +715,6 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       sessionData.initializationMsgHash == req.hashPrevMessage;
     if (!isPrevMsgHash) {
       throw new Error(`${fnTag}, previous message hash not match`);
-      this.Revert(req.sessionID);
     }
 
     if (sessionData.assetProfile === undefined) {

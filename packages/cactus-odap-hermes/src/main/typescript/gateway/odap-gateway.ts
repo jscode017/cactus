@@ -586,6 +586,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const fnTag = `${this.className}#commitFinal()`;
     const hashCommitFinal = SHA256(JSON.stringify(req)).toString();
     await this.checkValidCommitFinalRequest(req, req.sessionID);
+    let besuCreateAssetProof = "";
     if (this.besuApi != undefined) {
       const besuCreateRes = await this.besuApi.invokeContractV1({
         contractName: this.besuContractName,
@@ -612,6 +613,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       this.log.warn(besuCreateResDataJson.out.transactionReceipt);
       const besuCreateAssetReceipt =
         besuCreateResDataJson.out.transactionReceipt;
+      besuCreateAssetProof = JSON.stringify(besuCreateAssetReceipt);
       const besuCreateProofID = `${req.sessionID}-proof-of-create`;
       await this.publishOdapProof(
         besuCreateProofID,
@@ -627,7 +629,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const ack: CommitFinalResponseMessage = {
       messageType: "urn:ietf:odap:msgtype:commit-final-msg",
       serverIdentityPubkey: req.serverIdentityPubkey,
-      commitAcknowledgementClaim: "",
+      commitAcknowledgementClaim: besuCreateAssetProof,
       hashCommitFinal: hashCommitFinal,
       serverSignature: "",
     };
@@ -1294,6 +1296,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const commenceAckHash = SHA256(
       JSON.stringify(transferCommenceAck),
     ).toString();
+    let fabricLockAssetProof = "";
     if (this.fabricApi != undefined) {
       const lockRes = await this.fabricApi.runTransactionV1({
         signingCredential: this.fabricSigningCredential,
@@ -1314,6 +1317,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         } as FabricRunTransactionRequest,
       );
       this.log.warn(receiptLockRes);
+      fabricLockAssetProof = JSON.stringify(receiptLockRes);
       const sessionData = this.sessions.get(sessionID);
       if (sessionData == undefined) {
         await this.Revert(sessionID);
@@ -1328,7 +1332,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       serverIdentityPubkey: req.serverIdentityPubkey,
       clientSignature: "",
       hashCommenceAckRequest: commenceAckHash,
-      lockEvidenceClaim: " ",
+      lockEvidenceClaim: fabricLockAssetProof,
       lockEvidenceExpiration: " ",
     };
     lockEvidenceReq.clientSignature = await this.odapGatewaySign(
@@ -1478,6 +1482,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       `${sessionID}-${sessionData.step.toString()}`,
     );
     sessionData.step++;
+    let fabricDeleteAssetProof = "";
     if (this.fabricApi != undefined) {
       const deleteRes = await this.fabricApi.runTransactionV1({
         signingCredential: this.fabricSigningCredential,
@@ -1498,6 +1503,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         } as FabricRunTransactionRequest,
       );
       this.log.warn(receiptDeleteRes);
+      fabricDeleteAssetProof = JSON.stringify(receiptDeleteRes);
       const sessionData = this.sessions.get(sessionID);
       if (sessionData == undefined) {
         await this.Revert(sessionID);
@@ -1512,7 +1518,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       serverIdentityPubkey: req.serverIdentityPubkey,
       clientSignature: "",
       hashCommitPrepareAck: commitPrepareAckHash,
-      commitFinalClaim: "",
+      commitFinalClaim: fabricDeleteAssetProof,
     };
     commitFinalReq.clientSignature = await this.odapGatewaySign(
       JSON.stringify(commitFinalReq),

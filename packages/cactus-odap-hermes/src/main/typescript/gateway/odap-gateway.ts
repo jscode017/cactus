@@ -449,11 +449,12 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
 
     const processedTimestamp: string = time.toString();
 
-    const ack = {
+    const ack: InitialMessageAck = {
       sessionID: sessionID,
       initialRequestMessageHash: InitializationRequestMessageHash,
       timeStamp: recvTimestamp,
       processedTimeStamp: processedTimestamp,
+      serverIdentityPubkey: this.pubKey,
     };
     await this.storeDataAfterInitializationRequest(req, ack, sessionID);
     return ack;
@@ -1161,6 +1162,8 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     if (transferInitiationRes.status != 200) {
       throw new Error(`${fnTag}, send transfer initiation failed`);
     }
+    const serverIdentityPubkey =
+      transferInitiationRes.data.serverIdentityPubkey;
     initializationRequestMessage.initializationRequestMessageSignature = initializeReqSignature;
     const initializationMsgHash = SHA256(
       JSON.stringify(initializationRequestMessage),
@@ -1179,9 +1182,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         phase: "initiateTransfer",
         operation: "receive-ack",
         step: sessionData.step.toString(),
-        //TODO: ack need to send back pubkey, or client gateway need another way to get it
-        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
-        nodes: `${this.pubKey}`,
+        nodes: `${serverIdentityPubkey}->${this.pubKey}`,
       },
       `${sessionID}-${sessionData.step.toString()}`,
     );
@@ -1217,9 +1218,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         phase: "transfer-commence",
         operation: "send-req",
         step: sessionData.step.toString(),
-        //TODO: ack need to send back pubkey, or client gateway need another way to get it
-        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
-        nodes: `${this.pubKey}`,
+        nodes: `${this.pubKey}->${serverIdentityPubkey}`,
       },
       `${sessionID}-${sessionData.step.toString()}`,
     );
@@ -1286,9 +1285,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         phase: "transfer-commence",
         operation: "receive-ack",
         step: sessionData.step.toString(),
-        //TODO: ack need to send back pubkey, or client gateway need another way to get it
-        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
-        nodes: `${this.pubKey}`,
+        nodes: `${serverIdentityPubkey}->${this.pubKey}`,
       },
       `${sessionID}-${sessionData.step.toString()}`,
     );
@@ -1347,9 +1344,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         phase: "lock-evidence-req",
         operation: "send-req",
         step: sessionData.step.toString(),
-        //TODO: ack need to send back pubkey, or client gateway need another way to get it
-        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
-        nodes: `${this.pubKey}`,
+        nodes: `${this.pubKey}->${serverIdentityPubkey}`,
       },
       `${sessionID}-${sessionData.step.toString()}`,
     );
@@ -1398,9 +1393,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         phase: "lock-evidence-req",
         operation: "receive-ack",
         step: sessionData.step.toString(),
-        //TODO: ack need to send back pubkey, or client gateway need another way to get it
-        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
-        nodes: `${this.pubKey}`,
+        nodes: `${serverIdentityPubkey}->${this.pubKey}`,
       },
       `${sessionID}-${sessionData.step.toString()}`,
     );
@@ -1425,9 +1418,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         phase: "commit-prepare",
         operation: "send-req",
         step: sessionData.step.toString(),
-        //TODO: ack need to send back pubkey, or client gateway need another way to get it
-        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
-        nodes: `${this.pubKey}`,
+        nodes: `${this.pubKey}->${serverIdentityPubkey}`,
       },
       `${sessionID}-${sessionData.step.toString()}`,
     );
@@ -1475,9 +1466,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         phase: "commit-prepare",
         operation: "receive-ack",
         step: sessionData.step.toString(),
-        //TODO: ack need to send back pubkey, or client gateway need another way to get it
-        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
-        nodes: `${this.pubKey}`,
+        nodes: `${serverIdentityPubkey}->${this.pubKey}`,
       },
       `${sessionID}-${sessionData.step.toString()}`,
     );
@@ -1531,9 +1520,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         phase: "commit-final",
         operation: "send-req",
         step: sessionData.step.toString(),
-        //TODO: ack need to send back pubkey, or client gateway need another way to get it
-        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
-        nodes: `${this.pubKey}`,
+        nodes: `${this.pubKey}->${serverIdentityPubkey}`,
       },
       `${sessionID}-${sessionData.step.toString()}`,
     );
@@ -1569,9 +1556,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         phase: "commit-final",
         operation: "receive-ack",
         step: sessionData.step.toString(),
-        //TODO: ack need to send back pubkey, or client gateway need another way to get it
-        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
-        nodes: `${this.pubKey}`,
+        nodes: `${serverIdentityPubkey}->${this.pubKey}`,
       },
       `${sessionID}-${sessionData.step.toString()}`,
     );
@@ -1593,8 +1578,6 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         phase: "transfer-complete",
         operation: "send-req",
         step: sessionData.step.toString(),
-        //TODO: ack need to send back pubkey, or client gateway need another way to get it
-        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
         nodes: `${this.pubKey}`,
       },
       `${sessionID}-${sessionData.step.toString()}`,

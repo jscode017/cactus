@@ -304,13 +304,17 @@
                     },
                     "processedTimeStamp":{
                         "type":"string"
+                    },
+                    "serverIdentityPubkey":{
+                        "type":"string"
                     }
                 },
                 "required": [
                     "initialRequestMessageHash",
                     "timeStamp",
                     "processedTimeStamp",
-                    "sessionID"
+                    "sessionID",
+                    "serverIdentityPubkey"
                 ]
             },
             "TransferCommenceMessage":{

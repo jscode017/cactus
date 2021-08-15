@@ -416,6 +416,12 @@ export interface InitialMessageAck {
      * @memberof InitialMessageAck
      */
     processedTimeStamp: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof InitialMessageAck
+     */
+    serverIdentityPubkey: string;
 }
 
 /**

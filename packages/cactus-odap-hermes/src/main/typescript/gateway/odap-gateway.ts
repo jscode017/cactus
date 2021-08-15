@@ -1139,6 +1139,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       recipientGateWayPubkey: req.recipientGateWayPubkey,
       recipientGateWayDltSystem: req.recipientGateWayDltSystem,
     };
+    //TODO: task for storage here: how to get sessionID?
     //const dummyPrivKeyStr = odapGateWay.bufArray2HexStr(dummyPrivKeyBytes);
     /*initializationRequestMessage.initializationRequestMessageSignature = await odapGateWay.sign(
       JSON.stringify(initializationRequestMessage),
@@ -1167,9 +1168,22 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         `${fnTag}, initial message hash not match from initial message ack`,
       );
     }
-
+    //store ack
     const sessionID = initializeReqAck.sessionID;
-
+    const sessionData: SessionData = {};
+    sessionData.step = 0;
+    await this.odapLog(
+      {
+        phase: "initiateTransfer",
+        operation: "receive-ack",
+        step: sessionData.step.toString(),
+        //TODO: ack need to send back pubkey, or client gateway need another way to get it
+        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
+        nodes: `${this.pubKey}`,
+      },
+      `${sessionID}-${sessionData.step.toString()}`,
+    );
+    sessionData.step++;
     const hashAssetProfile = SHA256(
       JSON.stringify(req.assetProfile),
     ).toString();
@@ -1195,7 +1209,19 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const transferCommenceReqHash = SHA256(
       JSON.stringify(transferCommenceReq),
     ).toString();
-
+    //store req
+    await this.odapLog(
+      {
+        phase: "transfer-commence",
+        operation: "send-req",
+        step: sessionData.step.toString(),
+        //TODO: ack need to send back pubkey, or client gateway need another way to get it
+        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
+        nodes: `${this.pubKey}`,
+      },
+      `${sessionID}-${sessionData.step.toString()}`,
+    );
+    sessionData.step++;
     const transferCommenceRes = await odapServerApiClient.apiV1Phase2TransferCommence(
       transferCommenceReq,
     );
@@ -1252,6 +1278,19 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     ) {
       t.error("transfer commence ack signature verify failed");
     }*/
+    //store ack
+    await this.odapLog(
+      {
+        phase: "transfer-commence",
+        operation: "receive-ack",
+        step: sessionData.step.toString(),
+        //TODO: ack need to send back pubkey, or client gateway need another way to get it
+        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
+        nodes: `${this.pubKey}`,
+      },
+      `${sessionID}-${sessionData.step.toString()}`,
+    );
+    sessionData.step++;
     const commenceAckHash = SHA256(
       JSON.stringify(transferCommenceAck),
     ).toString();
@@ -1298,6 +1337,19 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const lockEvidenceReqHash = SHA256(
       JSON.stringify(lockEvidenceReq),
     ).toString();
+    //store req
+    await this.odapLog(
+      {
+        phase: "lock-evidence-req",
+        operation: "send-req",
+        step: sessionData.step.toString(),
+        //TODO: ack need to send back pubkey, or client gateway need another way to get it
+        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
+        nodes: `${this.pubKey}`,
+      },
+      `${sessionID}-${sessionData.step.toString()}`,
+    );
+    sessionData.step++;
     const lockEvidenceRes = await odapServerApiClient.apiV1Phase2LockEvidence(
       lockEvidenceReq,
     );
@@ -1336,7 +1388,19 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       );
     }
     //TODO: verify signature of lock evidence ack
-
+    //store ack
+    await this.odapLog(
+      {
+        phase: "lock-evidence-req",
+        operation: "receive-ack",
+        step: sessionData.step.toString(),
+        //TODO: ack need to send back pubkey, or client gateway need another way to get it
+        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
+        nodes: `${this.pubKey}`,
+      },
+      `${sessionID}-${sessionData.step.toString()}`,
+    );
+    sessionData.step++;
     const commitPrepareReq: CommitPreparationMessage = {
       sessionID: sessionID,
       messageType: "urn:ietf:odap:msgtype:commit-prepare-msg",
@@ -1351,7 +1415,19 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const commitPrepareHash = SHA256(
       JSON.stringify(commitPrepareReq),
     ).toString();
-
+    //store req
+    await this.odapLog(
+      {
+        phase: "commit-prepare",
+        operation: "send-req",
+        step: sessionData.step.toString(),
+        //TODO: ack need to send back pubkey, or client gateway need another way to get it
+        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
+        nodes: `${this.pubKey}`,
+      },
+      `${sessionID}-${sessionData.step.toString()}`,
+    );
+    sessionData.step++;
     const commitPrepareRes = await odapServerApiClient.apiV1Phase3CommitPreparation(
       commitPrepareReq,
     );
@@ -1389,7 +1465,19 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     }
 
     //TODO: verify signature
-
+    //store ack
+    await this.odapLog(
+      {
+        phase: "commit-prepare",
+        operation: "receive-ack",
+        step: sessionData.step.toString(),
+        //TODO: ack need to send back pubkey, or client gateway need another way to get it
+        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
+        nodes: `${this.pubKey}`,
+      },
+      `${sessionID}-${sessionData.step.toString()}`,
+    );
+    sessionData.step++;
     if (this.fabricApi != undefined) {
       const deleteRes = await this.fabricApi.runTransactionV1({
         signingCredential: this.fabricSigningCredential,
@@ -1432,6 +1520,18 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const commitFinalReqHash = SHA256(
       JSON.stringify(commitFinalReq),
     ).toString();
+    await this.odapLog(
+      {
+        phase: "commit-final",
+        operation: "send-req",
+        step: sessionData.step.toString(),
+        //TODO: ack need to send back pubkey, or client gateway need another way to get it
+        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
+        nodes: `${this.pubKey}`,
+      },
+      `${sessionID}-${sessionData.step.toString()}`,
+    );
+    sessionData.step++;
     const commitFinalRes = await odapServerApiClient.apiV1Phase3CommitFinal(
       commitFinalReq,
     );
@@ -1457,6 +1557,19 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         `${fnTag}, commit final serverIdentity pub key not match from commit final ack`,
       );
     }
+    //store ack
+    await this.odapLog(
+      {
+        phase: "commit-final",
+        operation: "receive-ack",
+        step: sessionData.step.toString(),
+        //TODO: ack need to send back pubkey, or client gateway need another way to get it
+        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
+        nodes: `${this.pubKey}`,
+      },
+      `${sessionID}-${sessionData.step.toString()}`,
+    );
+    sessionData.step++;
     const transferCompleteReq: TransferCompleteMessage = {
       sessionID: sessionID,
       messageType: "urn:ietf:odap:msgtype:commit-transfer-complete-msg",
@@ -1469,6 +1582,18 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     transferCompleteReq.clientSignature = await this.odapGatewaySign(
       JSON.stringify(transferCompleteReq),
     );
+    await this.odapLog(
+      {
+        phase: "transfer-complete",
+        operation: "send-req",
+        step: sessionData.step.toString(),
+        //TODO: ack need to send back pubkey, or client gateway need another way to get it
+        //nodes: `${initializeReqAck.destination}->${this.pubKey}`,
+        nodes: `${this.pubKey}`,
+      },
+      `${sessionID}-${sessionData.step.toString()}`,
+    );
+    sessionData.step++;
     await odapServerApiClient.apiV1Phase3TransferComplete(transferCompleteReq);
   }
 }

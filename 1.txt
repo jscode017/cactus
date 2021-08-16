@@ -1,0 +1,410 @@
+TAP version 13
+ok 1 - packages/cactus-odap-hermes/src/test/typescript/integration/odap/odap-api-call.test.ts # time=14082.956ms {
+    # BEFORE runs odap gateway tests via openApi
+    [2021-08-16T01:15:23.324Z] DEBUG (GoIpfsTestContainer): Created instance of GoIpfsTestContainer OK
+    ok 1 GoIpfsTestContainer instance truthy OK
+    [2021-08-16T01:15:25.772Z] DEBUG (GoIpfsTestContainer): Starting ipfs/go-ipfs:v0.8.0 with options:  {
+      ExposedPorts: { '4001/tcp': {}, '5001/tcp': {}, '8080/tcp': {} },
+      Env: [],
+      Healthcheck: {
+        Test: [
+          'CMD-SHELL',
+          "wget -O- --post-data='' --header='Content-Type:application/json' 'http://127.0.0.1:5001/api/v0/commands'"
+        ],
+        Interval: 1000000000,
+        Timeout: 3000000000,
+        Retries: 99,
+        StartPeriod: 1000000000
+      },
+      HostConfig: { PublishAllPorts: true }
+    }
+    [2021-08-16T01:15:26.150Z] DEBUG (GoIpfsTestContainer): Started ipfs/go-ipfs:v0.8.0 successfully. ID=6dfecb81ae1230988c83c0991ff7df5d2bdc370d76c59d5409b025f177d002c6
+    [2021-08-16T01:15:26.158Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'Changing user to ipfs\r\n'
+    [2021-08-16T01:15:26.228Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'ipfs version 0.8.0\r\n'
+    [2021-08-16T01:15:26.304Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'generating ED25519 keypair...done\r\n' +
+      'peer identity: 12D3KooWBAr6kSHpbgsmF71AXrNChBxsAUr6i9Uu4qmYq1warXrq\r\n' +
+      'initializing IPFS node at /data/ipfs\r\n'
+    [2021-08-16T01:15:26.392Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'to get started, enter:\r\n' +
+      '\r\n' +
+      '\tipfs cat /ipfs/QmQPeNsJPyVWPFDVHb77w8G42Fvo15z4bG2X8D2GhfbSXc/readme\r\n' +
+      '\r\n'
+    [2021-08-16T01:15:26.686Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'Initializing daemon...\r\n' +
+      'go-ipfs version: 0.8.0-ce693d7\r\n' +
+      'Repo version: 11\r\n' +
+      'System version: amd64/linux\r\n' +
+      'Golang version: go1.14.4\r\n'
+    [2021-08-16T01:15:26.708Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] '2021/08/16 01:15:26 failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 2048 kiB, got: 416 kiB). See https://github.com/lucas-clemente/quic-go/wiki/UDP-Receive-Buffer-Size for details.\r\n'
+    [2021-08-16T01:15:26.714Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'Swarm listening on /ip4/127.0.0.1/tcp/4001\r\n' +
+      'Swarm listening on /ip4/127.0.0.1/udp/4001/quic\r\n'
+    [2021-08-16T01:15:26.714Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'Swarm listening on /ip4/172.17.0.2/tcp/4001\r\n' +
+      'Swarm listening on /ip4/172.17.0.2/udp/4001/quic\r\n' +
+      'Swarm listening on /p2p-circuit\r\n'
+    [2021-08-16T01:15:26.715Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'Swarm announcing /ip4/127.0.0.1/tcp/4001\r\n' +
+      'Swarm announcing /ip4/127.0.0.1/udp/4001/quic\r\n' +
+      'Swarm announcing /ip4/172.17.0.2/tcp/4001\r\n' +
+      'Swarm announcing /ip4/172.17.0.2/udp/4001/quic\r\n'
+    [2021-08-16T01:15:26.716Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'API server listening on /ip4/0.0.0.0/tcp/5001\r\n' +
+      'WebUI: http://0.0.0.0:5001/webui\r\n'
+    [2021-08-16T01:15:26.716Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'Gateway (readonly) server listening on /ip4/0.0.0.0/tcp/8080\r\n'
+    [2021-08-16T01:15:26.716Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'Daemon is ready\r\n'
+    ok 2 Container returned by start() truthy OK
+    ok 3 Started GoIpfsTestContainer OK
+    ok 4 ObjectStoreIpfsApi truthy OK
+    # Go IPFS Test Container API URL: http://127.0.0.1:55044
+    # Go IPFS Test Container Gateway URL: http://127.0.0.1:55043
+    [2021-08-16T01:15:29.390Z] INFO (PluginObjectStoreIpfs): Created PluginObjectStoreIpfs. InstanceID=52fdf927-2c1c-465f-86ba-f7f732ddb995
+    [2021-08-16T01:15:29.390Z] INFO (PluginObjectStoreIpfs): Installing web services for plugin @hyperledger/cactus-plugin-object-store-ipfs...
+    [2021-08-16T01:15:29.390Z] DEBUG (GetObjectEndpointV1): Instantiated GetObjectEndpointV1 OK
+    [2021-08-16T01:15:29.390Z] DEBUG (SetObjectEndpointV1): Instantiated SetObjectEndpointV1 OK
+    [2021-08-16T01:15:29.390Z] DEBUG (HasObjectEndpointV1): Instantiated HasObjectEndpointV1 OK
+    [2021-08-16T01:15:29.390Z] INFO (PluginObjectStoreIpfs): Installed web services for plugin @hyperledger/cactus-plugin-object-store-ipfs OK {
+      endpoints: [
+        GetObjectEndpointV1 {
+          options: [Object],
+          plugin: [PluginObjectStoreIpfs],
+          log: [Logger]
+        },
+        SetObjectEndpointV1 {
+          options: [Object],
+          plugin: [PluginObjectStoreIpfs],
+          log: [Logger]
+        },
+        HasObjectEndpointV1 {
+          options: [Object],
+          plugin: [PluginObjectStoreIpfs],
+          log: [Logger]
+        }
+      ]
+    }
+    [2021-08-16T01:15:29.391Z] INFO (PluginObjectStoreIpfs): Installing web services for plugin @hyperledger/cactus-plugin-object-store-ipfs...
+    [2021-08-16T01:15:29.391Z] DEBUG (GetObjectEndpointV1): Instantiated GetObjectEndpointV1 OK
+    [2021-08-16T01:15:29.391Z] DEBUG (SetObjectEndpointV1): Instantiated SetObjectEndpointV1 OK
+    [2021-08-16T01:15:29.391Z] DEBUG (HasObjectEndpointV1): Instantiated HasObjectEndpointV1 OK
+    [2021-08-16T01:15:29.391Z] INFO (PluginObjectStoreIpfs): Installed web services for plugin @hyperledger/cactus-plugin-object-store-ipfs OK {
+      endpoints: [
+        GetObjectEndpointV1 {
+          options: [Object],
+          plugin: [PluginObjectStoreIpfs],
+          log: [Logger]
+        },
+        SetObjectEndpointV1 {
+          options: [Object],
+          plugin: [PluginObjectStoreIpfs],
+          log: [Logger]
+        },
+        HasObjectEndpointV1 {
+          options: [Object],
+          plugin: [PluginObjectStoreIpfs],
+          log: [Logger]
+        }
+      ]
+    }
+    ok 5 packageName truthy OK
+    ok 6 theInstanceId truthy OK
+    ok 7 instanceId === theInstanceId OK
+    # runs odap gateway tests via openApi
+    registering express
+    getting authorized provider
+    registering express
+    getting authorized provider
+    [2021-08-16T01:15:29.416Z] DEBUG (js-object-signer): Message to sign: "{\"version\":\"0.0.0\",\"loggingProfile\":\"dummy\",\"accessControlProfile\":\"dummy\",\"applicationProfile\":\"dummy\",\"payloadProfile\":{\"assetProfile\":{\"ExpirationDate\":\"Invalid Date\"},\"capabilities\":\"\"},\"initializationRequestMessageSignature\":\"\",\"sourceGatewayPubkey\":\"028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e\",\"sourceGateWayDltSystem\":\"dummy\",\"recipientGateWayPubkey\":\"0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8\",\"recipientGateWayDltSystem\":\"dummy\"}"
+    try in handle request
+    [2021-08-16T01:15:29.419Z] INFO (odap-logger): server gate way receive initiate transfer request: {"version":"0.0.0","loggingProfile":"dummy","accessControlProfile":"dummy","applicationProfile":"dummy","payloadProfile":{"assetProfile":{"ExpirationDate":"Invalid Date"},"capabilities":""},"initializationRequestMessageSignature":"c462f56513311cab669ad4e28cc30fedd75c6bcc8f3129f729d768139f78995838e2d5c0bdcd6e98a7b8862cac7c8d7c57f061849af404456e9b3417319b97ba","sourceGatewayPubkey":"028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e","sourceGateWayDltSystem":"dummy","recipientGateWayPubkey":"0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8","recipientGateWayDltSystem":"dummy"}
+    [2021-08-16T01:15:29.419Z] INFO (OdapGateWay): <initiateTransfer, 0, init, 028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e->0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8>
+    [2021-08-16T01:15:29.421Z] DEBUG (SetObjectEndpointV1): POST /api/v1/plugins/@hyperledger/cactus-plugin-object-store-ipfs/set-object {
+      key: 'dae07d30-00c6-45c4-8864-261110a8952b-0',
+      value: 'initiateTransfer, initiateTransfer, init, 028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e->0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8'
+    }
+    [2021-08-16T01:15:29.421Z] DEBUG (PluginObjectStoreIpfs): Seting object /392b3e5f-4ee1-4052-80d0-215832275b34/ee444449-6467-4e19-90c1-7bfeced62463/dae07d30-00c6-45c4-8864-261110a8952b-0 in IPFS...
+    [2021-08-16T01:15:29.458Z] INFO (OdapGateWay): <initiateTransfer, 0, receive-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e>
+    [2021-08-16T01:15:29.459Z] DEBUG (SetObjectEndpointV1): POST /api/v1/plugins/@hyperledger/cactus-plugin-object-store-ipfs/set-object {
+      key: 'dae07d30-00c6-45c4-8864-261110a8952b-0',
+      value: 'initiateTransfer, initiateTransfer, receive-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e'
+    }
+    [2021-08-16T01:15:29.459Z] DEBUG (PluginObjectStoreIpfs): Seting object /392b3e5f-4ee1-4052-80d0-215832275b34/ee444449-6467-4e19-90c1-7bfeced62463/dae07d30-00c6-45c4-8864-261110a8952b-0 in IPFS...
+    [2021-08-16T01:15:29.485Z] DEBUG (js-object-signer): Message to sign: "{\"sessionID\":\"dae07d30-00c6-45c4-8864-261110a8952b\",\"messageType\":\"urn:ietf:odap:msgtype:transfer-commence-msg\",\"originatorPubkey\":\"022ce461431c27b8b72fbc729c3b2d3d68d017c42fe8fed838c7e6f78802c6935f\",\"beneficiaryPubkey\":\"022ce461431c27b8b72fbc729c3b2d3d68d017c42fe8fed838c7e6f78802c6935f\",\"clientIdentityPubkey\":\"028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e\",\"serverIdentityPubkey\":\"0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8\",\"hashPrevMessage\":\"79ee965ecab73538e6e7709971b6062a04024beaee207613dde06bf9919039fa\",\"hashAssetProfile\":\"76ecba7225d6f9e9a30a7c143a8aab089e6e7eea9e3ecd142c479796f76bfe75\",\"senderDltSystem\":\"dummy\",\"recipientDltSystem\":\"dummy\",\"clientSignature\":\"\"}"
+    [2021-08-16T01:15:29.486Z] INFO (OdapGateWay): <transfer-commence, 1, send-req, 028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e->0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8>
+    [2021-08-16T01:15:29.487Z] DEBUG (SetObjectEndpointV1): POST /api/v1/plugins/@hyperledger/cactus-plugin-object-store-ipfs/set-object {
+      key: 'dae07d30-00c6-45c4-8864-261110a8952b-1',
+      value: 'transfer-commence, transfer-commence, send-req, 028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e->0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8'
+    }
+    [2021-08-16T01:15:29.487Z] DEBUG (PluginObjectStoreIpfs): Seting object /392b3e5f-4ee1-4052-80d0-215832275b34/ee444449-6467-4e19-90c1-7bfeced62463/dae07d30-00c6-45c4-8864-261110a8952b-1 in IPFS...
+    [2021-08-16T01:15:29.510Z] INFO (odap-logger): server gate way receive lock evidence transfer commence request: {"sessionID":"dae07d30-00c6-45c4-8864-261110a8952b","messageType":"urn:ietf:odap:msgtype:transfer-commence-msg","originatorPubkey":"022ce461431c27b8b72fbc729c3b2d3d68d017c42fe8fed838c7e6f78802c6935f","beneficiaryPubkey":"022ce461431c27b8b72fbc729c3b2d3d68d017c42fe8fed838c7e6f78802c6935f","clientIdentityPubkey":"028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e","serverIdentityPubkey":"0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8","hashPrevMessage":"79ee965ecab73538e6e7709971b6062a04024beaee207613dde06bf9919039fa","hashAssetProfile":"76ecba7225d6f9e9a30a7c143a8aab089e6e7eea9e3ecd142c479796f76bfe75","senderDltSystem":"dummy","recipientDltSystem":"dummy","clientSignature":"863cce61a576e6bbc6c8cfaf38fd6ec8f7d885979c7bc62f8211f480225b897c4ed299eeb842f38ff14b2d1e0b5643e626546f9fe8df7b49ba6d713a1f7b2639"}
+    [2021-08-16T01:15:29.511Z] INFO (odap-logger): {"sessionID":"dae07d30-00c6-45c4-8864-261110a8952b","messageType":"urn:ietf:odap:msgtype:transfer-commence-msg","originatorPubkey":"022ce461431c27b8b72fbc729c3b2d3d68d017c42fe8fed838c7e6f78802c6935f","beneficiaryPubkey":"022ce461431c27b8b72fbc729c3b2d3d68d017c42fe8fed838c7e6f78802c6935f","clientIdentityPubkey":"028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e","serverIdentityPubkey":"0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8","hashPrevMessage":"79ee965ecab73538e6e7709971b6062a04024beaee207613dde06bf9919039fa","hashAssetProfile":"76ecba7225d6f9e9a30a7c143a8aab089e6e7eea9e3ecd142c479796f76bfe75","senderDltSystem":"dummy","recipientDltSystem":"dummy","clientSignature":"863cce61a576e6bbc6c8cfaf38fd6ec8f7d885979c7bc62f8211f480225b897c4ed299eeb842f38ff14b2d1e0b5643e626546f9fe8df7b49ba6d713a1f7b2639"}
+    [2021-08-16T01:15:29.511Z] DEBUG (js-object-signer): Message to sign: "{\"messageType\":\"urn:ietf:odap:msgtype:transfer-commenceack-msg\",\"clientIdentityPubkey\":\"028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e\",\"serverIdentityPubkey\":\"0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8\",\"hashCommenceRequest\":\"ad1ce21acb625525a855b0fb0453c1c60fa8a32a8224f48131f239310a7d40c9\",\"serverSignature\":\"\"}"
+    [2021-08-16T01:15:29.512Z] INFO (OdapGateWay): <transfer-commence, 0, prepare-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e>
+    [2021-08-16T01:15:29.513Z] DEBUG (SetObjectEndpointV1): POST /api/v1/plugins/@hyperledger/cactus-plugin-object-store-ipfs/set-object {
+      key: 'dae07d30-00c6-45c4-8864-261110a8952b-0',
+      value: 'transfer-commence, transfer-commence, prepare-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e'
+    }
+    [2021-08-16T01:15:29.513Z] DEBUG (PluginObjectStoreIpfs): Seting object /392b3e5f-4ee1-4052-80d0-215832275b34/ee444449-6467-4e19-90c1-7bfeced62463/dae07d30-00c6-45c4-8864-261110a8952b-0 in IPFS...
+    [2021-08-16T01:15:29.543Z] INFO (OdapGateWay): <transfer-commence, 2, receive-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e>
+    [2021-08-16T01:15:29.544Z] DEBUG (SetObjectEndpointV1): POST /api/v1/plugins/@hyperledger/cactus-plugin-object-store-ipfs/set-object {
+      key: 'dae07d30-00c6-45c4-8864-261110a8952b-2',
+      value: 'transfer-commence, transfer-commence, receive-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e'
+    }
+    [2021-08-16T01:15:29.544Z] DEBUG (PluginObjectStoreIpfs): Seting object /392b3e5f-4ee1-4052-80d0-215832275b34/ee444449-6467-4e19-90c1-7bfeced62463/dae07d30-00c6-45c4-8864-261110a8952b-2 in IPFS...
+    [2021-08-16T01:15:29.564Z] DEBUG (js-object-signer): Message to sign: "{\"sessionID\":\"dae07d30-00c6-45c4-8864-261110a8952b\",\"messageType\":\"urn:ietf:odap:msgtype:lock-evidence-req-msg\",\"clientIdentityPubkey\":\"028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e\",\"serverIdentityPubkey\":\"022ce461431c27b8b72fbc729c3b2d3d68d017c42fe8fed838c7e6f78802c6935f\",\"clientSignature\":\"\",\"hashCommenceAckRequest\":\"35bad7ca183a400b2cce4049a82aaf4ec462ed6cd19895dcd8448d44f434cc61\",\"lockEvidenceClaim\":\"\",\"lockEvidenceExpiration\":\" \"}"
+    [2021-08-16T01:15:29.565Z] INFO (OdapGateWay): <lock-evidence-req, 3, send-req, 028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e->0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8>
+    [2021-08-16T01:15:29.566Z] DEBUG (SetObjectEndpointV1): POST /api/v1/plugins/@hyperledger/cactus-plugin-object-store-ipfs/set-object {
+      key: 'dae07d30-00c6-45c4-8864-261110a8952b-3',
+      value: 'lock-evidence-req, lock-evidence-req, send-req, 028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e->0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8'
+    }
+    [2021-08-16T01:15:29.566Z] DEBUG (PluginObjectStoreIpfs): Seting object /392b3e5f-4ee1-4052-80d0-215832275b34/ee444449-6467-4e19-90c1-7bfeced62463/dae07d30-00c6-45c4-8864-261110a8952b-3 in IPFS...
+    [2021-08-16T01:15:29.587Z] INFO (odap-logger): server gate way receive lock evidence request: {"sessionID":"dae07d30-00c6-45c4-8864-261110a8952b","messageType":"urn:ietf:odap:msgtype:lock-evidence-req-msg","clientIdentityPubkey":"028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e","serverIdentityPubkey":"022ce461431c27b8b72fbc729c3b2d3d68d017c42fe8fed838c7e6f78802c6935f","clientSignature":"9b0afe3344ddc33a94e883c66897970ea3d7417b3d8a2b7254e82863867b016c61372bce6cb078a9e0501daa4ddd319e2fd1d5f7c7dd66989af61ce2ec076bd7","hashCommenceAckRequest":"35bad7ca183a400b2cce4049a82aaf4ec462ed6cd19895dcd8448d44f434cc61","lockEvidenceClaim":"","lockEvidenceExpiration":" "}
+    [2021-08-16T01:15:29.588Z] DEBUG (js-object-signer): Message to sign: "{\"messageType\":\"urn:ietf:odap:msgtype:lock-evidence-req-msg\",\"clientIdentityPubkey\":\"028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e\",\"serverIdentityPubkey\":\"022ce461431c27b8b72fbc729c3b2d3d68d017c42fe8fed838c7e6f78802c6935f\",\"hashLockEvidenceRequest\":\"98ef48492bd2cba5e2ebee55968c30c97cdfa66700872ed7a293327ec9a72e44\",\"serverSignature\":\"\"}"
+    [2021-08-16T01:15:29.588Z] INFO (OdapGateWay): <lock-evidence, 0, prepare-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e>
+    [2021-08-16T01:15:29.589Z] DEBUG (SetObjectEndpointV1): POST /api/v1/plugins/@hyperledger/cactus-plugin-object-store-ipfs/set-object {
+      key: 'dae07d30-00c6-45c4-8864-261110a8952b-0',
+      value: 'lock-evidence, lock-evidence, prepare-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e'
+    }
+    [2021-08-16T01:15:29.590Z] DEBUG (PluginObjectStoreIpfs): Seting object /392b3e5f-4ee1-4052-80d0-215832275b34/ee444449-6467-4e19-90c1-7bfeced62463/dae07d30-00c6-45c4-8864-261110a8952b-0 in IPFS...
+    [2021-08-16T01:15:29.616Z] INFO (OdapGateWay): <lock-evidence-req, 4, receive-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e>
+    [2021-08-16T01:15:29.618Z] DEBUG (SetObjectEndpointV1): POST /api/v1/plugins/@hyperledger/cactus-plugin-object-store-ipfs/set-object {
+      key: 'dae07d30-00c6-45c4-8864-261110a8952b-4',
+      value: 'lock-evidence-req, lock-evidence-req, receive-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e'
+    }
+    [2021-08-16T01:15:29.618Z] DEBUG (PluginObjectStoreIpfs): Seting object /392b3e5f-4ee1-4052-80d0-215832275b34/ee444449-6467-4e19-90c1-7bfeced62463/dae07d30-00c6-45c4-8864-261110a8952b-4 in IPFS...
+    [2021-08-16T01:15:29.639Z] DEBUG (js-object-signer): Message to sign: "{\"sessionID\":\"dae07d30-00c6-45c4-8864-261110a8952b\",\"messageType\":\"urn:ietf:odap:msgtype:commit-prepare-msg\",\"clientIdentityPubkey\":\"028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e\",\"serverIdentityPubkey\":\"022ce461431c27b8b72fbc729c3b2d3d68d017c42fe8fed838c7e6f78802c6935f\",\"clientSignature\":\"\",\"hashLockEvidenceAck\":\"03b787b1ccadeeec4dcfb77e9a0d543a978ac51d65d2a63cdefd4c9c2e8796c7\"}"
+    [2021-08-16T01:15:29.639Z] INFO (OdapGateWay): <commit-prepare, 5, send-req, 028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e->0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8>
+    [2021-08-16T01:15:29.640Z] DEBUG (SetObjectEndpointV1): POST /api/v1/plugins/@hyperledger/cactus-plugin-object-store-ipfs/set-object {
+      key: 'dae07d30-00c6-45c4-8864-261110a8952b-5',
+      value: 'commit-prepare, commit-prepare, send-req, 028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e->0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8'
+    }
+    [2021-08-16T01:15:29.640Z] DEBUG (PluginObjectStoreIpfs): Seting object /392b3e5f-4ee1-4052-80d0-215832275b34/ee444449-6467-4e19-90c1-7bfeced62463/dae07d30-00c6-45c4-8864-261110a8952b-5 in IPFS...
+    [2021-08-16T01:15:29.661Z] INFO (odap-logger): server gate way receive commit prepare request: {"sessionID":"dae07d30-00c6-45c4-8864-261110a8952b","messageType":"urn:ietf:odap:msgtype:commit-prepare-msg","clientIdentityPubkey":"028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e","serverIdentityPubkey":"022ce461431c27b8b72fbc729c3b2d3d68d017c42fe8fed838c7e6f78802c6935f","clientSignature":"85ba15bcc3b477a7f36f5883b3edbfeb83db827551118d5979ff75c239e470dd1d025784c4635bf2948f5857e2cf57bd2ce1c04ea842bd717df843bd226d87e5","hashLockEvidenceAck":"03b787b1ccadeeec4dcfb77e9a0d543a978ac51d65d2a63cdefd4c9c2e8796c7"}
+    [2021-08-16T01:15:29.662Z] INFO (OdapGateWay): <commit-prepare, 0, prepare-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e>
+    [2021-08-16T01:15:29.663Z] DEBUG (SetObjectEndpointV1): POST /api/v1/plugins/@hyperledger/cactus-plugin-object-store-ipfs/set-object {
+      key: 'dae07d30-00c6-45c4-8864-261110a8952b-0',
+      value: 'commit-prepare, commit-prepare, prepare-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e'
+    }
+    [2021-08-16T01:15:29.663Z] DEBUG (PluginObjectStoreIpfs): Seting object /392b3e5f-4ee1-4052-80d0-215832275b34/ee444449-6467-4e19-90c1-7bfeced62463/dae07d30-00c6-45c4-8864-261110a8952b-0 in IPFS...
+    [2021-08-16T01:15:29.687Z] INFO (OdapGateWay): <commit-prepare, 6, receive-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e>
+    [2021-08-16T01:15:29.688Z] DEBUG (SetObjectEndpointV1): POST /api/v1/plugins/@hyperledger/cactus-plugin-object-store-ipfs/set-object {
+      key: 'dae07d30-00c6-45c4-8864-261110a8952b-6',
+      value: 'commit-prepare, commit-prepare, receive-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e'
+    }
+    [2021-08-16T01:15:29.688Z] DEBUG (PluginObjectStoreIpfs): Seting object /392b3e5f-4ee1-4052-80d0-215832275b34/ee444449-6467-4e19-90c1-7bfeced62463/dae07d30-00c6-45c4-8864-261110a8952b-6 in IPFS...
+    [2021-08-16T01:15:29.709Z] DEBUG (js-object-signer): Message to sign: "{\"sessionID\":\"dae07d30-00c6-45c4-8864-261110a8952b\",\"messageType\":\"urn:ietf:odap:msgtype:commit-final-msg\",\"clientIdentityPubkey\":\"028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e\",\"serverIdentityPubkey\":\"022ce461431c27b8b72fbc729c3b2d3d68d017c42fe8fed838c7e6f78802c6935f\",\"clientSignature\":\"\",\"hashCommitPrepareAck\":\"8bad8725e2f340a4c8b5f76ef9815e1cd4d40e0437e496328ef687a7f946e43a\",\"commitFinalClaim\":\"\"}"
+    [2021-08-16T01:15:29.709Z] INFO (OdapGateWay): <commit-final, 7, send-req, 028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e->0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8>
+    [2021-08-16T01:15:29.710Z] DEBUG (SetObjectEndpointV1): POST /api/v1/plugins/@hyperledger/cactus-plugin-object-store-ipfs/set-object {
+      key: 'dae07d30-00c6-45c4-8864-261110a8952b-7',
+      value: 'commit-final, commit-final, send-req, 028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e->0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8'
+    }
+    [2021-08-16T01:15:29.710Z] DEBUG (PluginObjectStoreIpfs): Seting object /392b3e5f-4ee1-4052-80d0-215832275b34/ee444449-6467-4e19-90c1-7bfeced62463/dae07d30-00c6-45c4-8864-261110a8952b-7 in IPFS...
+    [2021-08-16T01:15:29.732Z] INFO (odap-logger): server gate way receive commit final request: {"sessionID":"dae07d30-00c6-45c4-8864-261110a8952b","messageType":"urn:ietf:odap:msgtype:commit-final-msg","clientIdentityPubkey":"028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e","serverIdentityPubkey":"022ce461431c27b8b72fbc729c3b2d3d68d017c42fe8fed838c7e6f78802c6935f","clientSignature":"fa98ef1500bcca2e0340484d6d8482055b16d2e9af7e0481c4c841e994a13f17440de471e9e54e44ad650ffb99a0e5d1d4b434c0d3da5d059d71610ace18d8c0","hashCommitPrepareAck":"8bad8725e2f340a4c8b5f76ef9815e1cd4d40e0437e496328ef687a7f946e43a","commitFinalClaim":""}
+    [2021-08-16T01:15:29.733Z] INFO (OdapGateWay): <commit-final, 0, prepare-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e>
+    [2021-08-16T01:15:29.734Z] DEBUG (SetObjectEndpointV1): POST /api/v1/plugins/@hyperledger/cactus-plugin-object-store-ipfs/set-object {
+      key: 'dae07d30-00c6-45c4-8864-261110a8952b-0',
+      value: 'commit-final, commit-final, prepare-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e'
+    }
+    [2021-08-16T01:15:29.734Z] DEBUG (PluginObjectStoreIpfs): Seting object /392b3e5f-4ee1-4052-80d0-215832275b34/ee444449-6467-4e19-90c1-7bfeced62463/dae07d30-00c6-45c4-8864-261110a8952b-0 in IPFS...
+    [2021-08-16T01:15:29.757Z] INFO (OdapGateWay): <commit-final, 8, receive-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e>
+    [2021-08-16T01:15:29.758Z] DEBUG (SetObjectEndpointV1): POST /api/v1/plugins/@hyperledger/cactus-plugin-object-store-ipfs/set-object {
+      key: 'dae07d30-00c6-45c4-8864-261110a8952b-8',
+      value: 'commit-final, commit-final, receive-ack, 0321031aab83e6af55671e96b1e7c01089e65393749ebe6be9ca45d2831d3727d8->028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e'
+    }
+    [2021-08-16T01:15:29.758Z] DEBUG (PluginObjectStoreIpfs): Seting object /392b3e5f-4ee1-4052-80d0-215832275b34/ee444449-6467-4e19-90c1-7bfeced62463/dae07d30-00c6-45c4-8864-261110a8952b-8 in IPFS...
+    [2021-08-16T01:15:29.785Z] DEBUG (js-object-signer): Message to sign: "{\"sessionID\":\"dae07d30-00c6-45c4-8864-261110a8952b\",\"messageType\":\"urn:ietf:odap:msgtype:commit-transfer-complete-msg\",\"clientIdentityPubkey\":\"028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e\",\"serverIdentityPubkey\":\"022ce461431c27b8b72fbc729c3b2d3d68d017c42fe8fed838c7e6f78802c6935f\",\"clientSignature\":\"\",\"hashTransferCommence\":\"ad1ce21acb625525a855b0fb0453c1c60fa8a32a8224f48131f239310a7d40c9\",\"hashCommitFinalAck\":\"78d5184cc81190c6cdd769ed38ff18acac6e54eb33e2f0a45f9545dccec60eda\"}"
+    [2021-08-16T01:15:29.786Z] INFO (OdapGateWay): <transfer-complete, 9, send-req, 028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e>
+    [2021-08-16T01:15:29.787Z] DEBUG (SetObjectEndpointV1): POST /api/v1/plugins/@hyperledger/cactus-plugin-object-store-ipfs/set-object {
+      key: 'dae07d30-00c6-45c4-8864-261110a8952b-9',
+      value: 'transfer-complete, transfer-complete, send-req, 028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e'
+    }
+    [2021-08-16T01:15:29.787Z] DEBUG (PluginObjectStoreIpfs): Seting object /392b3e5f-4ee1-4052-80d0-215832275b34/ee444449-6467-4e19-90c1-7bfeced62463/dae07d30-00c6-45c4-8864-261110a8952b-9 in IPFS...
+    [2021-08-16T01:15:29.809Z] INFO (odap-logger): server gate way receive transfer complete request: {"sessionID":"dae07d30-00c6-45c4-8864-261110a8952b","messageType":"urn:ietf:odap:msgtype:commit-transfer-complete-msg","clientIdentityPubkey":"028ea6cbcac3948ec5f603515762c0e8caa907e518ee3edddff56bea5c9021330e","serverIdentityPubkey":"022ce461431c27b8b72fbc729c3b2d3d68d017c42fe8fed838c7e6f78802c6935f","clientSignature":"eb3108d7b8fcdf0e8e5a80fb1879ee74bc1e6e8ea5ed4a43d1fcc304649090af6b029bcd2185ae52cc5cc3b2afe0cf632fc8a1d35727161a39177766aad3a8bd","hashTransferCommence":"ad1ce21acb625525a855b0fb0453c1c60fa8a32a8224f48131f239310a7d40c9","hashCommitFinalAck":"78d5184cc81190c6cdd769ed38ff18acac6e54eb33e2f0a45f9545dccec60eda"}
+    [2021-08-16T01:15:29.810Z] INFO (odap-logger): transfer is complete
+    ok 8 should be truthy
+    
+    [2021-08-16T01:15:29.846Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] '\r\n'
+    [2021-08-16T01:15:29.846Z] DEBUG (GoIpfsTestContainer): [ipfs/go-ipfs:v0.8.0] 'Received interrupt signal, shutting down...\r\n' +
+      '(Hit ctrl-c again to force-shutdown the daemon.)\r\n'
+    1..8
+    # tests 8
+    # pass  8
+    
+    # ok
+}
+
+1..1
+# time=14110.407ms
+---------------------------------------|---------|----------|---------|---------|-------------------
+File                                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+---------------------------------------|---------|----------|---------|---------|-------------------
+All files                              |   33.09 |    16.09 |   22.93 |   32.55 |                   
+ ...ect-store-ipfs/src/main/typescript |   62.63 |    70.59 |   52.38 |   63.83 |                   
+  i-ipfs-http-client.ts                |      75 |    97.14 |     100 |      75 | 10                
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  plugin-factory-object-store.ts       |      75 |      100 |       0 |      75 | 17                
+  plugin-object-store-ipfs.ts          |   58.54 |     12.5 |   56.25 |   60.26 | ...61,176,184-188 
+  public-api.ts                        |    87.5 |      100 |   33.33 |   85.71 | 15                
+ ...generated/openapi/typescript-axios |   51.01 |    26.58 |   37.14 |   47.69 |                   
+  api.ts                               |   41.33 |    19.05 |   28.57 |   40.91 | ...92-322,343-355 
+  base.ts                              |   76.92 |    66.67 |      50 |      75 | 67-69             
+  common.ts                            |   65.31 |    27.08 |      60 |    57.5 | ...9,78-82,94-100 
+  configuration.ts                     |      10 |        0 |       0 |      10 | 78-99             
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+ ...s/src/main/typescript/web-services |   76.77 |       50 |   93.33 |   76.77 |                   
+  get-object-endpoint-v1.ts            |    69.7 |       50 |      90 |    69.7 | 87-97             
+  has-object-endpoint-v1.ts            |    69.7 |       50 |      90 |    69.7 | 87-97             
+  set-object-endpoint-v1.ts            |   90.91 |       50 |     100 |   90.91 | 95-97             
+ .../cactus-common/src/main/typescript |    45.6 |    23.38 |   39.58 |   43.75 |                   
+  bools.ts                             |     100 |      100 |     100 |     100 |                   
+  checks.ts                            |      50 |       60 |     100 |      50 | 17-18,36-37       
+  coded-error.ts                       |      20 |        0 |       0 |      25 | 7-12              
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  js-object-signer.ts                  |   51.61 |    33.33 |      50 |   51.61 | 34,37,63-102      
+  key-converter.ts                     |   12.24 |     7.69 |   14.29 |    12.5 | 15-125            
+  objects.ts                           |    6.25 |        0 |       0 |    6.67 | 33-63             
+  public-api.ts                        |     100 |      100 |   45.45 |     100 |                   
+  secp256k1-keys.ts                    |     100 |      100 |     100 |     100 |                   
+  servers.ts                           |   56.82 |    33.33 |      50 |   60.98 | 25,30,87-114      
+  strings.ts                           |   28.57 |        0 |       0 |   28.57 | 9-19              
+ ...common/src/main/typescript/logging |   75.76 |    45.45 |   57.14 |   75.76 |                   
+  logger-provider.ts                   |   71.43 |    42.86 |   33.33 |   71.43 | 26-29             
+  logger.ts                            |   78.95 |       50 |   63.64 |   78.95 | 42-50,63          
+ ...actus-core-api/src/main/typescript |     100 |      100 |   16.67 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  public-api.ts                        |     100 |      100 |   16.67 |     100 |                   
+ ...generated/openapi/typescript-axios |   83.33 |    63.64 |      80 |   85.11 |                   
+  api.ts                               |     100 |      100 |     100 |     100 |                   
+  base.ts                              |   38.46 |        0 |       0 |   41.67 | 52-55,67-69       
+  configuration.ts                     |     100 |       50 |     100 |     100 | 77-99             
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+ ...ore-api/src/main/typescript/plugin |      50 |        0 |       0 |      50 |                   
+  i-cactus-plugin.ts                   |      50 |        0 |       0 |      50 | 76                
+  plugin-factory.ts                    |      50 |      100 |       0 |      50 | 3                 
+ ...rc/main/typescript/plugin/keychain |      50 |        0 |       0 |      50 |                   
+  is-i-plugin-keychain.ts              |      50 |        0 |       0 |      50 | 4                 
+ ...ain/typescript/plugin/object-store |      50 |        0 |       0 |      50 |                   
+  is-i-plugin-object-store.ts          |      50 |        0 |       0 |      50 | 4                 
+ ...main/typescript/plugin/web-service |      60 |        0 |       0 |      60 |                   
+  i-endpoint-authz-options.ts          |   66.67 |        0 |       0 |   66.67 | 33                
+  i-plugin-web-service.ts              |      50 |        0 |       0 |      50 | 22                
+ ...es/cactus-core/src/main/typescript |   34.83 |       25 |   13.79 |   32.94 |                   
+  ...ensus-has-transaction-finality.ts |      25 |        0 |       0 |      25 | 10-27             
+  consortium-repository.ts             |   15.79 |        0 |       0 |   16.67 | 28-62             
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  plugin-registry.ts                   |   29.41 |    30.77 |   11.76 |   29.41 | 43,46,57-135      
+  public-api.ts                        |     100 |      100 |      40 |     100 |                   
+ ...e/src/main/typescript/web-services |   54.84 |       25 |      20 |   54.84 |                   
+  authorization-options-provider.ts    |      25 |        0 |       0 |      25 | 30-57             
+  register-web-service-endpoint.ts     |   86.67 |       50 |     100 |   86.67 | 30-33             
+ ...us-odap-hermes/src/main/typescript |   78.57 |    68.75 |      75 |   83.33 |                   
+  public-api.js                        |   78.57 |    68.75 |      75 |   83.33 | 15-16             
+ ...hermes/src/main/typescript/gateway |   66.72 |    42.93 |   80.56 |   67.37 |                   
+  odap-gateway.ts                      |   66.72 |    42.93 |   80.56 |   67.37 | ...1546,1553-1554 
+ ...generated/openapi/typescript-axios |   81.53 |    45.38 |   64.62 |   82.43 |                   
+  api.ts                               |   90.86 |    65.57 |   70.59 |    94.3 | 1498-1561         
+  base.ts                              |   76.92 |    66.67 |      50 |      75 | 67-69             
+  common.ts                            |   63.27 |    20.83 |      50 |      55 | ...9,78-82,94-100 
+  configuration.ts                     |      10 |        0 |       0 |      10 | 78-99             
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+ ...s/src/main/typescript/web-services |   90.45 |    16.67 |      90 |   90.45 |                   
+  commit-final-endpoint.ts             |   90.32 |    16.67 |      90 |   90.32 | 61,93-94          
+  commite-prepare-endpoint.ts          |   90.32 |    16.67 |      90 |   90.32 | 61,93-94          
+  lock-evidence-endpoint.ts            |   90.32 |    16.67 |      90 |   90.32 | 61,93-94          
+  ...nce-transfer-commence-endpoint.ts |   90.32 |    16.67 |      90 |   90.32 | 61,95-96          
+  send-client-request.ts               |   90.32 |    16.67 |      90 |   90.32 | 63,96-97          
+  transfer-complete.ts                 |   90.32 |    16.67 |      90 |   90.32 | 61,93-94          
+  transfer-initiation-endpoint.ts      |   91.18 |    16.67 |      90 |   91.18 | 61,96-97          
+ ...connector-besu/src/main/typescript |   12.65 |        0 |       0 |   12.42 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  model-type-guards.ts                 |      60 |        0 |       0 |      60 | 10,16             
+  plugin-factory-ledger-connector.ts   |      75 |      100 |       0 |      75 | 18                
+  plugin-ledger-connector-besu.ts      |    7.62 |        0 |       0 |    7.64 | 117-122,127-837   
+  public-api.ts                        |   91.67 |      100 |       0 |   90.91 | 21                
+ ...esu/src/main/typescript/api-client |   29.73 |        0 |       0 |   29.73 |                   
+  besu-api-client.ts                   |   29.73 |        0 |       0 |   29.73 | 28-67             
+ ...generated/openapi/typescript-axios |   18.64 |     5.88 |    4.94 |   16.41 |                   
+  api.ts                               |   12.22 |    10.26 |    5.97 |   12.12 | ...1712,1733-1840 
+  base.ts                              |   38.46 |        0 |       0 |   41.67 | 52-55,67-69       
+  common.ts                            |   40.82 |        0 |       0 |    27.5 | ...16,126,134-136 
+  configuration.ts                     |      10 |        0 |       0 |      10 | 78-99             
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+ ...ain/typescript/prometheus-exporter |      45 |        0 |       0 |      45 |                   
+  data-fetcher.ts                      |      50 |      100 |       0 |      50 | 8-9               
+  metrics.ts                           |     100 |      100 |     100 |     100 |                   
+  prometheus-exporter.ts               |   30.77 |        0 |       0 |   30.77 | 12-35             
+ ...u/src/main/typescript/web-services |    14.8 |        0 |       0 |    14.8 |                   
+  ...act-solidity-bytecode-endpoint.ts |   15.63 |        0 |       0 |   15.63 | 35-98             
+  get-balance-endpoint.ts              |   15.63 |        0 |       0 |   15.63 | 32-95             
+  get-besu-record-endpoint-v1.ts       |   15.63 |        0 |       0 |   15.63 | 33-96             
+  get-block-v1-endpoint-.ts            |   15.63 |        0 |       0 |   15.63 | 32-95             
+  get-past-logs-endpoint.ts            |   15.63 |        0 |       0 |   15.63 | 32-95             
+  ...s-exporter-metrics-endpoint-v1.ts |   13.79 |        0 |       0 |   13.79 | 33-91             
+  get-transaction-endpoint.ts          |   15.63 |        0 |       0 |   15.63 | 32-95             
+  invoke-contract-endpoint.ts          |   15.63 |        0 |       0 |   15.63 | 32-95             
+  run-transaction-endpoint.ts          |   15.63 |        0 |       0 |   15.63 | 32-95             
+  sign-transaction-endpoint-v1.ts      |   10.53 |        0 |       0 |   10.53 | 32-106            
+  watch-blocks-v1-endpoint.ts          |   14.29 |        0 |       0 |   14.29 | 26-73             
+ ...nnector-fabric/src/main/typescript |     9.4 |        0 |       0 |    9.23 |                   
+  chain-code-compiler.ts               |   10.42 |        0 |       0 |   10.42 | 70-170            
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  plugin-factory-ledger-connector.ts   |      75 |      100 |       0 |      75 | 18                
+  plugin-ledger-connector-fabric.ts    |    6.42 |        0 |       0 |    6.44 | 151-1096          
+  public-api.ts                        |      90 |      100 |       0 |   88.89 | 16                
+ ...-fabric/src/main/typescript/common |    4.94 |        0 |       0 |    5.19 |                   
+  create-gateway.ts                    |   15.15 |        0 |       0 |   15.15 | 28-91             
+  get-transaction-receipt-by-tx-id.ts  |    2.33 |        0 |       0 |    2.48 | 15-202            
+ ...rc/main/typescript/deploy-contract |   17.14 |        0 |       0 |   17.14 |                   
+  deploy-contract-endpoint-v1.ts       |   17.14 |        0 |       0 |   17.14 | 35-98             
+ ...pescript/deploy-contract-go-source |   17.14 |        0 |       0 |   17.14 |                   
+  ...contract-go-source-endpoint-v1.ts |   17.14 |        0 |       0 |   17.14 | 35-98             
+ ...generated/openapi/typescript-axios |   27.72 |     7.92 |    7.84 |   24.58 |                   
+  api.ts                               |   21.88 |     18.6 |   10.81 |   21.74 | ...1165,1186-1233 
+  base.ts                              |   38.46 |        0 |       0 |   41.67 | 52-55,67-69       
+  common.ts                            |   40.82 |        0 |       0 |    27.5 | ...16,126,134-136 
+  configuration.ts                     |      10 |        0 |       0 |      10 | 78-99             
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+ ...pt/get-prometheus-exporter-metrics |   14.81 |        0 |       0 |   14.81 |                   
+  ...s-exporter-metrics-endpoint-v1.ts |   14.81 |        0 |       0 |   14.81 | 33-92             
+ ...typescript/get-transaction-receipt |    12.9 |        0 |       0 |    12.9 |                   
+  ...on-receipt-by-txid-endpoint-v1.ts |    12.9 |        0 |       0 |    12.9 | 32-100            
+ ...or-fabric/src/main/typescript/peer |   28.57 |        0 |       0 |   28.57 |                   
+  source-lang-to-runtime-lang.ts       |   28.57 |        0 |       0 |   28.57 | 9-18              
+ ...ain/typescript/prometheus-exporter |    37.5 |        0 |       0 |    37.5 |                   
+  metrics.ts                           |     100 |      100 |     100 |     100 |                   
+  prometheus-exporter.ts               |   23.08 |        0 |       0 |   23.08 | 11-37             
+ ...rc/main/typescript/run-transaction |    12.9 |        0 |       0 |    12.9 |                   
+  run-transaction-endpoint-v1.ts       |    12.9 |        0 |       0 |    12.9 | 31-97             
+ ...s-test-tooling/src/main/typescript |   98.72 |        0 |    1.85 |   98.63 |                   
+  i-key-pair.ts                        |      50 |        0 |       0 |      50 | 9                 
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  public-api.ts                        |     100 |      100 |    1.89 |     100 |                   
+ ...t-tooling/src/main/typescript/besu |    7.72 |        0 |       0 |    7.82 |                   
+  besu-mp-test-ledger.ts               |   10.26 |        0 |       0 |   10.26 | 39-197            
+  besu-test-ledger.ts                  |    6.55 |        0 |       0 |    6.67 | 63-425            
+ ...cript/cactus-keychain-vault-server |   17.02 |        0 |       0 |   17.02 |                   
+  cactus-keychain-vault-server.ts      |   17.02 |        0 |       0 |   17.02 | 42-135            
+ ...tooling/src/main/typescript/common |   23.22 |    23.08 |   27.27 |   22.14 |                   
+  containers.ts                        |   25.42 |    26.79 |   33.33 |   24.26 | ...16-519,540-615 
+  streams.ts                           |     3.7 |        0 |       0 |     3.7 | 19-75             
+ ...-tooling/src/main/typescript/corda |     8.7 |        0 |       0 |    8.81 |                   
+  corda-test-ledger.ts                 |    8.13 |        0 |       0 |    8.23 | 78-412            
+  sample-cordapp-enum.ts               |     100 |      100 |     100 |     100 |                   
+ ...rc/main/typescript/corda-connector |   11.49 |        0 |       0 |   11.63 |                   
+  corda-connector-container.ts         |   11.49 |        0 |       0 |   11.63 | 68-239            
+ ...tooling/src/main/typescript/fabric |    6.99 |        0 |       0 |    7.07 |                   
+  fabric-test-ledger-v1.ts             |    6.99 |        0 |       0 |    7.07 | 79-530            
+ ...src/main/typescript/github-actions |   46.15 |        0 |       0 |   46.15 |                   
+  is-running-in-github-action.ts       |      50 |        0 |       0 |      50 | 24-26             
+  prune-docker-all-if-github-action.ts |   44.44 |        0 |       0 |   44.44 | 18-26             
+ ...ooling/src/main/typescript/go-ipfs |   87.32 |    74.07 |   88.24 |   87.32 |                   
+  go-ipfs-test-container.ts            |   87.32 |    74.07 |   88.24 |   87.32 | ...31,154,189-190 
+ ...ling/src/main/typescript/http-echo |       8 |        0 |       0 |    8.25 |                   
+  http-echo-container.ts               |       8 |        0 |       0 |    8.25 | 38-243            
+ ...oling/src/main/typescript/keycloak |    7.64 |        0 |       0 |    7.86 |                   
+  keycloak-container.ts                |    7.64 |        0 |       0 |    7.86 | 48-352            
+ ...ing/src/main/typescript/localstack |      16 |        0 |       0 |      16 |                   
+  localstack-container.ts              |      16 |        0 |       0 |      16 | 41-149            
+ ...g/src/main/typescript/openethereum |   16.28 |        0 |       0 |   16.28 |                   
+  openethereum-test-ledger.ts          |   16.28 |        0 |       0 |   16.28 | 60-242            
+ ...tooling/src/main/typescript/quorum |    6.92 |        0 |       0 |    7.05 |                   
+  quorum-test-ledger.ts                |    6.92 |        0 |       0 |    7.05 | 58-408            
+ ...rc/main/typescript/rustc-container |   15.48 |        0 |       0 |   15.48 |                   
+  rustc-build-cmd.ts                   |     100 |      100 |     100 |     100 |                   
+  rustc-container.ts                   |   14.46 |        0 |       0 |   14.46 | 62-217            
+ .../main/typescript/vault-test-server |   17.31 |        0 |       0 |   17.31 |                   
+  vault-test-server.ts                 |   17.31 |        0 |       0 |   17.31 | 44-154            
+---------------------------------------|---------|----------|---------|---------|-------------------

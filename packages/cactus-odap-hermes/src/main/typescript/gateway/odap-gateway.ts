@@ -838,7 +838,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     req: LockEvidenceMessage,
     sessionID: string,
   ): Promise<void> {
-    const fnTag = "${this.className()}#checkValidLockEvidenceRequest()";
+    const fnTag = `${this.className}#checkValidLockEvidenceRequest()`;
 
     if (req.messageType != "urn:ietf:odap:msgtype:lock-evidence-req-msg") {
       await this.Revert(sessionID);
@@ -1197,7 +1197,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       originatorPubkey: req.originatorPubkey,
       beneficiaryPubkey: req.beneficiaryPubkey,
       clientIdentityPubkey: this.pubKey,
-      serverIdentityPubkey: req.serverDltSystem,
+      serverIdentityPubkey: serverIdentityPubkey,
       hashPrevMessage: initializationMsgHash,
       hashAssetProfile: hashAssetProfile,
       senderDltSystem: req.clientDltSystem,
@@ -1257,14 +1257,13 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       );
     }
 
-    /* TODO: skip checking signature now, have to figure out a way to config the server gateway's publickey of the 
     const transferCommenceAckSignature = transferCommenceAck.serverSignature;
-  
+
     const transferCommenceAckSignatureHex = new Uint8Array(
       Buffer.from(transferCommenceAckSignature, "hex"),
     );
     const sourcePubkey = new Uint8Array(
-      Buffer.from(transferCommenceReq.serverIdentityPubkey, "hex"),
+      Buffer.from(serverIdentityPubkey, "hex"),
     );
     transferCommenceAck.serverSignature = "";
     if (
@@ -1277,8 +1276,12 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         sourcePubkey,
       )
     ) {
-      t.error("transfer commence ack signature verify failed");
-    }*/
+      await this.Revert(sessionID);
+      throw new Error(
+        `${fnTag}, transfer commence ack signature verify failed`,
+      );
+    }
+    transferCommenceAck.serverSignature = transferCommenceAckSignature;
     //store ack
     await this.odapLog(
       {
@@ -1386,7 +1389,23 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         `${fnTag}, lock evidence clientIdentity pub key not match from lock evidence ack`,
       );
     }
-    //TODO: verify signature of lock evidence ack
+    const lockEvidenceAckSignature = lockEvidenceAck.serverSignature;
+
+    const lockEvidenceAckSignatureHex = new Uint8Array(
+      Buffer.from(lockEvidenceAckSignature, "hex"),
+    );
+    lockEvidenceAck.serverSignature = "";
+    if (
+      !secp256k1.ecdsaVerify(
+        lockEvidenceAckSignatureHex,
+        Buffer.from(SHA256(JSON.stringify(lockEvidenceAck)).toString(), "hex"),
+        sourcePubkey,
+      )
+    ) {
+      await this.Revert(sessionID);
+      throw new Error(`${fnTag}, lock evidence ack signature verify failed`);
+    }
+    lockEvidenceAck.serverSignature = transferCommenceAckSignature;
     //store ack
     await this.odapLog(
       {
@@ -1459,7 +1478,23 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       );
     }
 
-    //TODO: verify signature
+    const commitPrepareAckSignature = commitPrepareAck.serverSignature;
+
+    const commitPrepareAckSignatureHex = new Uint8Array(
+      Buffer.from(commitPrepareAckSignature, "hex"),
+    );
+    commitPrepareAck.serverSignature = "";
+    if (
+      !secp256k1.ecdsaVerify(
+        commitPrepareAckSignatureHex,
+        Buffer.from(SHA256(JSON.stringify(commitPrepareAck)).toString(), "hex"),
+        sourcePubkey,
+      )
+    ) {
+      await this.Revert(sessionID);
+      throw new Error(`${fnTag}, commit prepare ack signature verify failed`);
+    }
+    commitPrepareAck.serverSignature = commitPrepareAckSignature;
     //store ack
     await this.odapLog(
       {
@@ -1550,6 +1585,23 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         `${fnTag}, commit final serverIdentity pub key not match from commit final ack`,
       );
     }
+    const commitFinalAckSignature = commitFinalAck.serverSignature;
+
+    const commitFinalAckSignatureHex = new Uint8Array(
+      Buffer.from(commitFinalAckSignature, "hex"),
+    );
+    commitFinalAck.serverSignature = "";
+    if (
+      !secp256k1.ecdsaVerify(
+        commitFinalAckSignatureHex,
+        Buffer.from(SHA256(JSON.stringify(commitFinalAck)).toString(), "hex"),
+        sourcePubkey,
+      )
+    ) {
+      await this.Revert(sessionID);
+      throw new Error(`${fnTag}, commit final ack signature verify failed`);
+    }
+    commitFinalAck.serverSignature = commitFinalAckSignature;
     //store ack
     await this.odapLog(
       {

@@ -1,5 +1,5 @@
 import http from "http";
-//import fs from "fs-extra";
+import fs from "fs-extra";
 import { Server as SocketIoServer } from "socket.io";
 import { AddressInfo } from "net";
 import secp256k1 from "secp256k1";
@@ -17,16 +17,17 @@ import {
   AssetProfile,
 } from "../../../../main/typescript/generated/openapi/typescript-axios";
 import {
-  //Checks,
+  Checks,
   IListenOptions,
+  LoggerProvider,
   LogLevelDesc,
   Servers,
 } from "@hyperledger/cactus-common";
-//import { DiscoveryOptions } from "fabric-network";
+import { DiscoveryOptions } from "fabric-network";
 
 import {
-  //Containers,
-  //FabricTestLedgerV1,
+  Containers,
+  FabricTestLedgerV1,
   pruneDockerAllIfGithubAction,
   GoIpfsTestContainer,
   BesuTestLedger,
@@ -47,7 +48,7 @@ import {
   OdapGateway,
   OdapGatewayConstructorOptions,
 } from "../../../../main/typescript/gateway/odap-gateway";
-/*import {
+import {
   ChainCodeProgrammingLanguage,
   DefaultEventHandlerStrategy,
   FabricContractInvocationType,
@@ -55,8 +56,9 @@ import {
   IPluginLedgerConnectorFabricOptions,
   PluginLedgerConnectorFabric,
   DefaultApi as FabricApi,
-} from "@hyperledger/cactus-plugin-ledger-connector-fabric";*/
-//import path from "path";
+  FabricSigningCredential,
+} from "@hyperledger/cactus-plugin-ledger-connector-fabric";
+import path from "path";
 import {
   //EthContractInvocationType,
   Web3SigningCredentialType,
@@ -68,6 +70,7 @@ import {
   Web3SigningCredential,
 } from "@hyperledger/cactus-plugin-ledger-connector-besu";
 import Web3 from "web3";
+import { string } from "joi";
 /**
  * Use this to debug issues with the fabric node SDK
  * ```sh
@@ -76,29 +79,34 @@ import Web3 from "web3";
  */
 let ipfsApiHost: string;
 const testCase = "runs odap gateway tests via openApi";
+let fabricSigningCredential: FabricSigningCredential;
 const logLevel: LogLevelDesc = "TRACE";
-//let fabricLedger: FabricTestLedgerV1;
+let fabricLedger: FabricTestLedgerV1;
+let fabricContractName: string;
+let fabricChannelName: string;
+let fabricPath: string;
+let fabricAssetID: string;
 let ipfsContainer: GoIpfsTestContainer;
 let besuTestLedger: BesuTestLedger;
 let besuPath: string;
 let besuContractName: string;
 let besuWeb3SigningCredential: Web3SigningCredential;
 let besuKeychainId: string;
+const level = "INFO";
+const label = "fabric run transaction test";
+const log = LoggerProvider.getOrCreate({ level, label });
+
 test("BEFORE " + testCase, async (t: Test) => {
-  test("BEFORE " + testCase, async (t: Test) => {
-    const pruning = pruneDockerAllIfGithubAction({ logLevel });
-    await t.doesNotReject(pruning, "Pruning didn't throw OK");
-    t.end();
+  const pruning = pruneDockerAllIfGithubAction({ logLevel });
+  await t.doesNotReject(pruning, "Pruning didn't throw OK");
+  test.onFailure(async () => {
+    await Containers.logDiagnostics({ logLevel });
   });
-  /*{
+  {
     const channelId = "mychannel";
     const channelName = channelId;
-
-    test.onFailure(async () => {
-      await Containers.logDiagnostics({ logLevel });
-    });
-
-    const ledger = new FabricTestLedgerV1({
+    fabricChannelName = channelName;
+    fabricLedger = new FabricTestLedgerV1({
       emitContainerLogs: true,
       publishAllPorts: true,
       // imageName: "faio2x",
@@ -108,13 +116,13 @@ test("BEFORE " + testCase, async (t: Test) => {
       envVars: new Map([["FABRIC_VERSION", "2.2.0"]]),
       logLevel,
     });
-    const connectionProfile = await ledger.getConnectionProfileOrg1();
+    await fabricLedger.start();
+    const connectionProfile = await fabricLedger.getConnectionProfileOrg1();
     t.ok(connectionProfile, "getConnectionProfileOrg1() out truthy OK");
-    fabricLedger = ledger;
-    const enrollAdminOut = await ledger.enrollAdmin();
+    const enrollAdminOut = await fabricLedger.enrollAdmin();
     const adminWallet = enrollAdminOut[1];
-    const [userIdentity] = await ledger.enrollUser(adminWallet);
-    const sshConfig = await ledger.getSshConfig();
+    const [userIdentity] = await fabricLedger.enrollUser(adminWallet);
+    const sshConfig = await fabricLedger.getSshConfig();
 
     const keychainInstanceId = uuidv4();
     const keychainId = uuidv4();
@@ -208,15 +216,15 @@ test("BEFORE " + testCase, async (t: Test) => {
     await plugin.getOrCreateWebServices();
     await plugin.registerWebServices(expressApp);
     const apiUrl = `http://localhost:${port}`;
-
+    fabricPath = apiUrl;
     const config = new Configuration({ basePath: apiUrl });
 
     const apiClient = new FabricApi(config);
 
     const contractName = "basic-asset-transfer-2";
-
+    fabricContractName = contractName;
     const contractRelPath =
-      "../fabric-contract/lock-asset/chaincode-typescript";
+      "../../fabric-contracts/lock-asset/chaincode-typescript";
     const contractDir = path.join(__dirname, contractRelPath);
 
     // ├── package.json
@@ -355,18 +363,18 @@ test("BEFORE " + testCase, async (t: Test) => {
     await new Promise((resolve) => setTimeout(resolve, 10000));
 
     const assetId = uuidv4();
-
-    // CreateAsset(id string, color string, size int, owner string, appraisedValue int)
+    fabricSigningCredential = {
+      keychainId,
+      keychainRef: keychainEntryKey,
+    };
+    fabricAssetID= assetId;
     const createRes = await apiClient.runTransactionV1({
       contractName,
       channelName,
       params: [assetId, "19"],
       methodName: "CreateAsset",
       invocationType: FabricContractInvocationType.Send,
-      signingCredential: {
-        keychainId,
-        keychainRef: keychainEntryKey,
-      },
+      signingCredential: fabricSigningCredential,
     });
     t.ok(createRes, "setRes truthy OK");
     t.true(createRes.status > 199, "createRes status > 199 OK");
@@ -374,7 +382,7 @@ test("BEFORE " + testCase, async (t: Test) => {
     t.comment(
       `BassicAssetTransfer.Create(): ${JSON.stringify(createRes.data)}`,
     );
-  }*/
+  }
   ipfsContainer = new GoIpfsTestContainer({ logLevel });
   t.ok(ipfsContainer, "GoIpfsTestContainer instance truthy OK");
   {
@@ -444,6 +452,7 @@ test("BEFORE " + testCase, async (t: Test) => {
     //const contractName = "LockAsset";
 
     const web3 = new Web3(rpcApiHttpHost);
+    log.warn(web3);
     const testEthAccount = web3.eth.accounts.create(uuidv4());
 
     const keychainEntryKey = uuidv4();
@@ -556,19 +565,24 @@ test(testCase, async (t: Test) => {
     await besuTestLedger.stop();
     await besuTestLedger.destroy();
   });
-  /*const tearDown = async () => {
+  const tearDown = async () => {
     await fabricLedger.stop();
     await fabricLedger.destroy();
     await pruneDockerAllIfGithubAction({ logLevel });
   };
 
-  test.onFinish(tearDown);*/
+  test.onFinish(tearDown);
   const odapClientGateWayPluginID = uuidv4();
   const odapPluginOptions: OdapGatewayConstructorOptions = {
     name: "cactus-plugin#odapGateway",
     dltIDs: ["dummy"],
     instanceId: odapClientGateWayPluginID,
     ipfsPath: ipfsApiHost,
+    fabricPath: fabricPath,
+    fabricSigningCredential: fabricSigningCredential,
+    fabricChannelName: fabricChannelName,
+    fabricContractName: fabricContractName,
+    fabricAssetID: fabricAssetID,
   };
   const clientOdapGateway = new OdapGateway(odapPluginOptions);
 
@@ -597,7 +611,7 @@ test(testCase, async (t: Test) => {
       dltIDs: ["dummy"],
       instanceId: odapServerGatewayInstanceID,
       ipfsPath: ipfsApiHost,
-      besuAssetID: "dont-care-now",
+      besuAssetID: "whatever",
       besuPath: besuPath,
       besuWeb3SigningCredential: besuWeb3SigningCredential,
       besuContractName: besuContractName,

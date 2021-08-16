@@ -229,7 +229,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
           options.fabricSigningCredential == undefined ||
           options.fabricChannelName == undefined ||
           options.fabricContractName == undefined ||
-          options.fabricAssetID != undefined;
+          options.fabricAssetID == undefined;
         if (notEnoughFabricParams) {
           throw new Error(
             `${fnTag}, fabric params missing should have: signing credentials, contract name, channel name, asset ID`,
@@ -714,7 +714,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     sessionID: string,
   ): Promise<void> {
     const sessionData = this.sessions.get(sessionID);
-    const fnTag = "${this.className()}#storeDataAfterInitializationRequest";
+    const fnTag = `${this.className}#storeDataAfterInitializationRequest`;
     if (sessionData == undefined) {
       await this.Revert(sessionID);
       throw new Error(`${fnTag}, session data is undefined`);
@@ -924,7 +924,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     req: CommitPreparationMessage,
     sessionID: string,
   ): Promise<void> {
-    const fnTag = "${this.className()}#checkValidCommitPreparationRequest()";
+    const fnTag = `${this.className}#checkValidCommitPreparationRequest()`;
 
     if (req.messageType != "urn:ietf:odap:msgtype:commit-prepare-msg") {
       await this.Revert(req.sessionID);
@@ -996,7 +996,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     req: CommitFinalMessage,
     sessionID: string,
   ): Promise<void> {
-    const fnTag = "${this.className()}#checkValidCommitFinalRequest()";
+    const fnTag = `${this.className}#checkValidCommitFinalRequest()`;
 
     if (req.messageType != "urn:ietf:odap:msgtype:commit-final-msg") {
       await this.Revert(req.sessionID);
@@ -1069,7 +1069,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     req: TransferCompleteMessage,
     sessionID: string,
   ): Promise<void> {
-    const fnTag = "${this.className()}#checkValidTransferCompleteRequest()";
+    const fnTag = `${this.className}#checkValidTransferCompleteRequest()`;
 
     if (
       req.messageType != "urn:ietf:odap:msgtype:commit-transfer-complete-msg"
@@ -1125,7 +1125,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     }
   }
   public async SendClientRequest(req: SendClientRequestMessage): Promise<void> {
-    const fnTag = "${this.className()}#sendClientRequest()";
+    const fnTag = `${this.className}#sendClientRequest()`;
     const odapServerApiConfig = new Configuration({
       basePath: req.serverGatewayConfiguration.apiHost,
     });
@@ -1296,6 +1296,10 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const commenceAckHash = SHA256(
       JSON.stringify(transferCommenceAck),
     ).toString();
+    //probably a weird place to set sessionID, but need it in Revert function
+    //or sessions.get(sessionID) would be undefined
+    //and just return
+    this.sessions.set(sessionID, sessionData);
     let fabricLockAssetProof = "";
     if (this.fabricApi != undefined) {
       const lockRes = await this.fabricApi.runTransactionV1({
@@ -1316,9 +1320,8 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
           params: [this.fabricChannelName, lockRes.data.transactionId],
         } as FabricRunTransactionRequest,
       );
-      this.log.warn(receiptLockRes);
-      fabricLockAssetProof = JSON.stringify(receiptLockRes);
-      const sessionData = this.sessions.get(sessionID);
+      this.log.warn(receiptLockRes.data);
+      fabricLockAssetProof = JSON.stringify(receiptLockRes.data);
       if (sessionData == undefined) {
         await this.Revert(sessionID);
         throw new Error(`${fnTag}, session data undefined`);
@@ -1526,13 +1529,8 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
           params: [this.fabricChannelName, deleteRes.data.transactionId],
         } as FabricRunTransactionRequest,
       );
-      this.log.warn(receiptDeleteRes);
-      fabricDeleteAssetProof = JSON.stringify(receiptDeleteRes);
-      const sessionData = this.sessions.get(sessionID);
-      if (sessionData == undefined) {
-        await this.Revert(sessionID);
-        throw new Error(`${fnTag}, session data undefined`);
-      }
+      this.log.warn(receiptDeleteRes.data);
+      fabricDeleteAssetProof = JSON.stringify(receiptDeleteRes.data);
       sessionData.isFabricAssetDeleted = true;
     }
     const commitFinalReq: CommitFinalMessage = {
@@ -1635,6 +1633,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       `${sessionID}-${sessionData.step.toString()}`,
     );
     sessionData.step++;
+    this.sessions.set(sessionID, sessionData);
     await odapServerApiClient.apiV1Phase3TransferComplete(transferCompleteReq);
   }
 }

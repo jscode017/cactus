@@ -56,7 +56,10 @@ test("deploys contract via .json file", async (t: Test) => {
     backend: new Map([[keychainEntryKey, keychainEntryValue]]),
     logLevel,
   });
-  keychainPlugin.set(LockAssetContractJson.contractName, LockAssetContractJson);
+  keychainPlugin.set(
+    LockAssetContractJson.contractName,
+    JSON.stringify(LockAssetContractJson),
+  );
   const factory = new PluginFactoryLedgerConnector({
     pluginImportType: PluginImportType.Local,
   });

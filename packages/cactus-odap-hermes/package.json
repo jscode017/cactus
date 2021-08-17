@@ -1,10 +1,10 @@
 {
   "name": "@hyperledger/cactus-odap-hermes",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "proof of concept of odap",
   "main": "dist/lib/main/typescript/index.js",
   "module": "dist/lib/main/typescript/index.js",
-  "types": "dist/types/main/typescript/index.d.ts",
+  "types": "dist/lib/main/typescript/index.d.ts",
   "files": [
     "dist/*"
   ],
@@ -69,15 +69,15 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@hyperledger/cactus-cmd-api-server": "0.6.0",
-    "@hyperledger/cactus-common": "0.6.0",
-    "@hyperledger/cactus-core": "0.6.0",
-    "@hyperledger/cactus-core-api": "0.6.0",
-    "@hyperledger/cactus-plugin-keychain-memory": "0.6.0",
-    "@hyperledger/cactus-plugin-ledger-connector-besu": "0.6.0",
-    "@hyperledger/cactus-plugin-ledger-connector-fabric": "0.6.0",
-    "@hyperledger/cactus-plugin-object-store-ipfs": "^0.6.0",
-    "@hyperledger/cactus-test-tooling": "0.6.0",
+    "@hyperledger/cactus-cmd-api-server": "0.7.0",
+    "@hyperledger/cactus-common": "0.7.0",
+    "@hyperledger/cactus-core": "0.7.0",
+    "@hyperledger/cactus-core-api": "0.7.0",
+    "@hyperledger/cactus-plugin-keychain-memory": "0.7.0",
+    "@hyperledger/cactus-plugin-ledger-connector-besu": "0.7.0",
+    "@hyperledger/cactus-plugin-ledger-connector-fabric": "0.7.0",
+    "@hyperledger/cactus-plugin-object-store-ipfs": "0.7.0",
+    "@hyperledger/cactus-test-tooling": "0.7.0",
     "axios": "0.21.1",
     "crypto-js": "4.0.0",
     "dockerode": "^3.3.0",

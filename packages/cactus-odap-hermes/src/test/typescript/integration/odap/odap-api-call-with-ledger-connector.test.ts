@@ -70,7 +70,6 @@ import {
   Web3SigningCredential,
 } from "@hyperledger/cactus-plugin-ledger-connector-besu";
 import Web3 from "web3";
-import { string } from "joi";
 /**
  * Use this to debug issues with the fabric node SDK
  * ```sh
@@ -367,7 +366,7 @@ test("BEFORE " + testCase, async (t: Test) => {
       keychainId,
       keychainRef: keychainEntryKey,
     };
-    fabricAssetID= assetId;
+    fabricAssetID = assetId;
     const createRes = await apiClient.runTransactionV1({
       contractName,
       channelName,
@@ -468,7 +467,7 @@ test("BEFORE " + testCase, async (t: Test) => {
     });
     keychainPlugin.set(
       LockAssetContractJson.contractName,
-      LockAssetContractJson,
+      JSON.stringify(LockAssetContractJson),
     );
     const factory = new PluginFactoryLedgerConnector({
       pluginImportType: PluginImportType.Local,

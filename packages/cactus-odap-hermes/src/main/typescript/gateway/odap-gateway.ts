@@ -445,7 +445,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const InitializationRequestMessageHash = SHA256(
       JSON.stringify(req),
     ).toString();
-    this.checkValidInitializationRequest(req);
+    await this.checkValidInitializationRequest(req);
 
     const processedTimestamp: string = time.toString();
 
@@ -469,7 +469,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       )}`,
     );
     const commenceReqHash = SHA256(JSON.stringify(req)).toString();
-    this.checkValidtransferCommenceRequest(req, req.sessionID);
+    await this.checkValidtransferCommenceRequest(req, req.sessionID);
 
     const ack: TransferCommenceResponseMessage = {
       messageType: "urn:ietf:odap:msgtype:transfer-commenceack-msg",
@@ -670,9 +670,9 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     return { ok: "true" };
   }
 
-  public checkValidInitializationRequest(
+  public async checkValidInitializationRequest(
     req: InitializationRequestMessage,
-  ): void {
+  ): Promise<void> {
     const fnTag = `${this.className}#checkValidInitializationRequest()`;
     const strSignature = req.initializationRequestMessageSignature;
     const sourceSignature = new Uint8Array(Buffer.from(strSignature, "hex"));
@@ -735,10 +735,10 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     sessionData.initialMsgProcessedTimeStamp = ack.processedTimeStamp;
     this.sessions.set(sessionID, sessionData);
   }
-  public checkValidtransferCommenceRequest(
+  public async checkValidtransferCommenceRequest(
     req: TransferCommenceMessage,
     sessionID: string,
-  ): void {
+  ): Promise<void> {
     const fnTag = "${this.className}#checkValidtransferCommenceRequest()";
     if (req.messageType != "urn:ietf:odap:msgtype:transfer-commence-msg") {
       throw new Error(`${fnTag}, wrong message type for transfer commence`);

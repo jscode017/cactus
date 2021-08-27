@@ -1,0 +1,1073 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Hyperledger Cactus Plugin - Connector Besu",
+        "description": "Can perform basic tasks on a Besu ledger",
+        "version": "0.0.1",
+        "license": {
+            "name": "Apache 2.0",
+            "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "servers": [
+        {
+            "url": "https://www.cactus.stream/{basePath}",
+            "description": "Public test instance",
+            "variables": {
+                "basePath": {
+                    "default": ""
+                }
+            }
+        },
+        {
+            "url": "http://localhost:4000/{basePath}",
+            "description": "    ",
+            "variables": {
+                "basePath": {
+                    "default": ""
+                }
+            }
+        }
+    ],
+    "components": {
+        "schemas": {
+            "CredentialProfile":{
+                "type":"string",
+                "enum": [
+                    "SAML",
+                    "OAUTH",
+                    "X509"
+                ]
+            },  
+            "PayloadProfile":{
+                "type":"object",
+                "properties": {
+                    "assetProfile":{
+                        "$ref":"#/components/schemas/AssetProfile"
+                    },
+                    "capabilities":{
+                        "type":"string"
+                    }
+                },
+                "required": [
+                    "assetProfile"
+                ]
+            },
+            "ApplicationProfile":{
+                "type":"object"
+            },
+            "Payload":{
+                "type":"object"
+            },
+            "AssetProfile":{
+                "type":"object",
+                "properties": {
+                    "Issuer":{
+                        "type":"string"
+                    },
+                    "AssetCode":{
+                        "type":"string"
+                    },
+                    "AssetCodeType":{
+                        "type":"string"
+                    },
+                    "IssuanceDate":{
+                        "type":"string"
+                    },
+                    "ExpirationDate":{
+                        "type":"string"
+                    },
+                    "VerificationEndPoint":{
+                        "type":"string"
+                    },
+                    "DigitalSignature":{
+                        "type":"string"
+                    },
+                    "ProspectusLink":{
+                        "type":"string"
+                    },
+                    "KeyInformationLink":{
+                        "type": "array",
+                        "items": {}
+                    },
+                    "KeyWord":{
+                        "type": "array",
+                        "items": {}
+                    },
+                    "TransferRestriction":{
+                        "type": "array",
+                        "items": {}
+                    },
+                    "LedgerRequirements":{
+                        "type": "array",
+                        "items": {}
+                    }
+                },
+                "required": [
+                    "ExpirationDate"
+                ]
+            },
+            "LoggingProfile":{
+                "type":"array",
+                "items": {
+                    "type":"string"
+                }
+            },
+            "AccessControlProfile":{
+                "type":"array",
+                "items": {
+                    "type":"string"
+                }
+            },
+            "Permissions":{
+                "type":"object"
+            },
+            "Transaction":{
+                "type":"object"
+            },
+            "ActionCategory":{
+                "type":"object"
+            },
+            "History":{
+                "type":"object",
+                "properties": {
+                    "Transactions":{
+                        "type":"array",
+                        "items":{
+                            "$ref":"#/components/schemas/Transaction"
+                        }
+                    },
+                    "Actions":{
+                        "type":"array",
+                        "items":{
+                            "$ref":"#/components/schemas/ActionCategory"
+                        }
+                    },
+                    "Origin":{
+                        "type":"string"
+                    },
+                    "Destination":{
+                        "type":"string"
+                    },
+                    "Balance":{
+                        "type":"string"
+                    },
+                    "CurrentStatus":{
+                        "type":"object"
+                    },
+                    "ApplicationSpecificParameters":{
+                        "type":"object"
+                    }
+                }
+            },
+            "SenderDltSystem":{
+                "type":"object"
+            },
+            "RecipientDltSystem":{
+                "type":"object"
+            },
+
+            "LockEvidenceClaim":{
+                "type":"object"
+            },
+            "LockClaimFormat":{
+                "type":"object"
+            },
+            "CommitFinalClaim":{
+                "type":"object"
+            },
+            "CommitFinalClaimFormat":{
+                "type":"object"
+            },
+            "CommitAcknowledgementClaim":{
+                "type":"object"
+            },
+            "CommitAcknowledgementClaimFormat":{
+                "type":"object"
+            },
+            "InitializationRequestMessage":{
+                "type":"object",
+                "properties":{
+                    "version":{
+                        "type":"string"
+                    },
+                    "developerURN":{
+                        "type":"string"
+                    },
+                    "credentialProfile":{
+                        "$ref":"#/components/schemas/CredentialProfile"
+                    },
+                    "payloadProfile":{
+                        "$ref":  "#/components/schemas/PayloadProfile"
+                    },
+                    "applicationProfile":{
+                        "type": "string"
+                    },
+                    "loggingProfile":{
+                        "type": "string"
+                    },
+                    "accessControlProfile":{
+                        "type": "string"
+                    },
+                    "initializationRequestMessageSignature":{
+                        "type":"string"
+                    },
+                    "sourceGatewayPubkey":{
+                        "type":"string"
+                    },
+                    "sourceGateWayDltSystem":{
+                        "type":"string"
+                    },
+                    "recipientGateWayPubkey":{
+                        "type":"string"
+                    },
+                    "recipientGateWayDltSystem":{
+                        "type":"string"
+                    },
+                    "escrowType":{
+                        "type":"string",
+                        "enum":[
+                            "FAUCET",
+                            "TIMELOCK",
+                            "HASHLOCK",
+                            "HASHTIMELOCK",
+                            "MULTICLAIMPC",
+                            "DESTROY",
+                            "BURN"
+                        ]
+                    },
+                    "expiryTime":{
+                        "type":"string"
+                    },
+                    "multipleClaimsAllowed":{
+                        "type":"boolean"
+                    },
+                    "multipleCancelsAllowed":{
+                        "type":"boolean"
+                    },
+                    "permissions":{
+                        "$ref":"#/components/schemas/Permissions"
+                    },
+                    "origin":{
+                        "type":"string"
+                    },
+                    "destination":{
+                        "type":"string"
+                    },
+                    "subsequentCalls":{
+                        "type":"object"
+                    },
+                    "histories":{
+                        "type":"array",
+                        "items":{
+                            "$ref":"#/components/schemas/History"
+                        }
+                    }
+                },
+                "required": [
+                    "loggingProfile",
+                    "accessControlProfile",
+                    "payloadProfile",
+                    "applicationProfile",
+                    "initializationRequestMessageSignature",
+                    "sourceGatewayPubkey",
+                    "sourceGateWayDltSystem",
+                    "recipientGateWayPubkey",
+                    "recipientGateWayDltSystem"
+                ]
+            },
+            "InitialMessageAck":{
+                "type":"object",
+                "properties": {
+                    "sessionID":{
+                        "type":"string"
+                    },
+                    "sequenceNumber":{
+                        "type":"number"
+                    },
+                    "odapPhase":{
+                        "type":"string",
+                        "enum":[
+                            "TransferInitialization",
+                            "LockEvidenceVerification",
+                            "CommitmentEstablishment"
+                        ]
+                    },
+                    "initialRequestMessageHash":{
+                        "type":"string"
+                    },
+                    "destination":{
+                        "type":"string"
+                    },
+                    "timeStamp":{
+                        "type":"string"
+                    },
+                    "processedTimeStamp":{
+                        "type":"string"
+                    },
+                    "serverIdentityPubkey":{
+                        "type":"string"
+                    }
+                },
+                "required": [
+                    "initialRequestMessageHash",
+                    "timeStamp",
+                    "processedTimeStamp",
+                    "sessionID",
+                    "serverIdentityPubkey"
+                ]
+            },
+            "TransferCommenceMessage":{
+                "type":"object",
+                "properties": {
+                    "sessionID": {
+                        "type":"string"
+                    },
+                    "messageType":{
+                        "type":"string"
+                    },
+                    "originatorPubkey":{
+                        "type":"string"
+                    },
+                    "beneficiaryPubkey":{
+                        "type":"string"
+                    },
+                    "senderDltSystem":{
+                        "type": "string"
+                    },
+                    "recipientDltSystem":{
+                        "type": "string"
+                    },
+                    "clientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "serverIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "hashAssetProfile":{
+                        "type":"string"
+                    },
+                    "assetUnit":{
+                        "type":"integer"
+                    },
+                    "hashPrevMessage":{
+                        "type":"string"
+                    },
+                    "clientTransferNumber":{
+                        "type":"integer",
+                        "nullable": true
+                    },
+                    "clientSignature":{
+                        "type":"string"
+                    }
+                },
+                "required": [
+                    "sessionID",
+                    "messageType",
+                    "originatorPubkey",
+                    "beneficiaryPubkey",
+                    "senderDltSystem",
+                    "recipientDltSystem",
+                    "clientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "hashAssetProfile",
+                    "hashPrevMessage",
+                    "clientSignature"
+                ]
+            },
+            "TransferCommenceResponseMessage":{
+                "type":"object",
+                "properties": {
+                    "clientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "serverIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "hashCommenceRequest":{
+                        "type":"string"
+                    },
+                    "serverTransferNumber":{
+                        "type":"integer",
+                        "nullable":true
+                    },
+                    "serverSignature":{
+                        "type":"string"
+                    },
+                    "messageType":{
+                        "type":"string"
+                    },
+                    "messageHash":{
+                        "type":"string"
+                    }
+                },
+                "required": [
+                    "messageType",
+                    "serverIdentityPubkey",
+                    "clientIdentityPubkey",
+                    "hashCommenceRequest",
+                    "serverSignature"
+                ]
+            },
+            "LockEvidenceMessage":{
+                "type":"object",
+                "properties": {
+                    "sessionID":{
+                        "type":"string"
+                    },
+                    "clientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "serverIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "lockEvidenceClaim":{
+                        "type":"string"
+                    },
+                    "lockEvidenceFormat":{
+                        "$ref":"#/components/schemas/LockClaimFormat",
+                        "nullable":true
+                    },
+                    "lockEvidenceExpiration":{
+                        "type":"string"
+                    },
+                    "hashCommenceAckRequest":{
+                        "type":"string"
+                    },
+                    "clientTransferNumber":{
+                        "type":"integer",
+                        "nullable":true
+                    },
+                    "clientSignature":{
+                        "type":"string"
+                    },
+                    "messageType":{
+                        "type":"string"
+                    },
+                    "messageHash":{
+                        "type":"string"
+                    }
+                },
+                "required": [
+                    "sessionID",
+                    "messageType",
+                    "clientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "lockEvidenceClaim",
+                    "lockEvidenceExpiration",
+                    "hashCommenceAckRequest",
+                    "clientSignature"
+                ]
+            },
+            "LockEvidenceResponseMessage":{
+                "type":"object",
+                "properties": {
+                    "clientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "serverIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "hashLockEvidenceRequest":{
+                        "type":"string"
+                    },
+                    "serverTransferNumber":{
+                        "type":"integer",
+                        "nullable":true
+                    },
+                    "serverSignature":{
+                        "type":"string"
+                    },
+                    "messageType":{
+                        "type":"string"
+                    }
+                },
+                "required": [
+                    "messageType",
+                    "clientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "hashLockEvidenceRequest",
+                    "serverSignature"
+                ]
+            },
+            "CommitPreparationMessage":{
+                "type":"object",
+                "properties": {
+                    "sessionID":{
+                        "type":"string"
+                    },
+                    "messageType":{
+                        "type":"string"
+                    },
+                    "clientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "serverIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "hashLockEvidenceAck":{
+                        "type":"string"
+                    },
+                    "clientTransferNumber":{
+                        "type":"integer"
+                    },
+                    "clientSignature":{
+                        "type":"string"
+                    }
+                },
+                "required": [
+                    "sessionID",
+                    "messageType",
+                    "clientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "hashLockEvidenceAck",
+                    "clientSignature"
+                ]
+            },
+            "CommitPreparationResponse":{
+                "type":"object",
+                "properties": {
+                    "messageType":{
+                        "type":"string"
+                    },
+                    "clientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "serverIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "hashCommitPrep":{
+                        "type":"string"
+                    },
+                    "serverTransferNumber":{
+                        "type":"string"
+                    },
+                    "serverSignature":{
+                        "type":"string"
+                    }
+                },
+                "required": [
+                    "messageType",
+                    "clientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "hashCommitPrep",
+                    "serverSignature"
+                ]
+            },
+            "CommitFinalMessage":{
+                "type":"object",
+                "properties": {
+                    "sessionID":{
+                        "type":"string"
+                    },
+                    "messageType":{
+                        "type":"string"
+                    },
+                    "clientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "serverIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "commitFinalClaim":{
+                        "type":"string"
+                    },
+                    "commitFinalClaimFormat":{
+                        "$ref":"#/components/schemas/CommitFinalClaimFormat"
+                    },
+                    "hashCommitPrepareAck":{
+                        "type":"string"
+                    },
+                    "clientTransferNumber":{
+                        "type":"integer",
+                        "nullable": true
+                    },
+                    "clientSignature":{
+                        "type":"string"
+                    }
+                },
+                "required": [
+                    "sessionID",
+                    "messageType",
+                    "clientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "commitFinalClaim",
+                    "hashCommitPrepareAck",
+                    "clientSignature"
+                ]
+            },
+            "CommitFinalResponseMessage":{
+                "type":"object",
+                "properties": {
+                    "messageType":{
+                        "type":"string"
+                    },
+                    "clientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "serverIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "commitAcknowledgementClaim":{
+                        "type": "string"
+                    },
+                    "commitAcknowledgementClaimFormat":{
+                        "$ref":"#/components/schemas/CommitAcknowledgementClaimFormat"
+                    },
+                    "hashCommitFinal":{
+                        "type":"string"
+                    },
+                    "serverTransferNumber":{
+                        "type":"integer"
+                    },
+                    "serverSignature":{
+                        "type":"string"
+                    }
+                },
+                "required": [
+                    "messageType",
+                    "ClientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "commitAcknowledgementClaim",
+                    "hashCommitFinal",
+                    "serverSignature"
+                ]
+            },
+            "TransferCompleteMessage":{
+                "type":"object",
+                "properties": {
+                    "sessionID":{
+                        "type":"string"
+                    },
+                    "messageType":{
+                        "type":"string"
+                    },
+                    "clientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "serverIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "hashCommitFinalAck":{
+                        "type":"string"
+                    },
+                    "clientTransferNumber":{
+                        "type":"integer",
+                        "nullable":true
+                    },
+                    "clientSignature":{
+                        "type":"string"
+                    },
+                    "hashTransferCommence":{
+                        "type": "string"
+                    }   
+                },
+                "required": [
+                    "sessionID",
+                    "messageType",
+                    "clientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "hashCommitFinalAck",
+                    "clientSignature",
+                    "hashTransferCommence"
+                ]
+            },
+            "TransferCompletMessageResponse":{
+                "type":"object",
+                "properties": {
+                    "ok":{
+                        "type":"string"
+                    }
+                },
+                "required": [
+                    "ok"
+                ]
+            },
+            "SendClientRequestMessage":{
+                "type":"object",
+                "properties": {
+                    "version":{
+                        "type":"string"
+                    },
+                    "loggingProfile":{
+                        "type":"string"
+                    },
+                    "accessControlProfile":{
+                        "type":"string"
+                    },
+                    "assetControlProfile":{
+                        "type":"string"
+                    },
+                    "applicationProfile":{
+                        "type":"string"
+                    },
+                    "assetProfile":{
+                        "$ref":"#/components/schemas/AssetProfile"
+                    },
+                    "payLoadProfile":{
+                        "$ref":"#/components/schemas/PayloadProfile"
+                    },
+                    "sourceGateWayDltSystem":{
+                        "type":"string"
+                    },
+                    "recipientGateWayDltSystem":{
+                        "type":"string"
+                    },
+                    "recipientGateWayPubkey":{
+                        "type":"string"
+                    },
+                    "originatorPubkey": {
+                        "type":"string"
+                    },
+                    "beneficiaryPubkey":{
+                        "type":"string"
+                    },
+                    "clientIdentityPubkey":{
+                        "type":"string"
+                    },
+                    "serverIdentityPubkey": {
+                        "type":"string"
+                    },
+                    "clientDltSystem": {
+                        "type":"string"
+                    },
+                    "serverDltSystem": {
+                        "type":"string"
+                    },
+                    "serverGatewayConfiguration": {
+                        "type":"object",
+                        "properties": {
+                            "apiHost":{
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "apiHost"
+                        ]
+                    }
+                },
+                "required": [
+                    "serverGatewayConfiguration",
+                    "version",
+                    "loggingProfile",
+                    "accessControlProfile",
+                    "assetControlProfile",
+                    "applicationProfile",
+                    "assetProfile",
+                    "payLoadProfile",
+                    "sourceGateWayDltSystem",
+                    "recipientGateWayDltSystem",
+                    "recipientGateWayPubkey",
+                    "originatorPubkey",
+                    "beneficiaryPubkey",
+                    "clientIdentityPubkey",
+                    "serverIdentityPubkey",
+                    "clientDltSystem",
+                    "serverDltSystem",
+                    "serverGatewayInstanceID"
+                ]
+            },
+            "OdapMessage":{
+                "type":"object",
+                "properties": {
+                    "SequenceNumber":{
+                        "type":"number"
+                    },
+                    "Phase":{
+                        "type":"string",
+                        "enum":[
+                            "TransferInitialization",
+                            "LockEvidenceVerification",
+                            "CommitmentEstablishment"
+                        ]
+                    },
+                    "ResourceURL":{
+                        "type":"string"
+                    },
+                    "DeveloperURN":{
+                        "type":"string"
+                    },
+                    "ActionResponse":{
+                        "type":"object",
+                        "properties": {
+                            "ResponseCode":{
+                                "type":"string",
+                                "enum":[
+                                    "200",
+                                    "404"
+                                ],
+                                "x-enum-varnames":[
+                                    "OK",
+                                    "RESOURCE_NOT_FOUND"
+                                ]
+                            },
+                            "Arguments":{
+                                "type":"array",
+                                "items":{}
+                            }
+                        }
+                    },
+                    "CredentialProfile":{
+                        "type":"string",
+                        "enum":[
+                            "SAML",
+                            "OAuth",
+                            "X509"
+                        ]
+                    },
+                    "CredentialBlock":{
+                        "type":"array",
+                        "items":{}
+                    },
+                    "CredentialsProfile":{
+                        "$ref":"#/components/schemas/PayloadProfile"
+                    },
+                    "ApplicationProfile":{
+                        "$ref":"#/components/schemas/ApplicationProfile"
+                    },
+                    "Payload":{
+                        "$ref":"#/components/schemas/Payload"
+                    },
+                    "PayloadHash":{
+                        "type":"string"
+                    },
+                    "MessageSignature":{
+                        "type":"string"
+                    }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/api/v1/phase1/transferinitiation":{
+            "post":{
+                "x-hyperledger-cactus": {
+                    "http": {
+                        "verbLowerCase": "post",
+                        "path": "/api/v1/phase1/transferinitiation"
+                    }
+                },
+                "operationId": "apiV1Phase1TransferInitiation",
+                "description":"",
+                "requestBody":{
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InitializationRequestMessage"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InitialMessageAck"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/phase2/transfercommence":{
+            "post":{
+                "x-hyperledger-cactus": {
+                    "http": {
+                        "verbLowerCase": "post",
+                        "path": "/api/v1/phase2/transfercommence"
+                    }
+                },
+                "operationId": "apiV1Phase2TransferCommence",
+                "description":"",
+                "requestBody":{
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TransferCommenceMessage"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TransferCommenceResponseMessage"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/phase2/lockevidence":{
+            "post":{
+                "x-hyperledger-cactus": {
+                    "http": {
+                        "verbLowerCase": "post",
+                        "path": "/api/v1/phase2/lockevidence"
+                    }
+                },
+                "operationId": "apiV1Phase2LockEvidence",
+                "description":"",
+                "requestBody":{
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LockEvidenceMessage"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LockEvidenceResponseMessage"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/phase3/commitpreparation":{
+            "post":{
+                "x-hyperledger-cactus": {
+                    "http": {
+                        "verbLowerCase": "post",
+                        "path": "/api/v1/phase3/commitpreparation"
+                    }
+                },
+                "operationId": "apiV1Phase3CommitPreparation",
+                "description":"",
+                "requestBody":{
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CommitPreparationMessage"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CommitPreparationResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/phase3/commitfinal":{
+            "post":{
+                "x-hyperledger-cactus": {
+                    "http": {
+                        "verbLowerCase": "post",
+                        "path": "/api/v1/phase3/commitfinal"
+                    }
+                },
+                "operationId": "apiV1Phase3CommitFinal",
+                "description":"",
+                "requestBody":{
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref":  "#/components/schemas/CommitFinalMessage"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CommitFinalResponseMessage"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/phase3/transfercomplete":{
+            "get":{
+                "x-hyperledger-cactus": {
+                    "http": {
+                        "verbLowerCase": "get",
+                        "path": "/api/v1/phase3/transfercomplete"
+                    }
+                },
+                "operationId": "apiV1Phase3TransferComplete",
+                "description":"",
+                "requestBody":{
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TransferCompleteMessage"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/sendclientrequest":{
+            "post":{
+                "x-hyperledger-cactus": {
+                    "http": {
+                        "verbLowerCase": "post",
+                        "path": "/api/v1/sendclientrequest"
+                    }
+                },
+                "operationId": "apiV1SendClientRequest",
+                "description":"",
+                "requestBody":{
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SendClientRequestMessage"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }   
+}

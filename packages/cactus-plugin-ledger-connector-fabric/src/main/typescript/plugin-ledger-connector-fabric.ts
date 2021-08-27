@@ -73,6 +73,7 @@ import {
   FabricSigningCredential,
   DefaultEventHandlerStrategy,
   FabricSigningCredentialType,
+  GetTransactionReceiptResponse,
 } from "./generated/openapi/typescript-axios/index";
 
 import {
@@ -103,6 +104,13 @@ import {
   CertDatastore,
   IIdentityData,
 } from "./identity/internal/cert-datastore";
+import { GetTransactionReceiptByTxIDEndpointV1 } from "./get-transaction-receipt/get-transaction-receipt-by-txid-endpoint-v1";
+//import { common } from "fabric-protos";
+import {
+  getTransactionReceiptForLockContractByTxID,
+  IGetTransactionReceiptByTxIDOptions,
+} from "./common/get-transaction-receipt-by-tx-id";
+//const { BlockDecoder } = require("fabric-common");
 /**
  * Constant value holding the default $GOPATH in the Fabric CLI container as
  * observed on fabric deployments that are produced by the official examples
@@ -816,6 +824,14 @@ export class PluginLedgerConnectorFabric
       const endpoint = new RunTransactionEndpointV1(opts);
       endpoints.push(endpoint);
     }
+    {
+      const opts: IRunTransactionEndpointV1Options = {
+        connector: this,
+        logLevel: this.opts.logLevel,
+      };
+      const endpoint = new GetTransactionReceiptByTxIDEndpointV1(opts);
+      endpoints.push(endpoint);
+    }
 
     {
       const opts: IGetPrometheusExporterMetricsEndpointV1Options = {
@@ -956,6 +972,7 @@ export class PluginLedgerConnectorFabric
 
       let out: Buffer;
       let success: boolean;
+      let transactionId = "";
       switch (invocationType) {
         case FabricContractInvocationType.Call: {
           out = await contract.evaluateTransaction(fnName, ...params);
@@ -994,6 +1011,7 @@ export class PluginLedgerConnectorFabric
             tx.setEndorsingPeers(endorsers);
           }
           out = await tx.submit(...params);
+          transactionId = tx.getTransactionId();
           success = true;
           break;
         }
@@ -1041,6 +1059,7 @@ export class PluginLedgerConnectorFabric
       const res: RunTransactionResponse = {
         functionOutput: outUtf8,
         success,
+        transactionId: transactionId,
       };
       gateway.disconnect();
       this.log.debug(`transact() response: %o`, res);
@@ -1051,6 +1070,17 @@ export class PluginLedgerConnectorFabric
       this.log.error(`transact() crashed: `, ex);
       throw new Error(`${fnTag} Unable to run transaction: ${ex.message}`);
     }
+  }
+  public async getTransactionReceiptByTxID(
+    req: RunTransactionRequest,
+  ): Promise<GetTransactionReceiptResponse> {
+    const gateway = await this.createGateway(req);
+    const options: IGetTransactionReceiptByTxIDOptions = {
+      channelName: req.channelName,
+      params: req.params,
+      gateway: gateway,
+    };
+    return await getTransactionReceiptForLockContractByTxID(options);
   }
 
   /**

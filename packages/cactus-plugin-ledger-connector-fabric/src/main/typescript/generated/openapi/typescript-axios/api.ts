@@ -686,6 +686,73 @@ export interface GatewayOptionsWallet {
 /**
  * 
  * @export
+ * @interface GetTransactionReceiptResponse
+ */
+export interface GetTransactionReceiptResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof GetTransactionReceiptResponse
+     */
+    blockNumber?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetTransactionReceiptResponse
+     */
+    channelID?: string;
+    /**
+     * 
+     * @type {any}
+     * @memberof GetTransactionReceiptResponse
+     */
+    transactionCreator?: any | null;
+    /**
+     * 
+     * @type {Array<any>}
+     * @memberof GetTransactionReceiptResponse
+     */
+    transactionEndorsement?: Array<any>;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetTransactionReceiptResponse
+     */
+    chainCodeName?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetTransactionReceiptResponse
+     */
+    chainCodeVersion?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetTransactionReceiptResponse
+     */
+    responseStatus?: string;
+    /**
+     * 
+     * @type {any}
+     * @memberof GetTransactionReceiptResponse
+     */
+    rwsetKey?: any | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetTransactionReceiptResponse
+     */
+    rwsetWriteData?: string;
+    /**
+     * 
+     * @type {any}
+     * @memberof GetTransactionReceiptResponse
+     */
+    blockMeteData?: any | null;
+}
+/**
+ * 
+ * @export
  * @interface InlineResponse501
  */
 export interface InlineResponse501 {
@@ -781,6 +848,12 @@ export interface RunTransactionResponse {
      * @memberof RunTransactionResponse
      */
     success: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof RunTransactionResponse
+     */
+    transactionId: string;
 }
 /**
  * 
@@ -939,6 +1012,42 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
+         * @summary get a transaction receipt by tx id on a Fabric ledger.
+         * @param {RunTransactionRequest} runTransactionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTransactionReceiptByTxIDV1: async (runTransactionRequest: RunTransactionRequest, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'runTransactionRequest' is not null or undefined
+            assertParamExists('getTransactionReceiptByTxIDV1', 'runTransactionRequest', runTransactionRequest)
+            const localVarPath = `/api/v1/plugins/@hyperledger/cactus-plugin-ledger-connector-fabric/get-transaction-receipt-by-txid`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(runTransactionRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Runs a transaction on a Fabric ledger.
          * @param {RunTransactionRequest} runTransactionRequest 
          * @param {*} [options] Override http request option.
@@ -1017,6 +1126,17 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary get a transaction receipt by tx id on a Fabric ledger.
+         * @param {RunTransactionRequest} runTransactionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTransactionReceiptByTxIDV1(runTransactionRequest: RunTransactionRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetTransactionReceiptResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTransactionReceiptByTxIDV1(runTransactionRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Runs a transaction on a Fabric ledger.
          * @param {RunTransactionRequest} runTransactionRequest 
          * @param {*} [options] Override http request option.
@@ -1064,6 +1184,16 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          */
         getPrometheusMetricsV1(options?: any): AxiosPromise<string> {
             return localVarFp.getPrometheusMetricsV1(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary get a transaction receipt by tx id on a Fabric ledger.
+         * @param {RunTransactionRequest} runTransactionRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTransactionReceiptByTxIDV1(runTransactionRequest: RunTransactionRequest, options?: any): AxiosPromise<GetTransactionReceiptResponse> {
+            return localVarFp.getTransactionReceiptByTxIDV1(runTransactionRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1118,6 +1248,18 @@ export class DefaultApi extends BaseAPI {
      */
     public getPrometheusMetricsV1(options?: any) {
         return DefaultApiFp(this.configuration).getPrometheusMetricsV1(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary get a transaction receipt by tx id on a Fabric ledger.
+     * @param {RunTransactionRequest} runTransactionRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getTransactionReceiptByTxIDV1(runTransactionRequest: RunTransactionRequest, options?: any) {
+        return DefaultApiFp(this.configuration).getTransactionReceiptByTxIDV1(runTransactionRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

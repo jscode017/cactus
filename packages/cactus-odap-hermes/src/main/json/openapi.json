@@ -317,6 +317,140 @@
                     "serverIdentityPubkey"
                 ]
             },
+            "SessionData":{
+                "type":"object",
+                "properties":{
+                    "step": {
+                        "type":"number"
+                    },
+                    "initializationMsgHash": {
+                        "type":"string"
+                    },
+                    "loggingProfile": {
+                        "type":"string"
+                    },
+                    "accessControlProfile": {
+                        "type":"string"
+                    },
+                    "applicationProfile": {
+                        "type":"string"
+                    },
+                    "assetProfile": {
+                        "$ref":"#/components/schemas/AssetProfile"
+                    },
+                    "initializationRequestMsgSignature": {
+                        "type":"string"
+                    },
+                    "sourceGateWayPubkey": {
+                        "type":"string"
+                    },
+                    "sourceGateWayDltSystem": {
+                        "type":"string"
+                    },
+                    "recipientGateWayPubkey": {
+                        "type":"string"
+                    },
+                    "recipientGateWayDltSystem": {
+                        "type":"string"
+                    },
+                    "initialMsgRcvTimeStamp": {
+                        "type":"string"
+                    },
+                    "initialMsgProcessedTimeStamp": {
+                        "type":"string"
+                    },
+                    "originatorPubkey": {
+                        "type":"string"
+                    },
+                    "beneficiaryPubkey": {
+                        "type":"string"
+                    },
+                    "clientIdentityPubkey": {
+                        "type":"string"
+                    },
+                    "serverIdentityPubkey": {
+                        "type":"string"
+                    },
+                    "clientDltSystem": {
+                        "type":"string"
+                    },
+                    "serverDltSystem": {
+                        "type":"string"
+                    },
+                    "commenceReqHash": {
+                        "type":"string"
+                    },
+                    "commenceAckHash": {
+                        "type":"string"
+                    },
+                    "clientSignatureForCommenceReq": {
+                        "type":"string"
+                    },
+                    "serverSignatureForCommenceAck": {
+                        "type":"string"
+                    },
+                    "lockEvidenceClaim": {
+                        "type":"string"
+                    },
+                    "clientSignatureForLockEvidence": {
+                        "type":"string"
+                    },
+                    "serverSignatureForLockEvidence": {
+                        "type":"string"
+                    },
+                    "lockEvidenceAckHash": {
+                        "type":"string"
+                    },
+                    "clientSignatureForCommitPreparation": {
+                        "type":"string"
+                    },
+                    "commitPrepareReqHash": {
+                        "type":"string"
+                    },
+                    "commitPrepareAckHash": {
+                        "type":"string"
+                    },
+                    "serverSignatureForCommitPreparation": {
+                        "type":"string"
+                    },  
+                    "commitFinalClaim": {
+                        "type":"string"
+                    },
+                    "clientSignatureForCommitFinal": {
+                        "type":"string"
+                    },
+                    "commitAckClaim": {
+                        "type":"string"
+                    },
+                    "serverSignatureForCommitFinal": {
+                        "type":"string"
+                    },
+                    "commitFinalReqHash": {
+                        "type":"string"
+                    },
+                    "commitFinalAckHash": {
+                        "type":"string"
+                    },
+                    "isFabricAssetDeleted": {
+                        "type":"boolean"
+                    },
+                    "isFabricAssetLocked": {
+                        "type":"boolean"
+                    },
+                    "isBesuAssetCreated": {
+                        "type":"boolean"
+                    },
+                    "fabricAssetID": {
+                        "type":"string"
+                    },
+                    "fabricAssetSize": {
+                        "type":"number"
+                    },
+                    "besuAssetID": {
+                        "type":"string"
+                    }
+                }
+            },
             "TransferCommenceMessage":{
                 "type":"object",
                 "properties": {

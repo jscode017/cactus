@@ -970,6 +970,271 @@ export interface SendClientRequestMessageServerGatewayConfiguration {
 /**
  * 
  * @export
+ * @interface SessionData
+ */
+export interface SessionData {
+    /**
+     * 
+     * @type {number}
+     * @memberof SessionData
+     */
+    step?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    initializationMsgHash?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    loggingProfile?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    accessControlProfile?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    applicationProfile?: string;
+    /**
+     * 
+     * @type {AssetProfile}
+     * @memberof SessionData
+     */
+    assetProfile?: AssetProfile;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    initializationRequestMsgSignature?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    sourceGateWayPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    sourceGateWayDltSystem?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    recipientGateWayPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    recipientGateWayDltSystem?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    initialMsgRcvTimeStamp?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    initialMsgProcessedTimeStamp?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    originatorPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    beneficiaryPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    clientIdentityPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    serverIdentityPubkey?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    clientDltSystem?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    serverDltSystem?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    commenceReqHash?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    commenceAckHash?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    clientSignatureForCommenceReq?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    serverSignatureForCommenceAck?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    lockEvidenceClaim?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    clientSignatureForLockEvidence?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    serverSignatureForLockEvidence?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    lockEvidenceAckHash?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    clientSignatureForCommitPreparation?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    commitPrepareReqHash?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    commitPrepareAckHash?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    serverSignatureForCommitPreparation?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    commitFinalClaim?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    clientSignatureForCommitFinal?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    commitAckClaim?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    serverSignatureForCommitFinal?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    commitFinalReqHash?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    commitFinalAckHash?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SessionData
+     */
+    isFabricAssetDeleted?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SessionData
+     */
+    isFabricAssetLocked?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SessionData
+     */
+    isBesuAssetCreated?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    fabricAssetID?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof SessionData
+     */
+    fabricAssetSize?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof SessionData
+     */
+    besuAssetID?: string;
+}
+/**
+ * 
+ * @export
  * @interface TransferCommenceMessage
  */
 export interface TransferCommenceMessage {

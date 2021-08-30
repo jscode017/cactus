@@ -437,7 +437,16 @@
                     "isFabricAssetLocked": {
                         "type":"boolean"
                     },
+                    "isFabricAssetCreated": {
+                        "type":"boolean"
+                    },
                     "isBesuAssetCreated": {
+                        "type":"boolean"
+                    },
+                    "isBesuAssetDeleted": {
+                        "type":"boolean"
+                    },
+                    "isBesuAssetLocked": {
                         "type":"boolean"
                     },
                     "fabricAssetID": {

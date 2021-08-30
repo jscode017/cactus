@@ -1212,7 +1212,25 @@ export interface SessionData {
      * @type {boolean}
      * @memberof SessionData
      */
+    isFabricAssetCreated?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SessionData
+     */
     isBesuAssetCreated?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SessionData
+     */
+    isBesuAssetDeleted?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SessionData
+     */
+    isBesuAssetLocked?: boolean;
     /**
      * 
      * @type {string}

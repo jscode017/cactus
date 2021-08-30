@@ -209,7 +209,10 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
   public async Revert(sessionID: string): Promise<void> {
     const sessionData = this.sessions.get(sessionID);
     if (sessionData == undefined) return;
-    if (sessionData.isFabricAssetDeleted) {
+    if (
+      sessionData.isFabricAssetDeleted != undefined &&
+      sessionData.isFabricAssetDeleted
+    ) {
       if (this.fabricApi == undefined) return;
       await this.fabricApi.runTransactionV1({
         signingCredential: this.fabricSigningCredential,
@@ -219,7 +222,10 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         methodName: "CreateAsset",
         params: [sessionData.fabricAssetID, sessionData.fabricAssetSize],
       } as FabricRunTransactionRequest);
-    } else if (sessionData.isFabricAssetLocked) {
+    } else if (
+      sessionData.isFabricAssetLocked != undefined &&
+      sessionData.isFabricAssetLocked
+    ) {
       if (this.fabricApi == undefined) return;
       await this.fabricApi.runTransactionV1({
         signingCredential: this.fabricSigningCredential,
@@ -229,13 +235,57 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         methodName: "UnLockAsset",
         params: [sessionData.fabricAssetID],
       } as FabricRunTransactionRequest);
-    } else if (sessionData.isBesuAssetCreated) {
+    } else if (
+      sessionData.isFabricAssetCreated != undefined &&
+      sessionData.isFabricAssetCreated
+    ) {
+      if (this.fabricApi == undefined) return;
+      await this.fabricApi.runTransactionV1({
+        signingCredential: this.fabricSigningCredential,
+        channelName: this.fabricChannelName,
+        contractName: this.fabricContractName,
+        invocationType: FabricContractInvocationType.Send,
+        methodName: "CreateAsset",
+        params: [sessionData.fabricAssetID],
+      } as FabricRunTransactionRequest);
+    } else if (
+      sessionData.isBesuAssetCreated != undefined &&
+      sessionData.isBesuAssetCreated
+    ) {
       //DO we really need this?
       if (this.besuApi == undefined) return;
       await this.besuApi.invokeContractV1({
         contractName: this.besuContractName,
         invocationType: EthContractInvocationType.Send,
         methodName: "deleteAsset",
+        gas: 1000000,
+        params: [this.besuAssetID],
+        signingCredential: this.besuWeb3SigningCredential,
+        keychainId: this.besuKeychainId,
+      } as BesuInvokeContractV1Request);
+    } else if (
+      sessionData.isBesuAssetDeleted != undefined &&
+      sessionData.isBesuAssetDeleted
+    ) {
+      if (this.besuApi == undefined) return;
+      await this.besuApi.invokeContractV1({
+        contractName: this.besuContractName,
+        invocationType: EthContractInvocationType.Send,
+        methodName: "createAsset",
+        gas: 1000000,
+        params: [this.besuAssetID],
+        signingCredential: this.besuWeb3SigningCredential,
+        keychainId: this.besuKeychainId,
+      } as BesuInvokeContractV1Request);
+    } else if (
+      sessionData.isBesuAssetLocked != undefined &&
+      sessionData.isBesuAssetLocked
+    ) {
+      if (this.besuApi == undefined) return;
+      await this.besuApi.invokeContractV1({
+        contractName: this.besuContractName,
+        invocationType: EthContractInvocationType.Send,
+        methodName: "unLockAsset",
         gas: 1000000,
         params: [this.besuAssetID],
         signingCredential: this.besuWeb3SigningCredential,

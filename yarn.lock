@@ -3637,11 +3637,21 @@
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/@types/dockerode/-/dockerode-3.2.7.tgz#0bc1f583b0e1edc4ca0c6179ef251382df35dcb3"
   integrity sha512-Y8hMRQTwsOjz4qm6yilZKKjB/Y7+2EOiY3RPN1Xtu63wEUEDVv+3Ou+sgiisPE9+pVe3bmwhnF+E1Iwj/o4J6w==
-
+  dependencies:
+    "@types/docker-modem" "*"
+    "@types/node" "*"
 "@types/crypto-js@^4.0.1":
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/@types/crypto-js/-/crypto-js-4.0.2.tgz#4524325a175bf819fec6e42560c389ce1fb92c97"
   integrity sha512-sCVniU+h3GcGqxOmng11BRvf9TfN9yIs8KKjB8C8d75W69cpTfZG80gau9yTx5SxF3gvHGbJhdESzzvnjtf3Og==
+
+"@types/dockerode@2.5.28":
+  version "2.5.28"
+  resolved "https://registry.yarnpkg.com/@types/dockerode/-/dockerode-2.5.28.tgz#e8fe6366782d052be3da7e508617f3c820defc1a"
+  integrity sha512-YHs025G2P+h+CDlmub33SY/CvGWCHpHATbgq73wykyvnZZjL0Iq+w+Vv214w3cac5McimFhsVecDJBNgPuMo4Q==
+  dependencies:
+    "@types/docker-modem" "*"
+    "@types/node" "*"
 
 "@types/elliptic@^6.4.9":
   version "6.4.13"
@@ -3891,6 +3901,15 @@
   version "14.17.12"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.17.12.tgz#7a31f720b85a617e54e42d24c4ace136601656c7"
   integrity sha512-vhUqgjJR1qxwTWV5Ps5txuy2XMdf7Fw+OrdChRboy8BmWUPkckOhphaohzFG6b8DW7CrxaBMdrdJ47SYFq1okw==
+"@types/node@^10.12.18", "@types/node@^10.3.2":
+  version "10.17.60"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.60.tgz#35f3d6213daed95da7f0f73e75bcc6980e90597b"
+  integrity sha512-F0KIgDJfy2nA3zMLmWGKxcH2ZVEtCZXHHdOQs2gSaQ27+lNeEfGxzkIw90aXswATX7AZ33tahPbzy6KAfUreVw==
+
+"@types/node@^12.0.12", "@types/node@^12.12.6":
+  version "12.20.19"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.19.tgz#538e61fc220f77ae4a4663c3d8c3cb391365c209"
+  integrity sha512-niAuZrwrjKck4+XhoCw6AAVQBENHftpXw9F4ryk66fTgYaKQ53R4FI7c9vUGGw5vQis1HKBHDR1gcYI/Bq1xvw==
 
 "@types/node@^12.6.1":
   version "12.20.20"
@@ -4068,7 +4087,7 @@
   dependencies:
     "@types/tape" "*"
 
-"@types/tape@*", "@types/tape@4.13.2":
+"@types/tape@*", "@types/tape@^4.13.0", "@types/tape@4.13.2":
   version "4.13.2"
   resolved "https://registry.yarnpkg.com/@types/tape/-/tape-4.13.2.tgz#77215c065b1c7840da3ca5e061337bb4c7258122"
   integrity sha512-V1ez/RtYRGN9cNYApw5xf27DpMkTB0033X6a2i3KUmKhSojBfbWN0i3EgZxboUG96WJLHLdOyZ01aiZwVW5aSA==
@@ -7466,7 +7485,7 @@ deep-equal@^1.0.1:
     object-keys "^1.1.1"
     regexp.prototype.flags "^1.2.0"
 
-deep-equal@^2.0.5:
+deep-equal@^2.0.3, deep-equal@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-2.0.5.tgz#55cd2fe326d83f9cbf7261ef0e060b3f724c5cb9"
   integrity sha512-nPiRgmbAtm1a3JsnLCf6/SLfXcjyN5v8L1TXzdCmHrXJ4hx+gW/w1YCcn7z8gJtSiDArZCgYtbao3QqLm/N1Sw==
@@ -7787,11 +7806,6 @@ docker-modem@^3.0.0:
     split-ca "^1.0.1"
     ssh2 "^0.8.7"
 
-dockerode@3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/dockerode/-/dockerode-3.3.0.tgz#bedaf48ef9fa9124275a54a9881a92374c51008e"
-  integrity sha512-St08lfOjpYCOXEM8XA0VLu3B3hRjtddODphNW5GFoA0AS3JHgoPQKOz0Qmdzg3P+hUPxhb02g1o1Cu1G+U3lRg==
-
 docker-modem@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/docker-modem/-/docker-modem-3.0.0.tgz#cb912ad8daed42f858269fb3be6944df281ec12d"
@@ -7801,6 +7815,14 @@ docker-modem@^3.0.0:
     readable-stream "^3.5.0"
     split-ca "^1.0.1"
     ssh2 "^0.8.7"
+
+dockerode@3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/dockerode/-/dockerode-3.2.0.tgz#80e5bd9c2a988bdde4c995ae4aa2584fa0166c23"
+  integrity sha512-C+y/W4Kks7YLBsfUOTMkk1IVilb4cdj+rE+UZ5hnE+rpcn2frSs7kX+6H8GteTqHcv8sln+GyxuP1qdno3IzIw==
+  dependencies:
+    docker-modem "^3.0.0"
+    tar-fs "~2.0.1"
 
 dockerode@^3.3.0:
   version "3.3.0"
@@ -8034,6 +8056,16 @@ elegant-spinner@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/elegant-spinner/-/elegant-spinner-2.0.0.tgz#f236378985ecd16da75488d166be4b688fd5af94"
   integrity sha512-5YRYHhvhYzV/FC4AiMdeSIg3jAYGq9xFvbhZMpPlJoBsfYgrw2DSCYeXfat6tYBu45PWiyRr3+flaCPPmviPaA==
+
+elliptic@6.3.3:
+  version "6.3.3"
+  resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.3.3.tgz#5482d9646d54bcb89fd7d994fc9e2e9568876e3f"
+  integrity sha1-VILZZG1UvLif19mU/J4ulWiHbj8=
+  dependencies:
+    bn.js "^4.4.0"
+    brorand "^1.0.1"
+    hash.js "^1.0.0"
+    inherits "^2.0.1"
 
 elliptic@6.5.4, elliptic@^6.4.0, elliptic@^6.4.1, elliptic@^6.5.2, elliptic@^6.5.3, elliptic@^6.5.4:
   version "6.5.4"
@@ -11539,7 +11571,7 @@ is-redirect@^1.0.0:
   resolved "https://registry.yarnpkg.com/is-redirect/-/is-redirect-1.0.0.tgz#1d03dded53bd8db0f30c26e4f95d36fc7c87dc24"
   integrity sha1-HQPd7VO9jbDzDCbk+V02/HyH3CQ=
 
-is-regex@^1.0.4, is-regex@^1.1.1, is-regex@^1.1.3, is-regex@^1.1.4:
+is-regex@^1.0.4, is-regex@^1.0.5, is-regex@^1.1.1, is-regex@^1.1.3, is-regex@^1.1.4:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/is-regex/-/is-regex-1.1.4.tgz#eef5663cd59fa4c0ae339505323df6854bb15958"
   integrity sha512-kvRdxDsxZjhzUX07ZnLydzS1TU/TJlTUHHY4YLL87e37oUA49DfkLqgy+VjFocowy29cKvcSiu+kIv728jTTVg==
@@ -14412,7 +14444,7 @@ object-inspect@^1.11.0, object-inspect@^1.9.0:
   resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.11.0.tgz#9dceb146cedd4148a0d9e51ab88d34cf509922b1"
   integrity sha512-jp7ikS6Sd3GxQfZJPyH3cjcbJF6GZPClgdV+EFygjFLQ5FmW/dRUnTd9PQ9k0JhoNDabWFbpF1yCdSWCC6gexg==
 
-object-is@^1.0.1, object-is@^1.1.4, object-is@^1.1.5:
+object-is@^1.0.1, object-is@^1.1.2, object-is@^1.1.4, object-is@^1.1.5:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/object-is/-/object-is-1.1.5.tgz#b9deeaa5fc7f1846a0faecdceec138e5778f53ac"
   integrity sha512-3cyDsyHgtmi7I7DfSSI2LDp6SK2lwvtbg0p0R1e0RvTqF5ceGx+K2dfSjm1bKDMVCFEDAQvy+o8c6a7VujOddw==
@@ -17050,6 +17082,11 @@ scrypt-js@^3.0.0, scrypt-js@^3.0.1:
   resolved "https://registry.yarnpkg.com/scrypt-js/-/scrypt-js-3.0.1.tgz#d314a57c2aef69d1ad98a138a21fe9eafa9ee312"
   integrity sha512-cdwTTnqPu0Hyvf5in5asVdZocVDTNRmR7XEcJuIzMjJeSHybHl7vpB66AzwTaIg6CLSbtjcxc8fqcySfnTkccA==
 
+scryptsy@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/scryptsy/-/scryptsy-2.1.0.tgz#8d1e8d0c025b58fdd25b6fa9a0dc905ee8faa790"
+  integrity sha512-1CdSqHQowJBnMAFyPEBRfqag/YP9OF394FV+4YREIJX4ljD7OxvQRDayyoyyCk+senRjSkP6VnUNQmVQqB6g7w==
+
 secp256k1@4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-4.0.0.tgz#1c5def3be9f86c679839110fd6be30d53f34f1a9"
@@ -19164,6 +19201,16 @@ typescript-optional@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/typescript-optional/-/typescript-optional-2.0.1.tgz#1dd4826bd751f78756e7eb3f96a16fbbeb3f7ee6"
   integrity sha512-xuwmqsCjE4OeeMKxbNX3jjNcISGzYh5Q9R1rM5OyxEVNIr94CB5llCkfKW+1nZTKbbUV0axN3QAUuX2fus/DhQ==
+
+typescript@4.2.4:
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.2.4.tgz#8610b59747de028fda898a8aef0e103f156d0961"
+  integrity sha512-V+evlYHZnQkaz8TRBuxTA92yZBPotr5H+WhQ7bD3hZUndx5tGOa1fuCgeSjxAzM1RiN5IzvadIXTVefuuwZCRg==
+
+typescript@4.3.4:
+  version "4.3.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.3.4.tgz#3f85b986945bcf31071decdd96cf8bfa65f9dcbc"
+  integrity sha512-uauPG7XZn9F/mo+7MrsRjyvbxFpzemRjKEZXS4AK83oP2KKOJPvb+9cO/gmnv8arWZvhnjVOXz7B49m1l0e9Ew==
 
 typescript@4.3.5, typescript@^4.3.2:
   version "4.3.5"

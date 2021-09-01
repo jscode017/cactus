@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Hyperledger Cactus Plugin - Connector Besu
- * Can perform basic tasks on a Besu ledger
+ * Hyperledger Cactus Plugin - Odap Hermes
+ * Implementation for Odap and Hermes
  *
  * The version of the OpenAPI document: 0.0.1
  * 
@@ -18,7 +18,7 @@ import { Configuration } from "./configuration";
 // @ts-ignore
 import globalAxios, { AxiosPromise, AxiosInstance } from 'axios';
 
-export const BASE_PATH = "https://www.cactus.stream".replace(/\/+$/, "");
+export const BASE_PATH = "http://localhost".replace(/\/+$/, "");
 
 /**
  *

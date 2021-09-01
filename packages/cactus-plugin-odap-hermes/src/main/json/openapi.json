@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.3",
     "info": {
-        "title": "Hyperledger Cactus Plugin - Connector Besu",
-        "description": "Can perform basic tasks on a Besu ledger",
+        "title": "Hyperledger Cactus Plugin - Odap Hermes",
+        "description": "Implementation for Odap and Hermes",
         "version": "0.0.1",
         "license": {
             "name": "Apache 2.0",

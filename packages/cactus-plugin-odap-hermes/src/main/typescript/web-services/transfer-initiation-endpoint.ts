@@ -48,17 +48,25 @@ export class TransferInitiationEndpointV1 implements IWebServiceEndpoint {
   }*/
 
   public getPath(): string {
-    const apiPath = OAS.paths["/api/v1/phase1/transferinitiation"];
+    const apiPath =
+      OAS.paths[
+        "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase1/transferinitiation"
+      ];
     return apiPath.post["x-hyperledger-cactus"].http.path;
   }
 
   public getVerbLowerCase(): string {
-    const apiPath = OAS.paths["/api/v1/phase1/transferinitiation"];
+    const apiPath =
+      OAS.paths[
+        "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase1/transferinitiation"
+      ];
     return apiPath.post["x-hyperledger-cactus"].http.verbLowerCase;
   }
 
   public getOperationId(): string {
-    return OAS.paths["/api/v1/phase1/transferinitiation"].post.operationId;
+    return OAS.paths[
+      "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase1/transferinitiation"
+    ].post.operationId;
   }
 
   getAuthorizationOptionsProvider(): IAsyncProvider<IEndpointAuthzOptions> {

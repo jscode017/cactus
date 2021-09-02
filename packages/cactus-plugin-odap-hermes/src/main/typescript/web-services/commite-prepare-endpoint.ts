@@ -48,17 +48,25 @@ export class CommitPrepareEndpointV1 implements IWebServiceEndpoint {
   }*/
 
   public getPath(): string {
-    const apiPath = OAS.paths["/api/v1/phase3/commitpreparation"];
+    const apiPath =
+      OAS.paths[
+        "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/commitpreparation"
+      ];
     return apiPath.post["x-hyperledger-cactus"].http.path;
   }
 
   public getVerbLowerCase(): string {
-    const apiPath = OAS.paths["/api/v1/phase3/commitpreparation"];
+    const apiPath =
+      OAS.paths[
+        "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/commitpreparation"
+      ];
     return apiPath.post["x-hyperledger-cactus"].http.verbLowerCase;
   }
 
   public getOperationId(): string {
-    return OAS.paths["/api/v1/phase3/commitpreparation"].post.operationId;
+    return OAS.paths[
+      "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/commitpreparation"
+    ].post.operationId;
   }
 
   getAuthorizationOptionsProvider(): IAsyncProvider<IEndpointAuthzOptions> {

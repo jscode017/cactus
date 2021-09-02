@@ -962,12 +962,12 @@
         }
     },
     "paths": {
-        "/api/v1/phase1/transferinitiation":{
+        "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase1/transferinitiation":{
             "post":{
                 "x-hyperledger-cactus": {
                     "http": {
                         "verbLowerCase": "post",
-                        "path": "/api/v1/phase1/transferinitiation"
+                        "path": "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase1/transferinitiation"
                     }
                 },
                 "operationId": "apiV1Phase1TransferInitiation",
@@ -995,12 +995,12 @@
                 }
             }
         },
-        "/api/v1/phase2/transfercommence":{
+        "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase2/transfercommence":{
             "post":{
                 "x-hyperledger-cactus": {
                     "http": {
                         "verbLowerCase": "post",
-                        "path": "/api/v1/phase2/transfercommence"
+                        "path": "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase2/transfercommence"
                     }
                 },
                 "operationId": "apiV1Phase2TransferCommence",
@@ -1028,12 +1028,12 @@
                 }
             }
         },
-        "/api/v1/phase2/lockevidence":{
+        "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase2/lockevidence":{
             "post":{
                 "x-hyperledger-cactus": {
                     "http": {
                         "verbLowerCase": "post",
-                        "path": "/api/v1/phase2/lockevidence"
+                        "path": "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase2/lockevidence"
                     }
                 },
                 "operationId": "apiV1Phase2LockEvidence",
@@ -1061,12 +1061,12 @@
                 }
             }
         },
-        "/api/v1/phase3/commitpreparation":{
+        "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/commitpreparation":{
             "post":{
                 "x-hyperledger-cactus": {
                     "http": {
                         "verbLowerCase": "post",
-                        "path": "/api/v1/phase3/commitpreparation"
+                        "path": "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/commitpreparation"
                     }
                 },
                 "operationId": "apiV1Phase3CommitPreparation",
@@ -1094,12 +1094,12 @@
                 }
             }
         },
-        "/api/v1/phase3/commitfinal":{
+        "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/commitfinal":{
             "post":{
                 "x-hyperledger-cactus": {
                     "http": {
                         "verbLowerCase": "post",
-                        "path": "/api/v1/phase3/commitfinal"
+                        "path": "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/commitfinal"
                     }
                 },
                 "operationId": "apiV1Phase3CommitFinal",
@@ -1127,12 +1127,12 @@
                 }
             }
         },
-        "/api/v1/phase3/transfercomplete":{
+        "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/transfercomplete":{
             "get":{
                 "x-hyperledger-cactus": {
                     "http": {
                         "verbLowerCase": "get",
-                        "path": "/api/v1/phase3/transfercomplete"
+                        "path": "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/transfercomplete"
                     }
                 },
                 "operationId": "apiV1Phase3TransferComplete",
@@ -1159,12 +1159,12 @@
                 }
             }
         },
-        "/api/v1/sendclientrequest":{
+        "/api/v1/@hyperledger/cactus-plugin-odap-hemres/sendclientrequest":{
             "post":{
                 "x-hyperledger-cactus": {
                     "http": {
                         "verbLowerCase": "post",
-                        "path": "/api/v1/sendclientrequest"
+                        "path": "/api/v1/@hyperledger/cactus-plugin-odap-hemres/sendclientrequest"
                     }
                 },
                 "operationId": "apiV1SendClientRequest",

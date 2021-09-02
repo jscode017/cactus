@@ -1466,7 +1466,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @throws {RequiredError}
          */
         apiV1Phase1TransferInitiation: async (initializationRequestMessage?: InitializationRequestMessage, options: any = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/v1/phase1/transferinitiation`;
+            const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase1/transferinitiation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1499,7 +1499,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @throws {RequiredError}
          */
         apiV1Phase2LockEvidence: async (lockEvidenceMessage?: LockEvidenceMessage, options: any = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/v1/phase2/lockevidence`;
+            const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase2/lockevidence`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1532,7 +1532,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @throws {RequiredError}
          */
         apiV1Phase2TransferCommence: async (transferCommenceMessage?: TransferCommenceMessage, options: any = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/v1/phase2/transfercommence`;
+            const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase2/transfercommence`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1565,7 +1565,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @throws {RequiredError}
          */
         apiV1Phase3CommitFinal: async (commitFinalMessage?: CommitFinalMessage, options: any = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/v1/phase3/commitfinal`;
+            const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/commitfinal`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1598,7 +1598,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @throws {RequiredError}
          */
         apiV1Phase3CommitPreparation: async (commitPreparationMessage?: CommitPreparationMessage, options: any = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/v1/phase3/commitpreparation`;
+            const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/commitpreparation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1631,7 +1631,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @throws {RequiredError}
          */
         apiV1Phase3TransferComplete: async (transferCompleteMessage?: TransferCompleteMessage, options: any = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/v1/phase3/transfercomplete`;
+            const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/transfercomplete`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1664,7 +1664,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @throws {RequiredError}
          */
         apiV1SendClientRequest: async (sendClientRequestMessage?: SendClientRequestMessage, options: any = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/v1/sendclientrequest`;
+            const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/sendclientrequest`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;

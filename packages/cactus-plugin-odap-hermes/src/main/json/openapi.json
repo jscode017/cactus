@@ -165,7 +165,7 @@
             "CommitAcknowledgementClaimFormat":{
                 "type":"object"
             },
-            "InitializationRequestMessage":{
+            "TransferInitializationV1Request":{
                 "type":"object",
                 "properties":{
                     "version":{
@@ -256,7 +256,7 @@
                     "recipientGateWayDltSystem"
                 ]
             },
-            "InitialMessageAck":{
+            "TransferInitializationV1Response":{
                 "type":"object",
                 "properties": {
                     "sessionID":{
@@ -440,7 +440,7 @@
                     }
                 }
             },
-            "TransferCommenceMessage":{
+            "TransferCommenceV1Request":{
                 "type":"object",
                 "properties": {
                     "sessionID": {
@@ -498,7 +498,7 @@
                     "clientSignature"
                 ]
             },
-            "TransferCommenceResponseMessage":{
+            "TransferCommenceV1Response":{
                 "type":"object",
                 "properties": {
                     "clientIdentityPubkey":{
@@ -532,7 +532,7 @@
                     "serverSignature"
                 ]
             },
-            "LockEvidenceMessage":{
+            "LockEvidenceV1Request":{
                 "type":"object",
                 "properties": {
                     "sessionID":{
@@ -582,7 +582,7 @@
                     "clientSignature"
                 ]
             },
-            "LockEvidenceResponseMessage":{
+            "LockEvidenceV1Response":{
                 "type":"object",
                 "properties": {
                     "clientIdentityPubkey":{
@@ -613,7 +613,7 @@
                     "serverSignature"
                 ]
             },
-            "CommitPreparationMessage":{
+            "CommitPreparationV1Request":{
                 "type":"object",
                 "properties": {
                     "sessionID":{
@@ -647,7 +647,7 @@
                     "clientSignature"
                 ]
             },
-            "CommitPreparationResponse":{
+            "CommitPreparationV1Response":{
                 "type":"object",
                 "properties": {
                     "messageType":{
@@ -677,7 +677,7 @@
                     "serverSignature"
                 ]
             },
-            "CommitFinalMessage":{
+            "CommitFinalV1Request":{
                 "type":"object",
                 "properties": {
                     "sessionID":{
@@ -719,7 +719,7 @@
                     "clientSignature"
                 ]
             },
-            "CommitFinalResponseMessage":{
+            "CommitFinalV1Response":{
                 "type":"object",
                 "properties": {
                     "messageType":{
@@ -756,7 +756,7 @@
                     "serverSignature"
                 ]
             },
-            "TransferCompleteMessage":{
+            "TransferCompleteV1Request":{
                 "type":"object",
                 "properties": {
                     "sessionID":{
@@ -795,7 +795,7 @@
                     "hashTransferCommence"
                 ]
             },
-            "TransferCompletMessageResponse":{
+            "TransferCompleteV1Response":{
                 "type":"object",
                 "properties": {
                     "ok":{
@@ -806,7 +806,7 @@
                     "ok"
                 ]
             },
-            "SendClientRequestMessage":{
+            "SendClientV1Request":{
                 "type":"object",
                 "properties": {
                     "version":{
@@ -976,7 +976,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/InitializationRequestMessage"
+                                "$ref": "#/components/schemas/TransferInitializationV1Request"
                             }
                         }
                     }
@@ -987,7 +987,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/InitialMessageAck"
+                                    "$ref": "#/components/schemas/TransferInitializationV1Response"
                                 }
                             }
                         }
@@ -1009,7 +1009,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/TransferCommenceMessage"
+                                "$ref": "#/components/schemas/TransferCommenceV1Request"
                             }
                         }
                     }
@@ -1020,7 +1020,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TransferCommenceResponseMessage"
+                                    "$ref": "#/components/schemas/TransferCommenceV1Response"
                                 }
                             }
                         }
@@ -1042,7 +1042,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/LockEvidenceMessage"
+                                "$ref": "#/components/schemas/LockEvidenceV1Request"
                             }
                         }
                     }
@@ -1053,7 +1053,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/LockEvidenceResponseMessage"
+                                    "$ref": "#/components/schemas/LockEvidenceV1Response"
                                 }
                             }
                         }
@@ -1075,7 +1075,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/CommitPreparationMessage"
+                                "$ref": "#/components/schemas/CommitPreparationV1Request"
                             }
                         }
                     }
@@ -1086,7 +1086,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/CommitPreparationResponse"
+                                    "$ref": "#/components/schemas/CommitPreparationV1Response"
                                 }
                             }
                         }
@@ -1108,7 +1108,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref":  "#/components/schemas/CommitFinalMessage"
+                                "$ref":  "#/components/schemas/CommitFinalV1Request"
                             }
                         }
                     }
@@ -1119,7 +1119,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/CommitFinalResponseMessage"
+                                    "$ref": "#/components/schemas/CommitFinalV1Response"
                                 }
                             }
                         }
@@ -1141,7 +1141,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/TransferCompleteMessage"
+                                "$ref": "#/components/schemas/TransferCompleteV1Request"
                             }
                         }
                     }
@@ -1173,7 +1173,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/SendClientRequestMessage"
+                                "$ref": "#/components/schemas/SendClientV1Request"
                             }
                         }
                     }

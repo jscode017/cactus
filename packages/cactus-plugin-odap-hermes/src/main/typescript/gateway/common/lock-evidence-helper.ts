@@ -1,9 +1,9 @@
 import { LoggerProvider } from "@hyperledger/cactus-common";
 import {
-  LockEvidenceMessage,
-  LockEvidenceResponseMessage,
-  TransferCommenceMessage,
-  TransferCommenceResponseMessage,
+  LockEvidenceV1Request,
+  LockEvidenceV1Response,
+  TransferCommenceV1Request,
+  TransferCommenceV1Response,
 } from "../../generated/openapi/typescript-axios";
 import { OdapGateway } from "../odap-gateway";
 import { SHA256 } from "crypto-js";
@@ -13,9 +13,9 @@ const log = LoggerProvider.getOrCreate({
   label: "odap-lock-evidence-helper",
 });
 export async function lockEvidenceTransferCommence(
-  req: TransferCommenceMessage,
+  req: TransferCommenceV1Request,
   odap: OdapGateway,
-): Promise<TransferCommenceResponseMessage> {
+): Promise<TransferCommenceV1Response> {
   const fnTag = `${odap.className}#lockEvidenceTransferCommence()`;
   log.info(
     `server gate way receive lock evidence transfer commence request: ${JSON.stringify(
@@ -25,7 +25,7 @@ export async function lockEvidenceTransferCommence(
   const commenceReqHash = SHA256(JSON.stringify(req)).toString();
   await checkValidtransferCommenceRequest(req, req.sessionID, odap);
 
-  const ack: TransferCommenceResponseMessage = {
+  const ack: TransferCommenceV1Response = {
     messageType: "urn:ietf:odap:msgtype:transfer-commenceack-msg",
     clientIdentityPubkey: req.clientIdentityPubkey,
     serverIdentityPubkey: req.serverIdentityPubkey,
@@ -56,7 +56,7 @@ export async function lockEvidenceTransferCommence(
 }
 
 async function checkValidtransferCommenceRequest(
-  req: TransferCommenceMessage,
+  req: TransferCommenceV1Request,
   sessionID: string,
   odap: OdapGateway,
 ): Promise<void> {
@@ -124,8 +124,8 @@ async function checkValidtransferCommenceRequest(
   }
 }
 async function storeDataAfterTransferCommence(
-  msg: TransferCommenceMessage,
-  ack: TransferCommenceResponseMessage,
+  msg: TransferCommenceV1Request,
+  ack: TransferCommenceV1Response,
   sessionID: string,
   odap: OdapGateway,
 ): Promise<void> {
@@ -158,9 +158,9 @@ async function storeDataAfterTransferCommence(
 }
 
 export async function lockEvidence(
-  req: LockEvidenceMessage,
+  req: LockEvidenceV1Request,
   odap: OdapGateway,
-): Promise<LockEvidenceResponseMessage> {
+): Promise<LockEvidenceV1Response> {
   const fnTag = `${odap.className}#lockEvidence()`;
   log.info(
     `server gate way receive lock evidence request: ${JSON.stringify(req)}`,
@@ -168,7 +168,7 @@ export async function lockEvidence(
   const lockEvidenceReqHash = SHA256(JSON.stringify(req)).toString();
   await checkValidLockEvidenceRequest(req, req.sessionID, odap);
 
-  const ack: LockEvidenceResponseMessage = {
+  const ack: LockEvidenceV1Response = {
     messageType: "urn:ietf:odap:msgtype:lock-evidence-req-msg",
     clientIdentityPubkey: req.clientIdentityPubkey,
     serverIdentityPubkey: req.serverIdentityPubkey,
@@ -198,7 +198,7 @@ export async function lockEvidence(
   return ack;
 }
 async function checkValidLockEvidenceRequest(
-  req: LockEvidenceMessage,
+  req: LockEvidenceV1Request,
   sessionID: string,
   odap: OdapGateway,
 ): Promise<void> {
@@ -261,8 +261,8 @@ async function checkValidLockEvidenceClaim(
   return lockEvidenceClaim !== undefined;
 }
 async function storeDataAfterLockEvidenceRequest(
-  req: LockEvidenceMessage,
-  ack: LockEvidenceResponseMessage,
+  req: LockEvidenceV1Request,
+  ack: LockEvidenceV1Response,
   sessionID: string,
   odap: OdapGateway,
 ): Promise<void> {

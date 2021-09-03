@@ -16,7 +16,7 @@ import {
 import { registerWebServiceEndpoint } from "@hyperledger/cactus-core";
 
 import { OdapGateway } from "../gateway/odap-gateway";
-import { TransferCompleteMessage } from "../generated/openapi/typescript-axios";
+import { TransferCompleteV1Request } from "../generated/openapi/typescript-axios";
 import OAS from "../../json/openapi.json";
 
 export interface ITransferCompleteEndpointOptions {
@@ -93,7 +93,7 @@ export class TransferCompleteEndpointV1 implements IWebServiceEndpoint {
   public async handleRequest(req: Request, res: Response): Promise<void> {
     const reqTag = `${this.getVerbLowerCase()} - ${this.getPath()}`;
     this.log.debug(reqTag);
-    const reqBody: TransferCompleteMessage = req.body;
+    const reqBody: TransferCompleteV1Request = req.body;
     try {
       const resBody = await this.options.gateway.TransferComplete(reqBody);
       res.json(resBody);

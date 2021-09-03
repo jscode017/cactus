@@ -1,6 +1,6 @@
 import {
-  InitializationRequestMessage,
-  InitialMessageAck,
+  TransferInitializationV1Request,
+  TransferInitializationV1Response,
   SessionData,
 } from "../../generated/openapi/typescript-axios";
 import secp256k1 from "secp256k1";
@@ -14,9 +14,9 @@ const log = LoggerProvider.getOrCreate({
   label: "odap-initiate-transfer-helper",
 });
 export async function initiateTransfer(
-  req: InitializationRequestMessage,
+  req: TransferInitializationV1Request,
   odap: OdapGateway,
-): Promise<InitialMessageAck> {
+): Promise<TransferInitializationV1Response> {
   log.info(
     `server gate way receive initiate transfer request: ${JSON.stringify(req)}`,
   );
@@ -42,7 +42,7 @@ export async function initiateTransfer(
 
   const processedTimestamp: string = time.toString();
 
-  const ack: InitialMessageAck = {
+  const ack: TransferInitializationV1Response = {
     sessionID: sessionID,
     initialRequestMessageHash: InitializationRequestMessageHash,
     timeStamp: recvTimestamp,
@@ -54,7 +54,7 @@ export async function initiateTransfer(
 }
 
 export async function checkValidInitializationRequest(
-  req: InitializationRequestMessage,
+  req: TransferInitializationV1Request,
   odap: OdapGateway,
 ): Promise<void> {
   const fnTag = `${odap.className}#checkValidInitializationRequest()`;
@@ -93,8 +93,8 @@ export async function checkValidInitializationRequest(
   }
 }
 export async function storeDataAfterInitializationRequest(
-  msg: InitializationRequestMessage,
-  ack: InitialMessageAck,
+  msg: TransferInitializationV1Request,
+  ack: TransferInitializationV1Response,
   sessionID: string,
   odap: OdapGateway,
 ): Promise<void> {

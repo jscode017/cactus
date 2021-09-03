@@ -16,7 +16,7 @@ import {
 import { registerWebServiceEndpoint } from "@hyperledger/cactus-core";
 
 import { OdapGateway } from "../gateway/odap-gateway";
-import { TransferCommenceMessage } from "../generated/openapi/typescript-axios";
+import { TransferCommenceV1Request } from "../generated/openapi/typescript-axios";
 import OAS from "../../json/openapi.json";
 
 export interface ILockEvidencePrepareEndpointOptions {
@@ -93,7 +93,7 @@ export class LockEvidencePrepareEndpointV1 implements IWebServiceEndpoint {
   public async handleRequest(req: Request, res: Response): Promise<void> {
     const reqTag = `${this.getVerbLowerCase()} - ${this.getPath()}`;
     this.log.debug(reqTag);
-    const reqBody: TransferCommenceMessage = req.body;
+    const reqBody: TransferCommenceV1Request = req.body;
     try {
       const resBody = await this.options.gateway.lockEvidenceTransferCommence(
         reqBody,

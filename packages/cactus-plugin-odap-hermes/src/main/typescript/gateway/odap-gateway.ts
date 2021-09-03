@@ -21,23 +21,21 @@ import {
   Configuration,
 } from "@hyperledger/cactus-core-api";
 import {
-  CommitFinalMessage,
-  CommitFinalResponseMessage,
-  CommitPreparationMessage,
-  CommitPreparationResponse,
-  InitializationRequestMessage,
-  //InitializationRequestMessagePayloadProfile,
-  InitialMessageAck,
-  LockEvidenceMessage,
-  LockEvidenceResponseMessage,
-  SendClientRequestMessage,
-  TransferCommenceMessage,
-  TransferCommenceResponseMessage,
-  TransferCompleteMessage,
-  TransferCompletMessageResponse,
+  CommitFinalV1Request,
+  CommitFinalV1Response,
+  CommitPreparationV1Request,
+  CommitPreparationV1Response,
+  TransferInitializationV1Request,
+  TransferInitializationV1Response,
+  LockEvidenceV1Request,
+  LockEvidenceV1Response,
+  SendClientV1Request,
+  TransferCommenceV1Request,
+  TransferCommenceV1Response,
+  TransferCompleteV1Request,
   DefaultApi as OdapApi,
-  //AssetProfile,
   SessionData,
+  TransferCompleteV1Response,
 } from "../generated/openapi/typescript-axios";
 //import { v4 as uuidV4 } from "uuid";
 //import { time } from "console";
@@ -415,44 +413,44 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     }
   }
   public async initiateTransfer(
-    req: InitializationRequestMessage,
-  ): Promise<InitialMessageAck> {
+    req: TransferInitializationV1Request,
+  ): Promise<TransferInitializationV1Response> {
     return initiateTransfer(req, this);
   }
   public async lockEvidenceTransferCommence(
-    req: TransferCommenceMessage,
-  ): Promise<TransferCommenceResponseMessage> {
+    req: TransferCommenceV1Request,
+  ): Promise<TransferCommenceV1Response> {
     return lockEvidenceTransferCommence(req, this);
   }
   public async lockEvidence(
-    req: LockEvidenceMessage,
-  ): Promise<LockEvidenceResponseMessage> {
+    req: LockEvidenceV1Request,
+  ): Promise<LockEvidenceV1Response> {
     return lockEvidence(req, this);
   }
   public async CommitPrepare(
-    req: CommitPreparationMessage,
-  ): Promise<CommitPreparationResponse> {
+    req: CommitPreparationV1Request,
+  ): Promise<CommitPreparationV1Response> {
     return CommitPrepare(req, this);
   }
 
   public async CommitFinal(
-    req: CommitFinalMessage,
-  ): Promise<CommitFinalResponseMessage> {
+    req: CommitFinalV1Request,
+  ): Promise<CommitFinalV1Response> {
     return CommitFinal(req, this);
   }
 
   public async TransferComplete(
-    req: TransferCompleteMessage,
-  ): Promise<TransferCompletMessageResponse> {
+    req: TransferCompleteV1Request,
+  ): Promise<TransferCompleteV1Response> {
     return TransferComplete(req, this);
   }
-  public async SendClientRequest(req: SendClientRequestMessage): Promise<void> {
+  public async SendClientRequest(req: SendClientV1Request): Promise<void> {
     const fnTag = `${this.className}#sendClientRequest()`;
     const odapServerApiConfig = new Configuration({
       basePath: req.serverGatewayConfiguration.apiHost,
     });
     const odapServerApiClient = new OdapApi(odapServerApiConfig);
-    const initializationRequestMessage: InitializationRequestMessage = {
+    const initializationRequestMessage: TransferInitializationV1Request = {
       version: req.version,
       loggingProfile: req.loggingProfile,
       accessControlProfile: req.accessControlProfile,
@@ -464,13 +462,6 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       recipientGateWayPubkey: req.recipientGateWayPubkey,
       recipientGateWayDltSystem: req.recipientGateWayDltSystem,
     };
-    //TODO: task for storage here: how to get sessionID?
-    //const dummyPrivKeyStr = odapGateWay.bufArray2HexStr(dummyPrivKeyBytes);
-    /*initializationRequestMessage.initializationRequestMessageSignature = await odapGateWay.sign(
-      JSON.stringify(initializationRequestMessage),
-      dummyPrivKeyStr,
-    );
-   */
     initializationRequestMessage.initializationRequestMessageSignature = "";
     const initializeReqSignature = await this.odapGatewaySign(
       JSON.stringify(initializationRequestMessage),
@@ -480,7 +471,8 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const transferInitiationRes = await odapServerApiClient.phase1TransferInitiationV1(
       initializationRequestMessage,
     );
-    const initializeReqAck: InitialMessageAck = transferInitiationRes.data;
+    const initializeReqAck: TransferInitializationV1Response =
+      transferInitiationRes.data;
     if (transferInitiationRes.status != 200) {
       throw new Error(`${fnTag}, send transfer initiation failed`);
     }
@@ -513,7 +505,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       JSON.stringify(req.assetProfile),
     ).toString();
 
-    const transferCommenceReq: TransferCommenceMessage = {
+    const transferCommenceReq: TransferCommenceV1Request = {
       sessionID: sessionID,
       messageType: "urn:ietf:odap:msgtype:transfer-commence-msg",
       originatorPubkey: req.originatorPubkey,
@@ -552,7 +544,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       await this.Revert(sessionID);
       throw new Error(`${fnTag}, send transfer commence failed`);
     }
-    const transferCommenceAck: TransferCommenceResponseMessage =
+    const transferCommenceAck: TransferCommenceV1Response =
       transferCommenceRes.data;
     if (transferCommenceReqHash != transferCommenceAck.hashCommenceRequest) {
       await this.Revert(sessionID);
@@ -650,7 +642,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       }
       sessionData.isFabricAssetLocked = true;
     }
-    const lockEvidenceReq: LockEvidenceMessage = {
+    const lockEvidenceReq: LockEvidenceV1Request = {
       sessionID: sessionID,
       messageType: "urn:ietf:odap:msgtype:lock-evidence-req-msg",
       clientIdentityPubkey: req.clientIdentityPubkey,
@@ -684,7 +676,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       await this.Revert(sessionID);
       throw new Error(`${fnTag}, send lock evidence failed`);
     }
-    const lockEvidenceAck: LockEvidenceResponseMessage = lockEvidenceRes.data;
+    const lockEvidenceAck: LockEvidenceV1Response = lockEvidenceRes.data;
     const lockEvidenceAckHash = SHA256(
       JSON.stringify(lockEvidenceAck),
     ).toString();
@@ -731,7 +723,6 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       throw new Error(`${fnTag}, lock evidence ack signature verify failed`);
     }
     lockEvidenceAck.serverSignature = transferCommenceAckSignature;
-    //store ack
     await this.odapLog(
       {
         phase: "lock-evidence-req",
@@ -742,7 +733,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       `${sessionID}-${sessionData.step.toString()}`,
     );
     sessionData.step++;
-    const commitPrepareReq: CommitPreparationMessage = {
+    const commitPrepareReq: CommitPreparationV1Request = {
       sessionID: sessionID,
       messageType: "urn:ietf:odap:msgtype:commit-prepare-msg",
       clientIdentityPubkey: req.clientIdentityPubkey,
@@ -774,7 +765,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       await this.Revert(sessionID);
       throw new Error(`${fnTag}, send commit prepare failed`);
     }
-    const commitPrepareAck: CommitPreparationResponse = commitPrepareRes.data;
+    const commitPrepareAck: CommitPreparationV1Response = commitPrepareRes.data;
     const commitPrepareAckHash = SHA256(
       JSON.stringify(commitPrepareAck),
     ).toString();
@@ -855,7 +846,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       fabricDeleteAssetProof = JSON.stringify(receiptDeleteRes.data);
       sessionData.isFabricAssetDeleted = true;
     }
-    const commitFinalReq: CommitFinalMessage = {
+    const commitFinalReq: CommitFinalV1Request = {
       sessionID: sessionID,
       messageType: "urn:ietf:odap:msgtype:commit-final-msg",
       clientIdentityPubkey: req.clientIdentityPubkey,
@@ -887,7 +878,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       await this.Revert(sessionID);
       throw new Error(`${fnTag}, send commit final failed`);
     }
-    const commitFinalAck: CommitFinalResponseMessage = commitFinalRes.data;
+    const commitFinalAck: CommitFinalV1Response = commitFinalRes.data;
     const commitFinalAckHash = SHA256(
       JSON.stringify(commitFinalAck),
     ).toString();
@@ -933,7 +924,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       `${sessionID}-${sessionData.step.toString()}`,
     );
     sessionData.step++;
-    const transferCompleteReq: TransferCompleteMessage = {
+    const transferCompleteReq: TransferCompleteV1Request = {
       sessionID: sessionID,
       messageType: "urn:ietf:odap:msgtype:commit-transfer-complete-msg",
       clientIdentityPubkey: req.clientIdentityPubkey,

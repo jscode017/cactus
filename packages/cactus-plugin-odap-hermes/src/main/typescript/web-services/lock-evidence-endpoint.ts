@@ -16,7 +16,7 @@ import {
 import { registerWebServiceEndpoint } from "@hyperledger/cactus-core";
 
 import { OdapGateway } from "../gateway/odap-gateway";
-import { LockEvidenceMessage } from "../generated/openapi/typescript-axios";
+import { LockEvidenceV1Request } from "../generated/openapi/typescript-axios";
 import OAS from "../../json/openapi.json";
 
 export interface ILockEvidenceEndpointOptions {
@@ -93,7 +93,7 @@ export class LockEvidenceEndpointV1 implements IWebServiceEndpoint {
   public async handleRequest(req: Request, res: Response): Promise<void> {
     const reqTag = `${this.getVerbLowerCase()} - ${this.getPath()}`;
     this.log.debug(reqTag);
-    const reqBody: LockEvidenceMessage = req.body;
+    const reqBody: LockEvidenceV1Request = req.body;
     try {
       const resBody = await this.options.gateway.lockEvidence(reqBody);
       res.json(resBody);

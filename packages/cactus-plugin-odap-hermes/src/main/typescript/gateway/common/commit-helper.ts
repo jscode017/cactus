@@ -3,10 +3,10 @@ import { SHA256 } from "crypto-js";
 import secp256k1 from "secp256k1";
 import { LoggerProvider } from "@hyperledger/cactus-common";
 import {
-  CommitFinalMessage,
-  CommitFinalResponseMessage,
-  CommitPreparationMessage,
-  CommitPreparationResponse,
+  CommitFinalV1Request,
+  CommitFinalV1Response,
+  CommitPreparationV1Request,
+  CommitPreparationV1Response,
 } from "../../generated/openapi/typescript-axios";
 import {
   EthContractInvocationType,
@@ -17,9 +17,9 @@ const log = LoggerProvider.getOrCreate({
   label: "odap-lock-evidence-helper",
 });
 export async function CommitPrepare(
-  req: CommitPreparationMessage,
+  req: CommitPreparationV1Request,
   odap: OdapGateway,
-): Promise<CommitPreparationResponse> {
+): Promise<CommitPreparationV1Response> {
   const fnTag = `${odap.className}#CommitPrepare()`;
   log.info(
     `server gate way receive commit prepare request: ${JSON.stringify(req)}`,
@@ -27,7 +27,7 @@ export async function CommitPrepare(
   const hashCommitPrepare = SHA256(JSON.stringify(req)).toString();
   await checkValidCommitPreparationRequest(req, req.sessionID, odap);
 
-  const ack: CommitPreparationResponse = {
+  const ack: CommitPreparationV1Response = {
     messageType: "urn:ietf:odap:msgtype:commit-prepare-ack-msg",
     clientIdentityPubkey: req.clientIdentityPubkey,
     serverIdentityPubkey: req.serverIdentityPubkey,
@@ -56,7 +56,7 @@ export async function CommitPrepare(
   return ack;
 }
 async function checkValidCommitPreparationRequest(
-  req: CommitPreparationMessage,
+  req: CommitPreparationV1Request,
   sessionID: string,
   odap: OdapGateway,
 ): Promise<void> {
@@ -106,8 +106,8 @@ async function checkValidCommitPreparationRequest(
   }
 }
 async function storeDataAfterCommitPreparationRequest(
-  req: CommitPreparationMessage,
-  ack: CommitPreparationResponse,
+  req: CommitPreparationV1Request,
+  ack: CommitPreparationV1Response,
   sessionID: string,
   odap: OdapGateway,
 ): Promise<void> {
@@ -130,9 +130,9 @@ async function storeDataAfterCommitPreparationRequest(
   odap.sessions.set(sessionID, sessionData);
 }
 export async function CommitFinal(
-  req: CommitFinalMessage,
+  req: CommitFinalV1Request,
   odap: OdapGateway,
-): Promise<CommitFinalResponseMessage> {
+): Promise<CommitFinalV1Response> {
   log.info(
     `server gate way receive commit final request: ${JSON.stringify(req)}`,
   );
@@ -177,7 +177,7 @@ export async function CommitFinal(
     }
     sessionData.isBesuAssetCreated = true;
   }
-  const ack: CommitFinalResponseMessage = {
+  const ack: CommitFinalV1Response = {
     messageType: "urn:ietf:odap:msgtype:commit-final-msg",
     serverIdentityPubkey: req.serverIdentityPubkey,
     commitAcknowledgementClaim: besuCreateAssetProof,
@@ -207,7 +207,7 @@ export async function CommitFinal(
   return ack;
 }
 async function checkValidCommitFinalRequest(
-  req: CommitFinalMessage,
+  req: CommitFinalV1Request,
   sessionID: string,
   odap: OdapGateway,
 ): Promise<void> {
@@ -257,8 +257,8 @@ async function checkValidCommitFinalRequest(
   }
 }
 async function storeDataAfterCommitFinalRequest(
-  req: CommitFinalMessage,
-  ack: CommitFinalResponseMessage,
+  req: CommitFinalV1Request,
+  ack: CommitFinalV1Response,
   sessionID: string,
   odap: OdapGateway,
 ): Promise<void> {

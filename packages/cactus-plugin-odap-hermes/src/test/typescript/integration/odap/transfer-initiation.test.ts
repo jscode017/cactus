@@ -7,7 +7,7 @@ import { v4 as uuidV4 } from "uuid";
 } from "../../../../main/typescript/public-api";*/
 import { OdapGateway } from "../../../../main/typescript/gateway/odap-gateway";
 import {
-  InitializationRequestMessage,
+  TransferInitializationV1Request,
   AssetProfile,
 } from "../../../../main/typescript/public-api";
 test("dummy test for transfer initiation flow", async (t: Test) => {
@@ -30,7 +30,7 @@ test("dummy test for transfer initiation flow", async (t: Test) => {
   const dummyPubKey = odapGateWay.bufArray2HexStr(dummyPubKeyBytes);
   const expiryDate = new Date("23/25/2060").toString();
   const assetProfile: AssetProfile = { ExpirationDate: expiryDate };
-  const initializationRequestMessage: InitializationRequestMessage = {
+  const initializationRequestMessage: TransferInitializationV1Request = {
     version: "0.0.0",
     loggingProfile: "dummy",
     accessControlProfile: "dummy",

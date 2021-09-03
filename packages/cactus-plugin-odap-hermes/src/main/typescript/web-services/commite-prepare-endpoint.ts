@@ -16,7 +16,7 @@ import {
 import { registerWebServiceEndpoint } from "@hyperledger/cactus-core";
 
 import { OdapGateway } from "../gateway/odap-gateway";
-import { CommitPreparationMessage } from "../generated/openapi/typescript-axios";
+import { CommitPreparationV1Request } from "../generated/openapi/typescript-axios";
 import OAS from "../../json/openapi.json";
 
 export interface ICommitPrepareEndpointOptions {
@@ -93,7 +93,7 @@ export class CommitPrepareEndpointV1 implements IWebServiceEndpoint {
   public async handleRequest(req: Request, res: Response): Promise<void> {
     const reqTag = `${this.getVerbLowerCase()} - ${this.getPath()}`;
     this.log.debug(reqTag);
-    const reqBody: CommitPreparationMessage = req.body;
+    const reqBody: CommitPreparationV1Request = req.body;
     try {
       const resBody = await this.options.gateway.CommitPrepare(reqBody);
       res.json(resBody);

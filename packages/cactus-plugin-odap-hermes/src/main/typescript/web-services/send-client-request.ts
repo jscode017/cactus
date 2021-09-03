@@ -17,7 +17,7 @@ import {
 import { registerWebServiceEndpoint } from "@hyperledger/cactus-core";
 
 import { OdapGateway } from "../gateway/odap-gateway";
-import { SendClientRequestMessage } from "../generated/openapi/typescript-axios";
+import { SendClientV1Request } from "../generated/openapi/typescript-axios";
 import OAS from "../../json/openapi.json";
 //import uuid from "uuid";
 
@@ -95,7 +95,7 @@ export class SendClientRequestEndpointV1 implements IWebServiceEndpoint {
   public async handleRequest(req: Request, res: Response): Promise<void> {
     const reqTag = `${this.getVerbLowerCase()} - ${this.getPath()}`;
     this.log.debug(reqTag);
-    const reqBody: SendClientRequestMessage = req.body;
+    const reqBody: SendClientV1Request = req.body;
     try {
       //TODO: replace dummy gateway with instanceID of odap gateway plugin
       const resBody = await this.options.gateway.SendClientRequest(reqBody);

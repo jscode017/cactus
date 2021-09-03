@@ -103,208 +103,208 @@ export interface AssetProfile {
 /**
  * 
  * @export
- * @interface CommitFinalMessage
+ * @interface CommitFinalV1Request
  */
-export interface CommitFinalMessage {
+export interface CommitFinalV1Request {
     /**
      * 
      * @type {string}
-     * @memberof CommitFinalMessage
+     * @memberof CommitFinalV1Request
      */
     sessionID: string;
     /**
      * 
      * @type {string}
-     * @memberof CommitFinalMessage
+     * @memberof CommitFinalV1Request
      */
     messageType: string;
     /**
      * 
      * @type {string}
-     * @memberof CommitFinalMessage
+     * @memberof CommitFinalV1Request
      */
     clientIdentityPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof CommitFinalMessage
+     * @memberof CommitFinalV1Request
      */
     serverIdentityPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof CommitFinalMessage
+     * @memberof CommitFinalV1Request
      */
     commitFinalClaim: string;
     /**
      * 
      * @type {object}
-     * @memberof CommitFinalMessage
+     * @memberof CommitFinalV1Request
      */
     commitFinalClaimFormat?: object;
     /**
      * 
      * @type {string}
-     * @memberof CommitFinalMessage
+     * @memberof CommitFinalV1Request
      */
     hashCommitPrepareAck: string;
     /**
      * 
      * @type {number}
-     * @memberof CommitFinalMessage
+     * @memberof CommitFinalV1Request
      */
     clientTransferNumber?: number | null;
     /**
      * 
      * @type {string}
-     * @memberof CommitFinalMessage
+     * @memberof CommitFinalV1Request
      */
     clientSignature: string;
 }
 /**
  * 
  * @export
- * @interface CommitFinalResponseMessage
+ * @interface CommitFinalV1Response
  */
-export interface CommitFinalResponseMessage {
+export interface CommitFinalV1Response {
     /**
      * 
      * @type {string}
-     * @memberof CommitFinalResponseMessage
+     * @memberof CommitFinalV1Response
      */
     messageType: string;
     /**
      * 
      * @type {string}
-     * @memberof CommitFinalResponseMessage
+     * @memberof CommitFinalV1Response
      */
     clientIdentityPubkey?: string;
     /**
      * 
      * @type {string}
-     * @memberof CommitFinalResponseMessage
+     * @memberof CommitFinalV1Response
      */
     serverIdentityPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof CommitFinalResponseMessage
+     * @memberof CommitFinalV1Response
      */
     commitAcknowledgementClaim: string;
     /**
      * 
      * @type {object}
-     * @memberof CommitFinalResponseMessage
+     * @memberof CommitFinalV1Response
      */
     commitAcknowledgementClaimFormat?: object;
     /**
      * 
      * @type {string}
-     * @memberof CommitFinalResponseMessage
+     * @memberof CommitFinalV1Response
      */
     hashCommitFinal: string;
     /**
      * 
      * @type {number}
-     * @memberof CommitFinalResponseMessage
+     * @memberof CommitFinalV1Response
      */
     serverTransferNumber?: number;
     /**
      * 
      * @type {string}
-     * @memberof CommitFinalResponseMessage
+     * @memberof CommitFinalV1Response
      */
     serverSignature: string;
 }
 /**
  * 
  * @export
- * @interface CommitPreparationMessage
+ * @interface CommitPreparationV1Request
  */
-export interface CommitPreparationMessage {
+export interface CommitPreparationV1Request {
     /**
      * 
      * @type {string}
-     * @memberof CommitPreparationMessage
+     * @memberof CommitPreparationV1Request
      */
     sessionID: string;
     /**
      * 
      * @type {string}
-     * @memberof CommitPreparationMessage
+     * @memberof CommitPreparationV1Request
      */
     messageType: string;
     /**
      * 
      * @type {string}
-     * @memberof CommitPreparationMessage
+     * @memberof CommitPreparationV1Request
      */
     clientIdentityPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof CommitPreparationMessage
+     * @memberof CommitPreparationV1Request
      */
     serverIdentityPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof CommitPreparationMessage
+     * @memberof CommitPreparationV1Request
      */
     hashLockEvidenceAck: string;
     /**
      * 
      * @type {number}
-     * @memberof CommitPreparationMessage
+     * @memberof CommitPreparationV1Request
      */
     clientTransferNumber?: number;
     /**
      * 
      * @type {string}
-     * @memberof CommitPreparationMessage
+     * @memberof CommitPreparationV1Request
      */
     clientSignature: string;
 }
 /**
  * 
  * @export
- * @interface CommitPreparationResponse
+ * @interface CommitPreparationV1Response
  */
-export interface CommitPreparationResponse {
+export interface CommitPreparationV1Response {
     /**
      * 
      * @type {string}
-     * @memberof CommitPreparationResponse
+     * @memberof CommitPreparationV1Response
      */
     messageType: string;
     /**
      * 
      * @type {string}
-     * @memberof CommitPreparationResponse
+     * @memberof CommitPreparationV1Response
      */
     clientIdentityPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof CommitPreparationResponse
+     * @memberof CommitPreparationV1Response
      */
     serverIdentityPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof CommitPreparationResponse
+     * @memberof CommitPreparationV1Response
      */
     hashCommitPrep: string;
     /**
      * 
      * @type {string}
-     * @memberof CommitPreparationResponse
+     * @memberof CommitPreparationV1Response
      */
     serverTransferNumber?: string;
     /**
      * 
      * @type {string}
-     * @memberof CommitPreparationResponse
+     * @memberof CommitPreparationV1Response
      */
     serverSignature: string;
 }
@@ -371,330 +371,116 @@ export interface History {
 /**
  * 
  * @export
- * @interface InitialMessageAck
+ * @interface LockEvidenceV1Request
  */
-export interface InitialMessageAck {
+export interface LockEvidenceV1Request {
     /**
      * 
      * @type {string}
-     * @memberof InitialMessageAck
-     */
-    sessionID: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof InitialMessageAck
-     */
-    sequenceNumber?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitialMessageAck
-     */
-    odapPhase?: InitialMessageAckOdapPhaseEnum;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitialMessageAck
-     */
-    initialRequestMessageHash: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitialMessageAck
-     */
-    destination?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitialMessageAck
-     */
-    timeStamp: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitialMessageAck
-     */
-    processedTimeStamp: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitialMessageAck
-     */
-    serverIdentityPubkey: string;
-}
-
-/**
-    * @export
-    * @enum {string}
-    */
-export enum InitialMessageAckOdapPhaseEnum {
-    TransferInitialization = 'TransferInitialization',
-    LockEvidenceVerification = 'LockEvidenceVerification',
-    CommitmentEstablishment = 'CommitmentEstablishment'
-}
-
-/**
- * 
- * @export
- * @interface InitializationRequestMessage
- */
-export interface InitializationRequestMessage {
-    /**
-     * 
-     * @type {string}
-     * @memberof InitializationRequestMessage
-     */
-    version?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitializationRequestMessage
-     */
-    developerURN?: string;
-    /**
-     * 
-     * @type {CredentialProfile}
-     * @memberof InitializationRequestMessage
-     */
-    credentialProfile?: CredentialProfile;
-    /**
-     * 
-     * @type {PayloadProfile}
-     * @memberof InitializationRequestMessage
-     */
-    payloadProfile: PayloadProfile;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitializationRequestMessage
-     */
-    applicationProfile: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitializationRequestMessage
-     */
-    loggingProfile: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitializationRequestMessage
-     */
-    accessControlProfile: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitializationRequestMessage
-     */
-    initializationRequestMessageSignature: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitializationRequestMessage
-     */
-    sourceGatewayPubkey: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitializationRequestMessage
-     */
-    sourceGateWayDltSystem: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitializationRequestMessage
-     */
-    recipientGateWayPubkey: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitializationRequestMessage
-     */
-    recipientGateWayDltSystem: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitializationRequestMessage
-     */
-    escrowType?: InitializationRequestMessageEscrowTypeEnum;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitializationRequestMessage
-     */
-    expiryTime?: string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof InitializationRequestMessage
-     */
-    multipleClaimsAllowed?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof InitializationRequestMessage
-     */
-    multipleCancelsAllowed?: boolean;
-    /**
-     * 
-     * @type {object}
-     * @memberof InitializationRequestMessage
-     */
-    permissions?: object;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitializationRequestMessage
-     */
-    origin?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InitializationRequestMessage
-     */
-    destination?: string;
-    /**
-     * 
-     * @type {object}
-     * @memberof InitializationRequestMessage
-     */
-    subsequentCalls?: object;
-    /**
-     * 
-     * @type {Array<History>}
-     * @memberof InitializationRequestMessage
-     */
-    histories?: Array<History>;
-}
-
-/**
-    * @export
-    * @enum {string}
-    */
-export enum InitializationRequestMessageEscrowTypeEnum {
-    Faucet = 'FAUCET',
-    Timelock = 'TIMELOCK',
-    Hashlock = 'HASHLOCK',
-    Hashtimelock = 'HASHTIMELOCK',
-    Multiclaimpc = 'MULTICLAIMPC',
-    Destroy = 'DESTROY',
-    Burn = 'BURN'
-}
-
-/**
- * 
- * @export
- * @interface LockEvidenceMessage
- */
-export interface LockEvidenceMessage {
-    /**
-     * 
-     * @type {string}
-     * @memberof LockEvidenceMessage
+     * @memberof LockEvidenceV1Request
      */
     sessionID: string;
     /**
      * 
      * @type {string}
-     * @memberof LockEvidenceMessage
+     * @memberof LockEvidenceV1Request
      */
     clientIdentityPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof LockEvidenceMessage
+     * @memberof LockEvidenceV1Request
      */
     serverIdentityPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof LockEvidenceMessage
+     * @memberof LockEvidenceV1Request
      */
     lockEvidenceClaim: string;
     /**
      * 
      * @type {object}
-     * @memberof LockEvidenceMessage
+     * @memberof LockEvidenceV1Request
      */
     lockEvidenceFormat?: object;
     /**
      * 
      * @type {string}
-     * @memberof LockEvidenceMessage
+     * @memberof LockEvidenceV1Request
      */
     lockEvidenceExpiration: string;
     /**
      * 
      * @type {string}
-     * @memberof LockEvidenceMessage
+     * @memberof LockEvidenceV1Request
      */
     hashCommenceAckRequest: string;
     /**
      * 
      * @type {number}
-     * @memberof LockEvidenceMessage
+     * @memberof LockEvidenceV1Request
      */
     clientTransferNumber?: number | null;
     /**
      * 
      * @type {string}
-     * @memberof LockEvidenceMessage
+     * @memberof LockEvidenceV1Request
      */
     clientSignature: string;
     /**
      * 
      * @type {string}
-     * @memberof LockEvidenceMessage
+     * @memberof LockEvidenceV1Request
      */
     messageType: string;
     /**
      * 
      * @type {string}
-     * @memberof LockEvidenceMessage
+     * @memberof LockEvidenceV1Request
      */
     messageHash?: string;
 }
 /**
  * 
  * @export
- * @interface LockEvidenceResponseMessage
+ * @interface LockEvidenceV1Response
  */
-export interface LockEvidenceResponseMessage {
+export interface LockEvidenceV1Response {
     /**
      * 
      * @type {string}
-     * @memberof LockEvidenceResponseMessage
+     * @memberof LockEvidenceV1Response
      */
     clientIdentityPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof LockEvidenceResponseMessage
+     * @memberof LockEvidenceV1Response
      */
     serverIdentityPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof LockEvidenceResponseMessage
+     * @memberof LockEvidenceV1Response
      */
     hashLockEvidenceRequest: string;
     /**
      * 
      * @type {number}
-     * @memberof LockEvidenceResponseMessage
+     * @memberof LockEvidenceV1Response
      */
     serverTransferNumber?: number | null;
     /**
      * 
      * @type {string}
-     * @memberof LockEvidenceResponseMessage
+     * @memberof LockEvidenceV1Response
      */
     serverSignature: string;
     /**
      * 
      * @type {string}
-     * @memberof LockEvidenceResponseMessage
+     * @memberof LockEvidenceV1Response
      */
     messageType: string;
 }
@@ -848,122 +634,122 @@ export interface PayloadProfile {
 /**
  * 
  * @export
- * @interface SendClientRequestMessage
+ * @interface SendClientV1Request
  */
-export interface SendClientRequestMessage {
+export interface SendClientV1Request {
     /**
      * 
      * @type {string}
-     * @memberof SendClientRequestMessage
+     * @memberof SendClientV1Request
      */
     version: string;
     /**
      * 
      * @type {string}
-     * @memberof SendClientRequestMessage
+     * @memberof SendClientV1Request
      */
     loggingProfile: string;
     /**
      * 
      * @type {string}
-     * @memberof SendClientRequestMessage
+     * @memberof SendClientV1Request
      */
     accessControlProfile: string;
     /**
      * 
      * @type {string}
-     * @memberof SendClientRequestMessage
+     * @memberof SendClientV1Request
      */
     assetControlProfile: string;
     /**
      * 
      * @type {string}
-     * @memberof SendClientRequestMessage
+     * @memberof SendClientV1Request
      */
     applicationProfile: string;
     /**
      * 
      * @type {AssetProfile}
-     * @memberof SendClientRequestMessage
+     * @memberof SendClientV1Request
      */
     assetProfile: AssetProfile;
     /**
      * 
      * @type {PayloadProfile}
-     * @memberof SendClientRequestMessage
+     * @memberof SendClientV1Request
      */
     payLoadProfile: PayloadProfile;
     /**
      * 
      * @type {string}
-     * @memberof SendClientRequestMessage
+     * @memberof SendClientV1Request
      */
     sourceGateWayDltSystem: string;
     /**
      * 
      * @type {string}
-     * @memberof SendClientRequestMessage
+     * @memberof SendClientV1Request
      */
     recipientGateWayDltSystem: string;
     /**
      * 
      * @type {string}
-     * @memberof SendClientRequestMessage
+     * @memberof SendClientV1Request
      */
     recipientGateWayPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof SendClientRequestMessage
+     * @memberof SendClientV1Request
      */
     originatorPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof SendClientRequestMessage
+     * @memberof SendClientV1Request
      */
     beneficiaryPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof SendClientRequestMessage
+     * @memberof SendClientV1Request
      */
     clientIdentityPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof SendClientRequestMessage
+     * @memberof SendClientV1Request
      */
     serverIdentityPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof SendClientRequestMessage
+     * @memberof SendClientV1Request
      */
     clientDltSystem: string;
     /**
      * 
      * @type {string}
-     * @memberof SendClientRequestMessage
+     * @memberof SendClientV1Request
      */
     serverDltSystem: string;
     /**
      * 
-     * @type {SendClientRequestMessageServerGatewayConfiguration}
-     * @memberof SendClientRequestMessage
+     * @type {SendClientV1RequestServerGatewayConfiguration}
+     * @memberof SendClientV1Request
      */
-    serverGatewayConfiguration: SendClientRequestMessageServerGatewayConfiguration;
+    serverGatewayConfiguration: SendClientV1RequestServerGatewayConfiguration;
 }
 /**
  * 
  * @export
- * @interface SendClientRequestMessageServerGatewayConfiguration
+ * @interface SendClientV1RequestServerGatewayConfiguration
  */
-export interface SendClientRequestMessageServerGatewayConfiguration {
+export interface SendClientV1RequestServerGatewayConfiguration {
     /**
      * 
      * @type {string}
-     * @memberof SendClientRequestMessageServerGatewayConfiguration
+     * @memberof SendClientV1RequestServerGatewayConfiguration
      */
     apiHost: string;
 }
@@ -1253,205 +1039,419 @@ export interface SessionData {
 /**
  * 
  * @export
- * @interface TransferCommenceMessage
+ * @interface TransferCommenceV1Request
  */
-export interface TransferCommenceMessage {
+export interface TransferCommenceV1Request {
     /**
      * 
      * @type {string}
-     * @memberof TransferCommenceMessage
+     * @memberof TransferCommenceV1Request
      */
     sessionID: string;
     /**
      * 
      * @type {string}
-     * @memberof TransferCommenceMessage
+     * @memberof TransferCommenceV1Request
      */
     messageType: string;
     /**
      * 
      * @type {string}
-     * @memberof TransferCommenceMessage
+     * @memberof TransferCommenceV1Request
      */
     originatorPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof TransferCommenceMessage
+     * @memberof TransferCommenceV1Request
      */
     beneficiaryPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof TransferCommenceMessage
+     * @memberof TransferCommenceV1Request
      */
     senderDltSystem: string;
     /**
      * 
      * @type {string}
-     * @memberof TransferCommenceMessage
+     * @memberof TransferCommenceV1Request
      */
     recipientDltSystem: string;
     /**
      * 
      * @type {string}
-     * @memberof TransferCommenceMessage
+     * @memberof TransferCommenceV1Request
      */
     clientIdentityPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof TransferCommenceMessage
+     * @memberof TransferCommenceV1Request
      */
     serverIdentityPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof TransferCommenceMessage
+     * @memberof TransferCommenceV1Request
      */
     hashAssetProfile: string;
     /**
      * 
      * @type {number}
-     * @memberof TransferCommenceMessage
+     * @memberof TransferCommenceV1Request
      */
     assetUnit?: number;
     /**
      * 
      * @type {string}
-     * @memberof TransferCommenceMessage
+     * @memberof TransferCommenceV1Request
      */
     hashPrevMessage: string;
     /**
      * 
      * @type {number}
-     * @memberof TransferCommenceMessage
+     * @memberof TransferCommenceV1Request
      */
     clientTransferNumber?: number | null;
     /**
      * 
      * @type {string}
-     * @memberof TransferCommenceMessage
+     * @memberof TransferCommenceV1Request
      */
     clientSignature: string;
 }
 /**
  * 
  * @export
- * @interface TransferCommenceResponseMessage
+ * @interface TransferCommenceV1Response
  */
-export interface TransferCommenceResponseMessage {
+export interface TransferCommenceV1Response {
     /**
      * 
      * @type {string}
-     * @memberof TransferCommenceResponseMessage
+     * @memberof TransferCommenceV1Response
      */
     clientIdentityPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof TransferCommenceResponseMessage
+     * @memberof TransferCommenceV1Response
      */
     serverIdentityPubkey: string;
     /**
      * 
      * @type {string}
-     * @memberof TransferCommenceResponseMessage
+     * @memberof TransferCommenceV1Response
      */
     hashCommenceRequest: string;
     /**
      * 
      * @type {number}
-     * @memberof TransferCommenceResponseMessage
+     * @memberof TransferCommenceV1Response
      */
     serverTransferNumber?: number | null;
     /**
      * 
      * @type {string}
-     * @memberof TransferCommenceResponseMessage
+     * @memberof TransferCommenceV1Response
      */
     serverSignature: string;
     /**
      * 
      * @type {string}
-     * @memberof TransferCommenceResponseMessage
+     * @memberof TransferCommenceV1Response
      */
     messageType: string;
     /**
      * 
      * @type {string}
-     * @memberof TransferCommenceResponseMessage
+     * @memberof TransferCommenceV1Response
      */
     messageHash?: string;
 }
 /**
  * 
  * @export
- * @interface TransferCompletMessageResponse
+ * @interface TransferCompleteV1Request
  */
-export interface TransferCompletMessageResponse {
+export interface TransferCompleteV1Request {
     /**
      * 
      * @type {string}
-     * @memberof TransferCompletMessageResponse
+     * @memberof TransferCompleteV1Request
+     */
+    sessionID: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCompleteV1Request
+     */
+    messageType: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCompleteV1Request
+     */
+    clientIdentityPubkey: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCompleteV1Request
+     */
+    serverIdentityPubkey: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCompleteV1Request
+     */
+    hashCommitFinalAck: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TransferCompleteV1Request
+     */
+    clientTransferNumber?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCompleteV1Request
+     */
+    clientSignature: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCompleteV1Request
+     */
+    hashTransferCommence: string;
+}
+/**
+ * 
+ * @export
+ * @interface TransferCompleteV1Response
+ */
+export interface TransferCompleteV1Response {
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferCompleteV1Response
      */
     ok: string;
 }
 /**
  * 
  * @export
- * @interface TransferCompleteMessage
+ * @interface TransferInitializationV1Request
  */
-export interface TransferCompleteMessage {
+export interface TransferInitializationV1Request {
     /**
      * 
      * @type {string}
-     * @memberof TransferCompleteMessage
+     * @memberof TransferInitializationV1Request
+     */
+    version?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Request
+     */
+    developerURN?: string;
+    /**
+     * 
+     * @type {CredentialProfile}
+     * @memberof TransferInitializationV1Request
+     */
+    credentialProfile?: CredentialProfile;
+    /**
+     * 
+     * @type {PayloadProfile}
+     * @memberof TransferInitializationV1Request
+     */
+    payloadProfile: PayloadProfile;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Request
+     */
+    applicationProfile: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Request
+     */
+    loggingProfile: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Request
+     */
+    accessControlProfile: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Request
+     */
+    initializationRequestMessageSignature: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Request
+     */
+    sourceGatewayPubkey: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Request
+     */
+    sourceGateWayDltSystem: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Request
+     */
+    recipientGateWayPubkey: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Request
+     */
+    recipientGateWayDltSystem: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Request
+     */
+    escrowType?: TransferInitializationV1RequestEscrowTypeEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Request
+     */
+    expiryTime?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof TransferInitializationV1Request
+     */
+    multipleClaimsAllowed?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof TransferInitializationV1Request
+     */
+    multipleCancelsAllowed?: boolean;
+    /**
+     * 
+     * @type {object}
+     * @memberof TransferInitializationV1Request
+     */
+    permissions?: object;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Request
+     */
+    origin?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Request
+     */
+    destination?: string;
+    /**
+     * 
+     * @type {object}
+     * @memberof TransferInitializationV1Request
+     */
+    subsequentCalls?: object;
+    /**
+     * 
+     * @type {Array<History>}
+     * @memberof TransferInitializationV1Request
+     */
+    histories?: Array<History>;
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum TransferInitializationV1RequestEscrowTypeEnum {
+    Faucet = 'FAUCET',
+    Timelock = 'TIMELOCK',
+    Hashlock = 'HASHLOCK',
+    Hashtimelock = 'HASHTIMELOCK',
+    Multiclaimpc = 'MULTICLAIMPC',
+    Destroy = 'DESTROY',
+    Burn = 'BURN'
+}
+
+/**
+ * 
+ * @export
+ * @interface TransferInitializationV1Response
+ */
+export interface TransferInitializationV1Response {
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Response
      */
     sessionID: string;
     /**
      * 
-     * @type {string}
-     * @memberof TransferCompleteMessage
+     * @type {number}
+     * @memberof TransferInitializationV1Response
      */
-    messageType: string;
+    sequenceNumber?: number;
     /**
      * 
      * @type {string}
-     * @memberof TransferCompleteMessage
+     * @memberof TransferInitializationV1Response
      */
-    clientIdentityPubkey: string;
+    odapPhase?: TransferInitializationV1ResponseOdapPhaseEnum;
     /**
      * 
      * @type {string}
-     * @memberof TransferCompleteMessage
+     * @memberof TransferInitializationV1Response
+     */
+    initialRequestMessageHash: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Response
+     */
+    destination?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Response
+     */
+    timeStamp: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Response
+     */
+    processedTimeStamp: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof TransferInitializationV1Response
      */
     serverIdentityPubkey: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof TransferCompleteMessage
-     */
-    hashCommitFinalAck: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof TransferCompleteMessage
-     */
-    clientTransferNumber?: number | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof TransferCompleteMessage
-     */
-    clientSignature: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof TransferCompleteMessage
-     */
-    hashTransferCommence: string;
 }
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum TransferInitializationV1ResponseOdapPhaseEnum {
+    TransferInitialization = 'TransferInitialization',
+    LockEvidenceVerification = 'LockEvidenceVerification',
+    CommitmentEstablishment = 'CommitmentEstablishment'
+}
+
 
 /**
  * DefaultApi - axios parameter creator
@@ -1461,11 +1461,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
     return {
         /**
          * 
-         * @param {InitializationRequestMessage} [initializationRequestMessage] 
+         * @param {TransferInitializationV1Request} [transferInitializationV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        phase1TransferInitiationV1: async (initializationRequestMessage?: InitializationRequestMessage, options: any = {}): Promise<RequestArgs> => {
+        phase1TransferInitiationV1: async (transferInitializationV1Request?: TransferInitializationV1Request, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase1/transferinitiation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1485,7 +1485,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(initializationRequestMessage, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(transferInitializationV1Request, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1494,11 +1494,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {LockEvidenceMessage} [lockEvidenceMessage] 
+         * @param {LockEvidenceV1Request} [lockEvidenceV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        phase2LockEvidenceV1: async (lockEvidenceMessage?: LockEvidenceMessage, options: any = {}): Promise<RequestArgs> => {
+        phase2LockEvidenceV1: async (lockEvidenceV1Request?: LockEvidenceV1Request, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase2/lockevidence`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1518,7 +1518,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(lockEvidenceMessage, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(lockEvidenceV1Request, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1527,11 +1527,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {TransferCommenceMessage} [transferCommenceMessage] 
+         * @param {TransferCommenceV1Request} [transferCommenceV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        phase2TransferCommenceV1: async (transferCommenceMessage?: TransferCommenceMessage, options: any = {}): Promise<RequestArgs> => {
+        phase2TransferCommenceV1: async (transferCommenceV1Request?: TransferCommenceV1Request, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase2/transfercommence`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1551,7 +1551,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(transferCommenceMessage, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(transferCommenceV1Request, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1560,11 +1560,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {CommitFinalMessage} [commitFinalMessage] 
+         * @param {CommitFinalV1Request} [commitFinalV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        phase3CommitFinalV1: async (commitFinalMessage?: CommitFinalMessage, options: any = {}): Promise<RequestArgs> => {
+        phase3CommitFinalV1: async (commitFinalV1Request?: CommitFinalV1Request, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/commitfinal`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1584,7 +1584,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(commitFinalMessage, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(commitFinalV1Request, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1593,11 +1593,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {CommitPreparationMessage} [commitPreparationMessage] 
+         * @param {CommitPreparationV1Request} [commitPreparationV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        phase3CommitPreparationV1: async (commitPreparationMessage?: CommitPreparationMessage, options: any = {}): Promise<RequestArgs> => {
+        phase3CommitPreparationV1: async (commitPreparationV1Request?: CommitPreparationV1Request, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/commitpreparation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1617,7 +1617,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(commitPreparationMessage, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(commitPreparationV1Request, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1626,11 +1626,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {TransferCompleteMessage} [transferCompleteMessage] 
+         * @param {TransferCompleteV1Request} [transferCompleteV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        phase3TransferCompleteV1: async (transferCompleteMessage?: TransferCompleteMessage, options: any = {}): Promise<RequestArgs> => {
+        phase3TransferCompleteV1: async (transferCompleteV1Request?: TransferCompleteV1Request, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/transfercomplete`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1650,7 +1650,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(transferCompleteMessage, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(transferCompleteV1Request, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1659,11 +1659,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {SendClientRequestMessage} [sendClientRequestMessage] 
+         * @param {SendClientV1Request} [sendClientV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sendClientRequestV1: async (sendClientRequestMessage?: SendClientRequestMessage, options: any = {}): Promise<RequestArgs> => {
+        sendClientRequestV1: async (sendClientV1Request?: SendClientV1Request, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/sendclientrequest`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1683,7 +1683,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(sendClientRequestMessage, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(sendClientV1Request, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1702,72 +1702,72 @@ export const DefaultApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @param {InitializationRequestMessage} [initializationRequestMessage] 
+         * @param {TransferInitializationV1Request} [transferInitializationV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async phase1TransferInitiationV1(initializationRequestMessage?: InitializationRequestMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InitialMessageAck>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.phase1TransferInitiationV1(initializationRequestMessage, options);
+        async phase1TransferInitiationV1(transferInitializationV1Request?: TransferInitializationV1Request, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TransferInitializationV1Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.phase1TransferInitiationV1(transferInitializationV1Request, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
-         * @param {LockEvidenceMessage} [lockEvidenceMessage] 
+         * @param {LockEvidenceV1Request} [lockEvidenceV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async phase2LockEvidenceV1(lockEvidenceMessage?: LockEvidenceMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LockEvidenceResponseMessage>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.phase2LockEvidenceV1(lockEvidenceMessage, options);
+        async phase2LockEvidenceV1(lockEvidenceV1Request?: LockEvidenceV1Request, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LockEvidenceV1Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.phase2LockEvidenceV1(lockEvidenceV1Request, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
-         * @param {TransferCommenceMessage} [transferCommenceMessage] 
+         * @param {TransferCommenceV1Request} [transferCommenceV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async phase2TransferCommenceV1(transferCommenceMessage?: TransferCommenceMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TransferCommenceResponseMessage>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.phase2TransferCommenceV1(transferCommenceMessage, options);
+        async phase2TransferCommenceV1(transferCommenceV1Request?: TransferCommenceV1Request, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TransferCommenceV1Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.phase2TransferCommenceV1(transferCommenceV1Request, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
-         * @param {CommitFinalMessage} [commitFinalMessage] 
+         * @param {CommitFinalV1Request} [commitFinalV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async phase3CommitFinalV1(commitFinalMessage?: CommitFinalMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommitFinalResponseMessage>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.phase3CommitFinalV1(commitFinalMessage, options);
+        async phase3CommitFinalV1(commitFinalV1Request?: CommitFinalV1Request, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommitFinalV1Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.phase3CommitFinalV1(commitFinalV1Request, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
-         * @param {CommitPreparationMessage} [commitPreparationMessage] 
+         * @param {CommitPreparationV1Request} [commitPreparationV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async phase3CommitPreparationV1(commitPreparationMessage?: CommitPreparationMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommitPreparationResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.phase3CommitPreparationV1(commitPreparationMessage, options);
+        async phase3CommitPreparationV1(commitPreparationV1Request?: CommitPreparationV1Request, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommitPreparationV1Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.phase3CommitPreparationV1(commitPreparationV1Request, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
-         * @param {TransferCompleteMessage} [transferCompleteMessage] 
+         * @param {TransferCompleteV1Request} [transferCompleteV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async phase3TransferCompleteV1(transferCompleteMessage?: TransferCompleteMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.phase3TransferCompleteV1(transferCompleteMessage, options);
+        async phase3TransferCompleteV1(transferCompleteV1Request?: TransferCompleteV1Request, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.phase3TransferCompleteV1(transferCompleteV1Request, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
-         * @param {SendClientRequestMessage} [sendClientRequestMessage] 
+         * @param {SendClientV1Request} [sendClientV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async sendClientRequestV1(sendClientRequestMessage?: SendClientRequestMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.sendClientRequestV1(sendClientRequestMessage, options);
+        async sendClientRequestV1(sendClientV1Request?: SendClientV1Request, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.sendClientRequestV1(sendClientV1Request, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -1782,66 +1782,66 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
     return {
         /**
          * 
-         * @param {InitializationRequestMessage} [initializationRequestMessage] 
+         * @param {TransferInitializationV1Request} [transferInitializationV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        phase1TransferInitiationV1(initializationRequestMessage?: InitializationRequestMessage, options?: any): AxiosPromise<InitialMessageAck> {
-            return localVarFp.phase1TransferInitiationV1(initializationRequestMessage, options).then((request) => request(axios, basePath));
+        phase1TransferInitiationV1(transferInitializationV1Request?: TransferInitializationV1Request, options?: any): AxiosPromise<TransferInitializationV1Response> {
+            return localVarFp.phase1TransferInitiationV1(transferInitializationV1Request, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {LockEvidenceMessage} [lockEvidenceMessage] 
+         * @param {LockEvidenceV1Request} [lockEvidenceV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        phase2LockEvidenceV1(lockEvidenceMessage?: LockEvidenceMessage, options?: any): AxiosPromise<LockEvidenceResponseMessage> {
-            return localVarFp.phase2LockEvidenceV1(lockEvidenceMessage, options).then((request) => request(axios, basePath));
+        phase2LockEvidenceV1(lockEvidenceV1Request?: LockEvidenceV1Request, options?: any): AxiosPromise<LockEvidenceV1Response> {
+            return localVarFp.phase2LockEvidenceV1(lockEvidenceV1Request, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {TransferCommenceMessage} [transferCommenceMessage] 
+         * @param {TransferCommenceV1Request} [transferCommenceV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        phase2TransferCommenceV1(transferCommenceMessage?: TransferCommenceMessage, options?: any): AxiosPromise<TransferCommenceResponseMessage> {
-            return localVarFp.phase2TransferCommenceV1(transferCommenceMessage, options).then((request) => request(axios, basePath));
+        phase2TransferCommenceV1(transferCommenceV1Request?: TransferCommenceV1Request, options?: any): AxiosPromise<TransferCommenceV1Response> {
+            return localVarFp.phase2TransferCommenceV1(transferCommenceV1Request, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {CommitFinalMessage} [commitFinalMessage] 
+         * @param {CommitFinalV1Request} [commitFinalV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        phase3CommitFinalV1(commitFinalMessage?: CommitFinalMessage, options?: any): AxiosPromise<CommitFinalResponseMessage> {
-            return localVarFp.phase3CommitFinalV1(commitFinalMessage, options).then((request) => request(axios, basePath));
+        phase3CommitFinalV1(commitFinalV1Request?: CommitFinalV1Request, options?: any): AxiosPromise<CommitFinalV1Response> {
+            return localVarFp.phase3CommitFinalV1(commitFinalV1Request, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {CommitPreparationMessage} [commitPreparationMessage] 
+         * @param {CommitPreparationV1Request} [commitPreparationV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        phase3CommitPreparationV1(commitPreparationMessage?: CommitPreparationMessage, options?: any): AxiosPromise<CommitPreparationResponse> {
-            return localVarFp.phase3CommitPreparationV1(commitPreparationMessage, options).then((request) => request(axios, basePath));
+        phase3CommitPreparationV1(commitPreparationV1Request?: CommitPreparationV1Request, options?: any): AxiosPromise<CommitPreparationV1Response> {
+            return localVarFp.phase3CommitPreparationV1(commitPreparationV1Request, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {TransferCompleteMessage} [transferCompleteMessage] 
+         * @param {TransferCompleteV1Request} [transferCompleteV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        phase3TransferCompleteV1(transferCompleteMessage?: TransferCompleteMessage, options?: any): AxiosPromise<any> {
-            return localVarFp.phase3TransferCompleteV1(transferCompleteMessage, options).then((request) => request(axios, basePath));
+        phase3TransferCompleteV1(transferCompleteV1Request?: TransferCompleteV1Request, options?: any): AxiosPromise<any> {
+            return localVarFp.phase3TransferCompleteV1(transferCompleteV1Request, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {SendClientRequestMessage} [sendClientRequestMessage] 
+         * @param {SendClientV1Request} [sendClientV1Request] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        sendClientRequestV1(sendClientRequestMessage?: SendClientRequestMessage, options?: any): AxiosPromise<any> {
-            return localVarFp.sendClientRequestV1(sendClientRequestMessage, options).then((request) => request(axios, basePath));
+        sendClientRequestV1(sendClientV1Request?: SendClientV1Request, options?: any): AxiosPromise<any> {
+            return localVarFp.sendClientRequestV1(sendClientV1Request, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1855,79 +1855,79 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
 export class DefaultApi extends BaseAPI {
     /**
      * 
-     * @param {InitializationRequestMessage} [initializationRequestMessage] 
+     * @param {TransferInitializationV1Request} [transferInitializationV1Request] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public phase1TransferInitiationV1(initializationRequestMessage?: InitializationRequestMessage, options?: any) {
-        return DefaultApiFp(this.configuration).phase1TransferInitiationV1(initializationRequestMessage, options).then((request) => request(this.axios, this.basePath));
+    public phase1TransferInitiationV1(transferInitializationV1Request?: TransferInitializationV1Request, options?: any) {
+        return DefaultApiFp(this.configuration).phase1TransferInitiationV1(transferInitializationV1Request, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {LockEvidenceMessage} [lockEvidenceMessage] 
+     * @param {LockEvidenceV1Request} [lockEvidenceV1Request] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public phase2LockEvidenceV1(lockEvidenceMessage?: LockEvidenceMessage, options?: any) {
-        return DefaultApiFp(this.configuration).phase2LockEvidenceV1(lockEvidenceMessage, options).then((request) => request(this.axios, this.basePath));
+    public phase2LockEvidenceV1(lockEvidenceV1Request?: LockEvidenceV1Request, options?: any) {
+        return DefaultApiFp(this.configuration).phase2LockEvidenceV1(lockEvidenceV1Request, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {TransferCommenceMessage} [transferCommenceMessage] 
+     * @param {TransferCommenceV1Request} [transferCommenceV1Request] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public phase2TransferCommenceV1(transferCommenceMessage?: TransferCommenceMessage, options?: any) {
-        return DefaultApiFp(this.configuration).phase2TransferCommenceV1(transferCommenceMessage, options).then((request) => request(this.axios, this.basePath));
+    public phase2TransferCommenceV1(transferCommenceV1Request?: TransferCommenceV1Request, options?: any) {
+        return DefaultApiFp(this.configuration).phase2TransferCommenceV1(transferCommenceV1Request, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {CommitFinalMessage} [commitFinalMessage] 
+     * @param {CommitFinalV1Request} [commitFinalV1Request] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public phase3CommitFinalV1(commitFinalMessage?: CommitFinalMessage, options?: any) {
-        return DefaultApiFp(this.configuration).phase3CommitFinalV1(commitFinalMessage, options).then((request) => request(this.axios, this.basePath));
+    public phase3CommitFinalV1(commitFinalV1Request?: CommitFinalV1Request, options?: any) {
+        return DefaultApiFp(this.configuration).phase3CommitFinalV1(commitFinalV1Request, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {CommitPreparationMessage} [commitPreparationMessage] 
+     * @param {CommitPreparationV1Request} [commitPreparationV1Request] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public phase3CommitPreparationV1(commitPreparationMessage?: CommitPreparationMessage, options?: any) {
-        return DefaultApiFp(this.configuration).phase3CommitPreparationV1(commitPreparationMessage, options).then((request) => request(this.axios, this.basePath));
+    public phase3CommitPreparationV1(commitPreparationV1Request?: CommitPreparationV1Request, options?: any) {
+        return DefaultApiFp(this.configuration).phase3CommitPreparationV1(commitPreparationV1Request, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {TransferCompleteMessage} [transferCompleteMessage] 
+     * @param {TransferCompleteV1Request} [transferCompleteV1Request] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public phase3TransferCompleteV1(transferCompleteMessage?: TransferCompleteMessage, options?: any) {
-        return DefaultApiFp(this.configuration).phase3TransferCompleteV1(transferCompleteMessage, options).then((request) => request(this.axios, this.basePath));
+    public phase3TransferCompleteV1(transferCompleteV1Request?: TransferCompleteV1Request, options?: any) {
+        return DefaultApiFp(this.configuration).phase3TransferCompleteV1(transferCompleteV1Request, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {SendClientRequestMessage} [sendClientRequestMessage] 
+     * @param {SendClientV1Request} [sendClientV1Request] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public sendClientRequestV1(sendClientRequestMessage?: SendClientRequestMessage, options?: any) {
-        return DefaultApiFp(this.configuration).sendClientRequestV1(sendClientRequestMessage, options).then((request) => request(this.axios, this.basePath));
+    public sendClientRequestV1(sendClientV1Request?: SendClientV1Request, options?: any) {
+        return DefaultApiFp(this.configuration).sendClientRequestV1(sendClientV1Request, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

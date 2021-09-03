@@ -13,7 +13,7 @@ import express from "express";
 import { DefaultApi as ObjectStoreIpfsApi } from "@hyperledger/cactus-plugin-object-store-ipfs";
 //import { PluginRegistry } from "@hyperledger/cactus-core";
 import {
-  SendClientRequestMessage,
+  SendClientV1Request,
   AssetProfile,
 } from "../../../../main/typescript/generated/openapi/typescript-axios";
 import {
@@ -650,7 +650,7 @@ test(testCase, async (t: Test) => {
     const dummyPubKey = clientOdapGateway.bufArray2HexStr(dummyPubKeyBytes);
     const expiryDate = new Date("23/25/2060").toString();
     const assetProfile: AssetProfile = { ExpirationDate: expiryDate };
-    const odapClientRequest: SendClientRequestMessage = {
+    const odapClientRequest: SendClientV1Request = {
       serverGatewayConfiguration: {
         apiHost: odapServerGatewayApiHost,
       },

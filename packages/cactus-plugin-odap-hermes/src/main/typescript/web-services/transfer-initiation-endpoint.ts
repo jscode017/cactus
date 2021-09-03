@@ -16,7 +16,7 @@ import {
 import { registerWebServiceEndpoint } from "@hyperledger/cactus-core";
 
 import { OdapGateway } from "../gateway/odap-gateway";
-import { InitializationRequestMessage } from "../generated/openapi/typescript-axios";
+import { TransferInitializationV1Request } from "../generated/openapi/typescript-axios";
 import OAS from "../../json/openapi.json";
 
 export interface ITransferInitiationEndpointOptions {
@@ -95,7 +95,7 @@ export class TransferInitiationEndpointV1 implements IWebServiceEndpoint {
   public async handleRequest(req: Request, res: Response): Promise<void> {
     const reqTag = `${this.getVerbLowerCase()} - ${this.getPath()}`;
     this.log.debug(reqTag);
-    const reqBody: InitializationRequestMessage = req.body;
+    const reqBody: TransferInitializationV1Request = req.body;
     try {
       console.log("try in handle request");
       const resBody = await this.options.gateway.initiateTransfer(reqBody);

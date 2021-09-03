@@ -16,7 +16,7 @@ import {
 import { registerWebServiceEndpoint } from "@hyperledger/cactus-core";
 
 import { OdapGateway } from "../gateway/odap-gateway";
-import { CommitFinalMessage } from "../generated/openapi/typescript-axios";
+import { CommitFinalV1Request } from "../generated/openapi/typescript-axios";
 import OAS from "../../json/openapi.json";
 
 export interface ICommitFinalEndpointOptions {
@@ -93,7 +93,7 @@ export class CommitFinalEndpointV1 implements IWebServiceEndpoint {
   public async handleRequest(req: Request, res: Response): Promise<void> {
     const reqTag = `${this.getVerbLowerCase()} - ${this.getPath()}`;
     this.log.debug(reqTag);
-    const reqBody: CommitFinalMessage = req.body;
+    const reqBody: CommitFinalV1Request = req.body;
     try {
       const resBody = await this.options.gateway.CommitFinal(reqBody);
       res.json(resBody);

@@ -4,7 +4,7 @@ import secp256k1 from "secp256k1";
 import { OdapGateway } from "../../../../main/typescript/gateway/odap-gateway";
 import {
   //LockEvidenceMessage,
-  TransferCommenceMessage,
+  TransferCommenceV1Request,
   AssetProfile,
 } from "../../../../main/typescript/generated/openapi/typescript-axios/api";
 import { v4 as uuidV4 } from "uuid";
@@ -41,7 +41,7 @@ test("dummy test for transfer commence flow", async (t: Test) => {
 
   odapGateWay.sessions.set(sessionID, sessionData);
 
-  const transferCommenceReq: TransferCommenceMessage = {
+  const transferCommenceReq: TransferCommenceV1Request = {
     sessionID: sessionID,
     messageType: "urn:ietf:odap:msgtype:transfer-commence-msg",
     originatorPubkey: dummyPubKey,

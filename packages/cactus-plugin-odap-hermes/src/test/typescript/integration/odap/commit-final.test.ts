@@ -3,7 +3,7 @@ import { randomBytes } from "crypto";
 import secp256k1 from "secp256k1";
 import { OdapGateway } from "../../../../main/typescript/gateway/odap-gateway";
 import {
-  CommitFinalMessage,
+  CommitFinalV1Request,
   //LockEvidenceMessage,
 } from "../../../../main/typescript/generated/openapi/typescript-axios/api";
 import { v4 as uuidV4 } from "uuid";
@@ -33,7 +33,7 @@ test("dummy test for commit final flow", async (t: Test) => {
   const sessionID = uuidV4();
 
   odapGateWay.sessions.set(sessionID, sessionData);
-  const commitFinalReq: CommitFinalMessage = {
+  const commitFinalReq: CommitFinalV1Request = {
     sessionID: sessionID,
     messageType: "urn:ietf:odap:msgtype:commit-final-msg",
     clientIdentityPubkey: dummyPubKey,

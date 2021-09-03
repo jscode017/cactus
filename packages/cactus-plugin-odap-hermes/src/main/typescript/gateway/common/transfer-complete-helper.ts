@@ -3,17 +3,17 @@ import { SHA256 } from "crypto-js";
 import secp256k1 from "secp256k1";
 import { LoggerProvider } from "@hyperledger/cactus-common";
 import {
-  TransferCompleteMessage,
-  TransferCompletMessageResponse,
+  TransferCompleteV1Request,
+  TransferCompleteV1Response,
 } from "../../generated/openapi/typescript-axios";
 const log = LoggerProvider.getOrCreate({
   level: "INFO",
   label: "odap-transfer-complete-helper",
 });
 export async function TransferComplete(
-  req: TransferCompleteMessage,
+  req: TransferCompleteV1Request,
   odap: OdapGateway,
-): Promise<TransferCompletMessageResponse> {
+): Promise<TransferCompleteV1Response> {
   log.info(
     `server gate way receive transfer complete request: ${JSON.stringify(req)}`,
   );
@@ -22,7 +22,7 @@ export async function TransferComplete(
   return { ok: "true" };
 }
 async function CheckValidTransferCompleteRequest(
-  req: TransferCompleteMessage,
+  req: TransferCompleteV1Request,
   sessionID: string,
   odap: OdapGateway,
 ): Promise<void> {

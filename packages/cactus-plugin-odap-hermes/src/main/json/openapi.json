@@ -970,7 +970,7 @@
                         "path": "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase1/transferinitiation"
                     }
                 },
-                "operationId": "apiV1Phase1TransferInitiation",
+                "operationId": "phase1TransferInitiationV1",
                 "description":"",
                 "requestBody":{
                     "content": {
@@ -1003,7 +1003,7 @@
                         "path": "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase2/transfercommence"
                     }
                 },
-                "operationId": "apiV1Phase2TransferCommence",
+                "operationId": "phase2TransferCommenceV1",
                 "description":"",
                 "requestBody":{
                     "content": {
@@ -1036,7 +1036,7 @@
                         "path": "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase2/lockevidence"
                     }
                 },
-                "operationId": "apiV1Phase2LockEvidence",
+                "operationId": "phase2LockEvidenceV1",
                 "description":"",
                 "requestBody":{
                     "content": {
@@ -1069,7 +1069,7 @@
                         "path": "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/commitpreparation"
                     }
                 },
-                "operationId": "apiV1Phase3CommitPreparation",
+                "operationId": "phase3CommitPreparationV1",
                 "description":"",
                 "requestBody":{
                     "content": {
@@ -1102,7 +1102,7 @@
                         "path": "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/commitfinal"
                     }
                 },
-                "operationId": "apiV1Phase3CommitFinal",
+                "operationId": "phase3CommitFinalV1",
                 "description":"",
                 "requestBody":{
                     "content": {
@@ -1135,7 +1135,7 @@
                         "path": "/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/transfercomplete"
                     }
                 },
-                "operationId": "apiV1Phase3TransferComplete",
+                "operationId": "phase3TransferCompleteV1",
                 "description":"",
                 "requestBody":{
                     "content": {
@@ -1167,7 +1167,7 @@
                         "path": "/api/v1/@hyperledger/cactus-plugin-odap-hemres/sendclientrequest"
                     }
                 },
-                "operationId": "apiV1SendClientRequest",
+                "operationId": "sendClientRequestV1",
                 "description":"",
                 "requestBody":{
                     "content": {

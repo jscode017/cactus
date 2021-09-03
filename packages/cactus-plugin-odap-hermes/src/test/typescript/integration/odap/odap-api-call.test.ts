@@ -199,7 +199,7 @@ test(testCase, async (t: Test) => {
       serverIdentityPubkey: dummyPubKey,
       sourceGateWayDltSystem: "dummy",
     };
-    const res = await apiClient.apiV1SendClientRequest(odapClientRequest);
+    const res = await apiClient.sendClientRequestV1(odapClientRequest);
     /*const odapConnector = pluginRegistry.plugins.find(
       (plugin) => plugin.getInstanceId() == odapClientGateWayPluginID,
     ) as ;*/

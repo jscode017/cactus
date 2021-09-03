@@ -477,7 +477,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     );
     initializationRequestMessage.initializationRequestMessageSignature = initializeReqSignature;
 
-    const transferInitiationRes = await odapServerApiClient.apiV1Phase1TransferInitiation(
+    const transferInitiationRes = await odapServerApiClient.phase1TransferInitiationV1(
       initializationRequestMessage,
     );
     const initializeReqAck: InitialMessageAck = transferInitiationRes.data;
@@ -545,7 +545,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       `${sessionID}-${sessionData.step.toString()}`,
     );
     sessionData.step++;
-    const transferCommenceRes = await odapServerApiClient.apiV1Phase2TransferCommence(
+    const transferCommenceRes = await odapServerApiClient.phase2TransferCommenceV1(
       transferCommenceReq,
     );
     if (transferCommenceRes.status != 200) {
@@ -677,7 +677,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       `${sessionID}-${sessionData.step.toString()}`,
     );
     sessionData.step++;
-    const lockEvidenceRes = await odapServerApiClient.apiV1Phase2LockEvidence(
+    const lockEvidenceRes = await odapServerApiClient.phase2LockEvidenceV1(
       lockEvidenceReq,
     );
     if (lockEvidenceRes.status != 200) {
@@ -767,7 +767,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       `${sessionID}-${sessionData.step.toString()}`,
     );
     sessionData.step++;
-    const commitPrepareRes = await odapServerApiClient.apiV1Phase3CommitPreparation(
+    const commitPrepareRes = await odapServerApiClient.phase3CommitPreparationV1(
       commitPrepareReq,
     );
     if (commitPrepareRes.status != 200) {
@@ -880,7 +880,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       `${sessionID}-${sessionData.step.toString()}`,
     );
     sessionData.step++;
-    const commitFinalRes = await odapServerApiClient.apiV1Phase3CommitFinal(
+    const commitFinalRes = await odapServerApiClient.phase3CommitFinalV1(
       commitFinalReq,
     );
     if (commitFinalRes.status != 200) {
@@ -956,6 +956,6 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     );
     sessionData.step++;
     this.sessions.set(sessionID, sessionData);
-    await odapServerApiClient.apiV1Phase3TransferComplete(transferCompleteReq);
+    await odapServerApiClient.phase3TransferCompleteV1(transferCompleteReq);
   }
 }

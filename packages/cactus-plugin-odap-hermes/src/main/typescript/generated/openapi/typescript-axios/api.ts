@@ -1465,7 +1465,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiV1Phase1TransferInitiation: async (initializationRequestMessage?: InitializationRequestMessage, options: any = {}): Promise<RequestArgs> => {
+        phase1TransferInitiationV1: async (initializationRequestMessage?: InitializationRequestMessage, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase1/transferinitiation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1498,7 +1498,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiV1Phase2LockEvidence: async (lockEvidenceMessage?: LockEvidenceMessage, options: any = {}): Promise<RequestArgs> => {
+        phase2LockEvidenceV1: async (lockEvidenceMessage?: LockEvidenceMessage, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase2/lockevidence`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1531,7 +1531,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiV1Phase2TransferCommence: async (transferCommenceMessage?: TransferCommenceMessage, options: any = {}): Promise<RequestArgs> => {
+        phase2TransferCommenceV1: async (transferCommenceMessage?: TransferCommenceMessage, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase2/transfercommence`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1564,7 +1564,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiV1Phase3CommitFinal: async (commitFinalMessage?: CommitFinalMessage, options: any = {}): Promise<RequestArgs> => {
+        phase3CommitFinalV1: async (commitFinalMessage?: CommitFinalMessage, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/commitfinal`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1597,7 +1597,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiV1Phase3CommitPreparation: async (commitPreparationMessage?: CommitPreparationMessage, options: any = {}): Promise<RequestArgs> => {
+        phase3CommitPreparationV1: async (commitPreparationMessage?: CommitPreparationMessage, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/commitpreparation`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1630,7 +1630,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiV1Phase3TransferComplete: async (transferCompleteMessage?: TransferCompleteMessage, options: any = {}): Promise<RequestArgs> => {
+        phase3TransferCompleteV1: async (transferCompleteMessage?: TransferCompleteMessage, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/phase3/transfercomplete`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1663,7 +1663,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiV1SendClientRequest: async (sendClientRequestMessage?: SendClientRequestMessage, options: any = {}): Promise<RequestArgs> => {
+        sendClientRequestV1: async (sendClientRequestMessage?: SendClientRequestMessage, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/@hyperledger/cactus-plugin-odap-hemres/sendclientrequest`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1706,8 +1706,8 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiV1Phase1TransferInitiation(initializationRequestMessage?: InitializationRequestMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InitialMessageAck>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV1Phase1TransferInitiation(initializationRequestMessage, options);
+        async phase1TransferInitiationV1(initializationRequestMessage?: InitializationRequestMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<InitialMessageAck>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.phase1TransferInitiationV1(initializationRequestMessage, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1716,8 +1716,8 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiV1Phase2LockEvidence(lockEvidenceMessage?: LockEvidenceMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LockEvidenceResponseMessage>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV1Phase2LockEvidence(lockEvidenceMessage, options);
+        async phase2LockEvidenceV1(lockEvidenceMessage?: LockEvidenceMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LockEvidenceResponseMessage>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.phase2LockEvidenceV1(lockEvidenceMessage, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1726,8 +1726,8 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiV1Phase2TransferCommence(transferCommenceMessage?: TransferCommenceMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TransferCommenceResponseMessage>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV1Phase2TransferCommence(transferCommenceMessage, options);
+        async phase2TransferCommenceV1(transferCommenceMessage?: TransferCommenceMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TransferCommenceResponseMessage>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.phase2TransferCommenceV1(transferCommenceMessage, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1736,8 +1736,8 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiV1Phase3CommitFinal(commitFinalMessage?: CommitFinalMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommitFinalResponseMessage>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV1Phase3CommitFinal(commitFinalMessage, options);
+        async phase3CommitFinalV1(commitFinalMessage?: CommitFinalMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommitFinalResponseMessage>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.phase3CommitFinalV1(commitFinalMessage, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1746,8 +1746,8 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiV1Phase3CommitPreparation(commitPreparationMessage?: CommitPreparationMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommitPreparationResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV1Phase3CommitPreparation(commitPreparationMessage, options);
+        async phase3CommitPreparationV1(commitPreparationMessage?: CommitPreparationMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommitPreparationResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.phase3CommitPreparationV1(commitPreparationMessage, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1756,8 +1756,8 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiV1Phase3TransferComplete(transferCompleteMessage?: TransferCompleteMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV1Phase3TransferComplete(transferCompleteMessage, options);
+        async phase3TransferCompleteV1(transferCompleteMessage?: TransferCompleteMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.phase3TransferCompleteV1(transferCompleteMessage, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1766,8 +1766,8 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiV1SendClientRequest(sendClientRequestMessage?: SendClientRequestMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiV1SendClientRequest(sendClientRequestMessage, options);
+        async sendClientRequestV1(sendClientRequestMessage?: SendClientRequestMessage, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.sendClientRequestV1(sendClientRequestMessage, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -1786,8 +1786,8 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiV1Phase1TransferInitiation(initializationRequestMessage?: InitializationRequestMessage, options?: any): AxiosPromise<InitialMessageAck> {
-            return localVarFp.apiV1Phase1TransferInitiation(initializationRequestMessage, options).then((request) => request(axios, basePath));
+        phase1TransferInitiationV1(initializationRequestMessage?: InitializationRequestMessage, options?: any): AxiosPromise<InitialMessageAck> {
+            return localVarFp.phase1TransferInitiationV1(initializationRequestMessage, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1795,8 +1795,8 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiV1Phase2LockEvidence(lockEvidenceMessage?: LockEvidenceMessage, options?: any): AxiosPromise<LockEvidenceResponseMessage> {
-            return localVarFp.apiV1Phase2LockEvidence(lockEvidenceMessage, options).then((request) => request(axios, basePath));
+        phase2LockEvidenceV1(lockEvidenceMessage?: LockEvidenceMessage, options?: any): AxiosPromise<LockEvidenceResponseMessage> {
+            return localVarFp.phase2LockEvidenceV1(lockEvidenceMessage, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1804,8 +1804,8 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiV1Phase2TransferCommence(transferCommenceMessage?: TransferCommenceMessage, options?: any): AxiosPromise<TransferCommenceResponseMessage> {
-            return localVarFp.apiV1Phase2TransferCommence(transferCommenceMessage, options).then((request) => request(axios, basePath));
+        phase2TransferCommenceV1(transferCommenceMessage?: TransferCommenceMessage, options?: any): AxiosPromise<TransferCommenceResponseMessage> {
+            return localVarFp.phase2TransferCommenceV1(transferCommenceMessage, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1813,8 +1813,8 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiV1Phase3CommitFinal(commitFinalMessage?: CommitFinalMessage, options?: any): AxiosPromise<CommitFinalResponseMessage> {
-            return localVarFp.apiV1Phase3CommitFinal(commitFinalMessage, options).then((request) => request(axios, basePath));
+        phase3CommitFinalV1(commitFinalMessage?: CommitFinalMessage, options?: any): AxiosPromise<CommitFinalResponseMessage> {
+            return localVarFp.phase3CommitFinalV1(commitFinalMessage, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1822,8 +1822,8 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiV1Phase3CommitPreparation(commitPreparationMessage?: CommitPreparationMessage, options?: any): AxiosPromise<CommitPreparationResponse> {
-            return localVarFp.apiV1Phase3CommitPreparation(commitPreparationMessage, options).then((request) => request(axios, basePath));
+        phase3CommitPreparationV1(commitPreparationMessage?: CommitPreparationMessage, options?: any): AxiosPromise<CommitPreparationResponse> {
+            return localVarFp.phase3CommitPreparationV1(commitPreparationMessage, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1831,8 +1831,8 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiV1Phase3TransferComplete(transferCompleteMessage?: TransferCompleteMessage, options?: any): AxiosPromise<any> {
-            return localVarFp.apiV1Phase3TransferComplete(transferCompleteMessage, options).then((request) => request(axios, basePath));
+        phase3TransferCompleteV1(transferCompleteMessage?: TransferCompleteMessage, options?: any): AxiosPromise<any> {
+            return localVarFp.phase3TransferCompleteV1(transferCompleteMessage, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1840,8 +1840,8 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiV1SendClientRequest(sendClientRequestMessage?: SendClientRequestMessage, options?: any): AxiosPromise<any> {
-            return localVarFp.apiV1SendClientRequest(sendClientRequestMessage, options).then((request) => request(axios, basePath));
+        sendClientRequestV1(sendClientRequestMessage?: SendClientRequestMessage, options?: any): AxiosPromise<any> {
+            return localVarFp.sendClientRequestV1(sendClientRequestMessage, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1860,8 +1860,8 @@ export class DefaultApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public apiV1Phase1TransferInitiation(initializationRequestMessage?: InitializationRequestMessage, options?: any) {
-        return DefaultApiFp(this.configuration).apiV1Phase1TransferInitiation(initializationRequestMessage, options).then((request) => request(this.axios, this.basePath));
+    public phase1TransferInitiationV1(initializationRequestMessage?: InitializationRequestMessage, options?: any) {
+        return DefaultApiFp(this.configuration).phase1TransferInitiationV1(initializationRequestMessage, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1871,8 +1871,8 @@ export class DefaultApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public apiV1Phase2LockEvidence(lockEvidenceMessage?: LockEvidenceMessage, options?: any) {
-        return DefaultApiFp(this.configuration).apiV1Phase2LockEvidence(lockEvidenceMessage, options).then((request) => request(this.axios, this.basePath));
+    public phase2LockEvidenceV1(lockEvidenceMessage?: LockEvidenceMessage, options?: any) {
+        return DefaultApiFp(this.configuration).phase2LockEvidenceV1(lockEvidenceMessage, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1882,8 +1882,8 @@ export class DefaultApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public apiV1Phase2TransferCommence(transferCommenceMessage?: TransferCommenceMessage, options?: any) {
-        return DefaultApiFp(this.configuration).apiV1Phase2TransferCommence(transferCommenceMessage, options).then((request) => request(this.axios, this.basePath));
+    public phase2TransferCommenceV1(transferCommenceMessage?: TransferCommenceMessage, options?: any) {
+        return DefaultApiFp(this.configuration).phase2TransferCommenceV1(transferCommenceMessage, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1893,8 +1893,8 @@ export class DefaultApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public apiV1Phase3CommitFinal(commitFinalMessage?: CommitFinalMessage, options?: any) {
-        return DefaultApiFp(this.configuration).apiV1Phase3CommitFinal(commitFinalMessage, options).then((request) => request(this.axios, this.basePath));
+    public phase3CommitFinalV1(commitFinalMessage?: CommitFinalMessage, options?: any) {
+        return DefaultApiFp(this.configuration).phase3CommitFinalV1(commitFinalMessage, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1904,8 +1904,8 @@ export class DefaultApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public apiV1Phase3CommitPreparation(commitPreparationMessage?: CommitPreparationMessage, options?: any) {
-        return DefaultApiFp(this.configuration).apiV1Phase3CommitPreparation(commitPreparationMessage, options).then((request) => request(this.axios, this.basePath));
+    public phase3CommitPreparationV1(commitPreparationMessage?: CommitPreparationMessage, options?: any) {
+        return DefaultApiFp(this.configuration).phase3CommitPreparationV1(commitPreparationMessage, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1915,8 +1915,8 @@ export class DefaultApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public apiV1Phase3TransferComplete(transferCompleteMessage?: TransferCompleteMessage, options?: any) {
-        return DefaultApiFp(this.configuration).apiV1Phase3TransferComplete(transferCompleteMessage, options).then((request) => request(this.axios, this.basePath));
+    public phase3TransferCompleteV1(transferCompleteMessage?: TransferCompleteMessage, options?: any) {
+        return DefaultApiFp(this.configuration).phase3TransferCompleteV1(transferCompleteMessage, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1926,8 +1926,8 @@ export class DefaultApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public apiV1SendClientRequest(sendClientRequestMessage?: SendClientRequestMessage, options?: any) {
-        return DefaultApiFp(this.configuration).apiV1SendClientRequest(sendClientRequestMessage, options).then((request) => request(this.axios, this.basePath));
+    public sendClientRequestV1(sendClientRequestMessage?: SendClientRequestMessage, options?: any) {
+        return DefaultApiFp(this.configuration).sendClientRequestV1(sendClientRequestMessage, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

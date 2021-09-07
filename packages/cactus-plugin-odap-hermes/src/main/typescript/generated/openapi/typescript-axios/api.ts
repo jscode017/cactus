@@ -32,73 +32,73 @@ export interface AssetProfile {
      * @type {string}
      * @memberof AssetProfile
      */
-    Issuer?: string;
+    issuer?: string;
     /**
      * 
      * @type {string}
      * @memberof AssetProfile
      */
-    AssetCode?: string;
+    assetCode?: string;
     /**
      * 
      * @type {string}
      * @memberof AssetProfile
      */
-    AssetCodeType?: string;
+    assetCodeType?: string;
     /**
      * 
      * @type {string}
      * @memberof AssetProfile
      */
-    IssuanceDate?: string;
+    issuanceDate?: string;
     /**
      * 
      * @type {string}
      * @memberof AssetProfile
      */
-    ExpirationDate: string;
+    expirationDate: string;
     /**
      * 
      * @type {string}
      * @memberof AssetProfile
      */
-    VerificationEndPoint?: string;
+    verificationEndPoint?: string;
     /**
      * 
      * @type {string}
      * @memberof AssetProfile
      */
-    DigitalSignature?: string;
+    digitalSignature?: string;
     /**
      * 
      * @type {string}
      * @memberof AssetProfile
      */
-    ProspectusLink?: string;
+    prospectusLink?: string;
     /**
      * 
      * @type {Array<any>}
      * @memberof AssetProfile
      */
-    KeyInformationLink?: Array<any>;
+    keyInformationLink?: Array<any>;
     /**
      * 
      * @type {Array<any>}
      * @memberof AssetProfile
      */
-    KeyWord?: Array<any>;
+    keyWord?: Array<any>;
     /**
      * 
      * @type {Array<any>}
      * @memberof AssetProfile
      */
-    TransferRestriction?: Array<any>;
+    transferRestriction?: Array<any>;
     /**
      * 
      * @type {Array<any>}
      * @memberof AssetProfile
      */
-    LedgerRequirements?: Array<any>;
+    ledgerRequirements?: Array<any>;
 }
 /**
  * 

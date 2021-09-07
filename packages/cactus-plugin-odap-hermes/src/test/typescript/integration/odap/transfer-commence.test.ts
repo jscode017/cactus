@@ -27,7 +27,7 @@ test("dummy test for transfer commence flow", async (t: Test) => {
   const dummyPubKey = odapGateWay.bufArray2HexStr(dummyPubKeyBytes);
   const dummyHash = SHA256("dummy").toString();
   const expiryDate = new Date("23/25/2060").toString();
-  const assetProfile: AssetProfile = { ExpirationDate: expiryDate };
+  const assetProfile: AssetProfile = { expirationDate: expiryDate };
   const assetProfileHash = SHA256(JSON.stringify(assetProfile)).toString();
   const sessionData = {
     initializationMsgHash: dummyHash,

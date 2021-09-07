@@ -42,49 +42,49 @@
             "AssetProfile":{
                 "type":"object",
                 "properties": {
-                    "Issuer":{
+                    "issuer":{
                         "type":"string"
                     },
-                    "AssetCode":{
+                    "assetCode":{
                         "type":"string"
                     },
-                    "AssetCodeType":{
+                    "assetCodeType":{
                         "type":"string"
                     },
-                    "IssuanceDate":{
+                    "issuanceDate":{
                         "type":"string"
                     },
-                    "ExpirationDate":{
+                    "expirationDate":{
                         "type":"string"
                     },
-                    "VerificationEndPoint":{
+                    "verificationEndPoint":{
                         "type":"string"
                     },
-                    "DigitalSignature":{
+                    "digitalSignature":{
                         "type":"string"
                     },
-                    "ProspectusLink":{
+                    "prospectusLink":{
                         "type":"string"
                     },
-                    "KeyInformationLink":{
+                    "keyInformationLink":{
                         "type": "array",
                         "items": {}
                     },
-                    "KeyWord":{
+                    "keyWord":{
                         "type": "array",
                         "items": {}
                     },
-                    "TransferRestriction":{
+                    "transferRestriction":{
                         "type": "array",
                         "items": {}
                     },
-                    "LedgerRequirements":{
+                    "ledgerRequirements":{
                         "type": "array",
                         "items": {}
                     }
                 },
                 "required": [
-                    "ExpirationDate"
+                    "expirationDate"
                 ]
             },
             "LoggingProfile":{

@@ -29,7 +29,7 @@ test("dummy test for transfer initiation flow", async (t: Test) => {
   const dummyPubKeyBytes = secp256k1.publicKeyCreate(dummyPrivKeyBytes);
   const dummyPubKey = odapGateWay.bufArray2HexStr(dummyPubKeyBytes);
   const expiryDate = new Date("23/25/2060").toString();
-  const assetProfile: AssetProfile = { ExpirationDate: expiryDate };
+  const assetProfile: AssetProfile = { expirationDate: expiryDate };
   const initializationRequestMessage: TransferInitializationV1Request = {
     version: "0.0.0",
     loggingProfile: "dummy",

@@ -86,7 +86,7 @@ export async function checkValidInitializationRequest(
       `${fnTag}, recipient gate way dlt system is not supported in this gateway`,
     );
   }
-  const expiryDate: string = req.payloadProfile.assetProfile.ExpirationDate;
+  const expiryDate: string = req.payloadProfile.assetProfile.expirationDate;
   const isDataExpire: boolean = Date.now().toString() >= expiryDate;
   if (isDataExpire) {
     throw new Error(`${fnTag}, asset has expired`);

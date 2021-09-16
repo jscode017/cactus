@@ -415,37 +415,65 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
   public async initiateTransfer(
     req: TransferInitializationV1Request,
   ): Promise<TransferInitializationV1Response> {
-    return initiateTransfer(req, this);
+    const fnTag = `${this.className}#InitiateTransfer()`;
+    this.log.info(`${fnTag}, start processing, time: ${Date.now()}`);
+    const initiateTransferResponse = await initiateTransfer(req, this);
+    this.log.info(`${fnTag}, complete processing, time: ${Date.now()}`);
+    return initiateTransferResponse;
   }
   public async lockEvidenceTransferCommence(
     req: TransferCommenceV1Request,
   ): Promise<TransferCommenceV1Response> {
-    return lockEvidenceTransferCommence(req, this);
+    const fnTag = `${this.className}#TransferCommence()`;
+    this.log.info(`${fnTag}, start processing, time: ${Date.now()}`);
+    const TransferCommenceResponse = await lockEvidenceTransferCommence(
+      req,
+      this,
+    );
+    this.log.info(`${fnTag}, complete processing, time: ${Date.now()}`);
+    return TransferCommenceResponse;
   }
   public async lockEvidence(
     req: LockEvidenceV1Request,
   ): Promise<LockEvidenceV1Response> {
-    return lockEvidence(req, this);
+    const fnTag = `${this.className}#LockEvidence()`;
+    this.log.info(`${fnTag}, start processing, time: ${Date.now()}`);
+    const lockEvidenceResponse = await lockEvidence(req, this);
+    this.log.info(`${fnTag}, complete processing, time: ${Date.now()}`);
+    return lockEvidenceResponse;
   }
   public async CommitPrepare(
     req: CommitPreparationV1Request,
   ): Promise<CommitPreparationV1Response> {
-    return CommitPrepare(req, this);
+    const fnTag = `${this.className}#CommitPrepare()`;
+    this.log.info(`${fnTag}, start processing, time: ${Date.now()}`);
+    const commitPrepare = await CommitPrepare(req, this);
+    this.log.info(`${fnTag}, complete processing, time: ${Date.now()}`);
+    return commitPrepare;
   }
 
   public async CommitFinal(
     req: CommitFinalV1Request,
   ): Promise<CommitFinalV1Response> {
-    return CommitFinal(req, this);
+    const fnTag = `${this.className}#CommitFinal()`;
+    this.log.info(`${fnTag}, start processing, time: ${Date.now()}`);
+    const commitFinal = await CommitFinal(req, this);
+    this.log.info(`${fnTag}, complete processing, time: ${Date.now()}`);
+    return commitFinal;
   }
 
   public async TransferComplete(
     req: TransferCompleteV1Request,
   ): Promise<TransferCompleteV1Response> {
-    return TransferComplete(req, this);
+    const fnTag = `${this.className}#transferCompleteRequest()`;
+    this.log.info(`${fnTag}, start processing, time: ${Date.now()}`);
+    const transferComplete = await TransferComplete(req, this);
+    this.log.info(`${fnTag}, complete processing, time: ${Date.now()}`);
+    return transferComplete;
   }
   public async SendClientRequest(req: SendClientV1Request): Promise<void> {
     const fnTag = `${this.className}#sendClientRequest()`;
+    this.log.info(`${fnTag}, start processing, time: ${Date.now()}`);
     const odapServerApiConfig = new Configuration({
       basePath: req.serverGatewayConfiguration.apiHost,
     });
@@ -948,5 +976,6 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     sessionData.step++;
     this.sessions.set(sessionID, sessionData);
     await odapServerApiClient.phase3TransferCompleteV1(transferCompleteReq);
+    this.log.info(`${fnTag}, complete processing, time: ${Date.now()}`);
   }
 }

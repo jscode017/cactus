@@ -495,9 +495,12 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       JSON.stringify(initializationRequestMessage),
     );
     initializationRequestMessage.initializationRequestMessageSignature = initializeReqSignature;
-
+    this.log.info(`${fnTag}, send initial transfer req, time: ${Date.now()}`);
     const transferInitiationRes = await odapServerApiClient.phase1TransferInitiationV1(
       initializationRequestMessage,
+    );
+    this.log.info(
+      `${fnTag},  receive initial transfer ack, time: ${Date.now()}`,
     );
     const initializeReqAck: TransferInitializationV1Response =
       transferInitiationRes.data;
@@ -565,9 +568,14 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       `${sessionID}-${sessionData.step.toString()}`,
     );
     sessionData.step++;
+    this.log.info(`${fnTag}, send transfer commence req, time: ${Date.now()}`);
     const transferCommenceRes = await odapServerApiClient.phase2TransferCommenceV1(
       transferCommenceReq,
     );
+    this.log.info(
+      `${fnTag}, receive transfer commence ack, time: ${Date.now()}`,
+    );
+
     if (transferCommenceRes.status != 200) {
       await this.Revert(sessionID);
       throw new Error(`${fnTag}, send transfer commence failed`);
@@ -697,9 +705,11 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       `${sessionID}-${sessionData.step.toString()}`,
     );
     sessionData.step++;
+    this.log.info(`${fnTag}, send lock evidence req, time: ${Date.now()}`);
     const lockEvidenceRes = await odapServerApiClient.phase2LockEvidenceV1(
       lockEvidenceReq,
     );
+    this.log.info(`${fnTag}, receive lock evidence ack, time: ${Date.now()}`);
     if (lockEvidenceRes.status != 200) {
       await this.Revert(sessionID);
       throw new Error(`${fnTag}, send lock evidence failed`);
@@ -786,9 +796,11 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       `${sessionID}-${sessionData.step.toString()}`,
     );
     sessionData.step++;
+    this.log.info(`${fnTag}, send commit prepare req, time: ${Date.now()}`);
     const commitPrepareRes = await odapServerApiClient.phase3CommitPreparationV1(
       commitPrepareReq,
     );
+    this.log.info(`${fnTag}, receive commit prepare ack, time: ${Date.now()}`);
     if (commitPrepareRes.status != 200) {
       await this.Revert(sessionID);
       throw new Error(`${fnTag}, send commit prepare failed`);
@@ -899,9 +911,11 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       `${sessionID}-${sessionData.step.toString()}`,
     );
     sessionData.step++;
+    this.log.info(`${fnTag}, send commit final req, time: ${Date.now()}`);
     const commitFinalRes = await odapServerApiClient.phase3CommitFinalV1(
       commitFinalReq,
     );
+    this.log.info(`${fnTag}, receive commit final ack, time: ${Date.now()}`);
     if (commitFinalRes.status != 200) {
       await this.Revert(sessionID);
       throw new Error(`${fnTag}, send commit final failed`);
@@ -975,7 +989,9 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     );
     sessionData.step++;
     this.sessions.set(sessionID, sessionData);
+    this.log.info(`${fnTag}, send transfer complete req, time: ${Date.now()}`);
     await odapServerApiClient.phase3TransferCompleteV1(transferCompleteReq);
+    this.log.info(`${fnTag}, receive transfer complete, time: ${Date.now()}`);
     this.log.info(`${fnTag}, complete processing, time: ${Date.now()}`);
   }
 }

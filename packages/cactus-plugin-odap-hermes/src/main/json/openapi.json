@@ -867,6 +867,15 @@
                         "required": [
                             "apiHost"
                         ]
+                    },
+                    "rollBackForLock":{
+                        "type":"boolean"
+                    },
+                    "rollBackForDelete":{
+                        "type":"boolean"
+                    },
+                    "rollBackForCreate":{
+                        "type":"boolean"
                     }
                 },
                 "required": [

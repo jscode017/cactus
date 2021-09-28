@@ -739,6 +739,24 @@ export interface SendClientV1Request {
      * @memberof SendClientV1Request
      */
     serverGatewayConfiguration: SendClientV1RequestServerGatewayConfiguration;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SendClientV1Request
+     */
+    rollBackForLock?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SendClientV1Request
+     */
+    rollBackForDelete?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SendClientV1Request
+     */
+    rollBackForCreate?: boolean;
 }
 /**
  * 

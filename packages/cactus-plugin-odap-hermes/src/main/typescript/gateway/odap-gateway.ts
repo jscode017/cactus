@@ -205,6 +205,8 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     }
   }
   public async Revert(sessionID: string): Promise<void> {
+    const fnTag = `${this.className}#Revert()`;
+    this.log.info(`${fnTag}, begin revert process, time: ${Date.now()}`);
     const sessionData = this.sessions.get(sessionID);
     if (sessionData == undefined) return;
     if (
@@ -290,6 +292,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         keychainId: this.besuKeychainId,
       } as BesuInvokeContractV1Request);
     }
+    this.log.info(`${fnTag}, complete revert process, time: ${Date.now()}`);
     return;
   }
   public get className(): string {
@@ -771,6 +774,11 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       `${sessionID}-${sessionData.step.toString()}`,
     );
     sessionData.step++;
+    if (req.rollBackForLock) {
+      this.log.warn("should got here for rollback lock");
+      await this.Revert(sessionID);
+      throw new Error(`${fnTag}, roll back for lock command`);
+    }
     const commitPrepareReq: CommitPreparationV1Request = {
       sessionID: sessionID,
       messageType: "urn:ietf:odap:msgtype:commit-prepare-msg",
@@ -965,6 +973,11 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       },
       `${sessionID}-${sessionData.step.toString()}`,
     );
+    if (req.rollBackForDelete) {
+      this.log.warn("should got here for rollback lock");
+      await this.Revert(sessionID);
+      throw new Error(`${fnTag}, roll back for delete command`);
+    }
     sessionData.step++;
     const transferCompleteReq: TransferCompleteV1Request = {
       sessionID: sessionID,
@@ -990,6 +1003,11 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     sessionData.step++;
     this.sessions.set(sessionID, sessionData);
     this.log.info(`${fnTag}, send transfer complete req, time: ${Date.now()}`);
+    if (req.rollBackForCreate) {
+      this.log.warn("should got here for rollback lock");
+      transferCompleteReq.clientSignature = "";
+      throw new Error(`${fnTag}, roll back for create command`);
+    }
     await odapServerApiClient.phase3TransferCompleteV1(transferCompleteReq);
     this.log.info(`${fnTag}, receive transfer complete, time: ${Date.now()}`);
     this.log.info(`${fnTag}, complete processing, time: ${Date.now()}`);

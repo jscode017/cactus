@@ -433,7 +433,7 @@
                         "type":"string"
                     },
                     "fabricAssetSize": {
-                        "type":"number"
+                        "type":"string"
                     },
                     "besuAssetID": {
                         "type":"string"

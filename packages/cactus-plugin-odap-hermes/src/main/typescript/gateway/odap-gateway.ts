@@ -70,6 +70,9 @@ import { TransferComplete } from "./common/transfer-complete-helper";
   label: "odap-logger",
 });*/
 export interface OdapGatewayConstructorOptions {
+  failAfterCreate?: boolean;
+  failAfterDelete?: boolean;
+  failAfterLock?: boolean;
   name: string;
   dltIDs: string[];
   instanceId: string;
@@ -85,6 +88,7 @@ export interface OdapGatewayConstructorOptions {
   besuKeychainId?: string;
 
   fabricAssetID?: string;
+  fabricAssetSize?: string;
   besuAssetID?: string;
 }
 export interface OdapGatewayKeyPairs {
@@ -126,8 +130,21 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
   public besuKeychainId?: string;
 
   public fabricAssetID?: string;
+  public fabricAssetSize?: string;
   public besuAssetID?: string;
+  public failAfterLock?: boolean;
+  public failAfterDelete?: boolean;
+  public failAfterCreate?: boolean;
   public constructor(options: OdapGatewayConstructorOptions) {
+    if (options.failAfterCreate) {
+      this.failAfterCreate = true;
+    }
+    if (options.failAfterDelete) {
+      this.failAfterDelete = true;
+    }
+    if (options.failAfterLock) {
+      this.failAfterLock = true;
+    }
     const fnTag = `${this.className}#constructor()`;
     Checks.truthy(options, `${fnTag} arg options`);
     Checks.truthy(options.instanceId, `${fnTag} arg options.instanceId`);
@@ -180,6 +197,11 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         this.fabricChannelName = options.fabricChannelName;
         this.fabricContractName = options.fabricContractName;
         this.fabricAssetID = options.fabricAssetID;
+        if (!options.fabricAssetSize) {
+          this.fabricAssetSize = "1";
+        } else {
+          this.fabricAssetSize = options.fabricAssetSize;
+        }
       }
     }
     if (options.besuPath != undefined) {
@@ -204,12 +226,33 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
   }
   public async Revert(sessionID: string): Promise<void> {
     const sessionData = this.sessions.get(sessionID);
+    this.log.warn("reverting!!!");
+    this.log.warn("locked?");
+    this.log.warn(this.failAfterLock);
+    this.log.warn("deleted?");
+    this.log.warn(this.failAfterDelete);
+    this.log.warn("created?");
+    this.log.warn(this.failAfterCreate);
     if (sessionData == undefined) return;
+    if (this.failAfterDelete) {
+      sessionData.isFabricAssetDeleted = true;
+    }
+    if (this.failAfterLock) {
+      sessionData.isFabricAssetLocked = true;
+    }
+    if (this.failAfterCreate) {
+      sessionData.isBesuAssetCreated = true;
+    }
     if (
       sessionData.isFabricAssetDeleted != undefined &&
       sessionData.isFabricAssetDeleted
     ) {
       if (this.fabricApi == undefined) return;
+      const fnTag = `${this.className}#revertFabricDelete()`;
+      this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
+      this.log.warn(this.fabricChannelName);
+      this.log.warn(this.fabricContractName);
+      this.log.warn(sessionData.fabricAssetID);
       await this.fabricApi.runTransactionV1({
         signingCredential: this.fabricSigningCredential,
         channelName: this.fabricChannelName,
@@ -218,11 +261,17 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         methodName: "CreateAsset",
         params: [sessionData.fabricAssetID, sessionData.fabricAssetSize],
       } as FabricRunTransactionRequest);
+      this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     } else if (
       sessionData.isFabricAssetLocked != undefined &&
       sessionData.isFabricAssetLocked
     ) {
       if (this.fabricApi == undefined) return;
+      const fnTag = `${this.className}#revertFabricLock()`;
+      this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
+      this.log.warn(this.fabricChannelName);
+      this.log.warn(this.fabricContractName);
+      this.log.warn(sessionData.fabricAssetID);
       await this.fabricApi.runTransactionV1({
         signingCredential: this.fabricSigningCredential,
         channelName: this.fabricChannelName,
@@ -231,10 +280,13 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         methodName: "UnLockAsset",
         params: [sessionData.fabricAssetID],
       } as FabricRunTransactionRequest);
+      this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     } else if (
       sessionData.isFabricAssetCreated != undefined &&
       sessionData.isFabricAssetCreated
     ) {
+      const fnTag = `${this.className}#revertFabricCreate()`;
+      this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
       if (this.fabricApi == undefined) return;
       await this.fabricApi.runTransactionV1({
         signingCredential: this.fabricSigningCredential,
@@ -244,11 +296,15 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         methodName: "CreateAsset",
         params: [sessionData.fabricAssetID],
       } as FabricRunTransactionRequest);
+      this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     } else if (
       sessionData.isBesuAssetCreated != undefined &&
       sessionData.isBesuAssetCreated
     ) {
       if (this.besuApi == undefined) return;
+      const fnTag = `${this.className}#revertBesuCreate()`;
+      this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
+      this.log.warn(this.besuAssetID);
       await this.besuApi.invokeContractV1({
         contractName: this.besuContractName,
         invocationType: EthContractInvocationType.Send,
@@ -258,10 +314,13 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         signingCredential: this.besuWeb3SigningCredential,
         keychainId: this.besuKeychainId,
       } as BesuInvokeContractV1Request);
+      this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     } else if (
       sessionData.isBesuAssetDeleted != undefined &&
       sessionData.isBesuAssetDeleted
     ) {
+      const fnTag = `${this.className}#revertBesuDelete()`;
+      this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
       if (this.besuApi == undefined) return;
       await this.besuApi.invokeContractV1({
         contractName: this.besuContractName,
@@ -272,10 +331,13 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         signingCredential: this.besuWeb3SigningCredential,
         keychainId: this.besuKeychainId,
       } as BesuInvokeContractV1Request);
+      this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     } else if (
       sessionData.isBesuAssetLocked != undefined &&
       sessionData.isBesuAssetLocked
     ) {
+      const fnTag = `${this.className}#revertBesuLock()`;
+      this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
       if (this.besuApi == undefined) return;
       await this.besuApi.invokeContractV1({
         contractName: this.besuContractName,
@@ -286,6 +348,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         signingCredential: this.besuWeb3SigningCredential,
         keychainId: this.besuKeychainId,
       } as BesuInvokeContractV1Request);
+      this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     }
     return;
   }
@@ -410,39 +473,39 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     req: TransferInitializationV1Request,
   ): Promise<TransferInitializationV1Response> {
     const fnTag = `${this.className}#InitiateTransfer()`;
-    this.log.info(`${fnTag}, start processing, time: ${Date.now()}`);
+    this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
     const initiateTransferResponse = await initiateTransfer(req, this);
-    this.log.info(`${fnTag}, complete processing, time: ${Date.now()}`);
+    this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     return initiateTransferResponse;
   }
   public async lockEvidenceTransferCommence(
     req: TransferCommenceV1Request,
   ): Promise<TransferCommenceV1Response> {
     const fnTag = `${this.className}#TransferCommence()`;
-    this.log.info(`${fnTag}, start processing, time: ${Date.now()}`);
+    this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
     const TransferCommenceResponse = await lockEvidenceTransferCommence(
       req,
       this,
     );
-    this.log.info(`${fnTag}, complete processing, time: ${Date.now()}`);
+    this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     return TransferCommenceResponse;
   }
   public async lockEvidence(
     req: LockEvidenceV1Request,
   ): Promise<LockEvidenceV1Response> {
     const fnTag = `${this.className}#LockEvidence()`;
-    this.log.info(`${fnTag}, start processing, time: ${Date.now()}`);
+    this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
     const lockEvidenceResponse = await lockEvidence(req, this);
-    this.log.info(`${fnTag}, complete processing, time: ${Date.now()}`);
+    this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     return lockEvidenceResponse;
   }
   public async CommitPrepare(
     req: CommitPreparationV1Request,
   ): Promise<CommitPreparationV1Response> {
     const fnTag = `${this.className}#CommitPrepare()`;
-    this.log.info(`${fnTag}, start processing, time: ${Date.now()}`);
+    this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
     const commitPrepare = await CommitPrepare(req, this);
-    this.log.info(`${fnTag}, complete processing, time: ${Date.now()}`);
+    this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     return commitPrepare;
   }
 
@@ -450,9 +513,9 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     req: CommitFinalV1Request,
   ): Promise<CommitFinalV1Response> {
     const fnTag = `${this.className}#CommitFinal()`;
-    this.log.info(`${fnTag}, start processing, time: ${Date.now()}`);
+    this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
     const commitFinal = await CommitFinal(req, this);
-    this.log.info(`${fnTag}, complete processing, time: ${Date.now()}`);
+    this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     return commitFinal;
   }
 
@@ -460,14 +523,14 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     req: TransferCompleteV1Request,
   ): Promise<TransferCompleteV1Response> {
     const fnTag = `${this.className}#transferCompleteRequest()`;
-    this.log.info(`${fnTag}, start processing, time: ${Date.now()}`);
+    this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
     const transferComplete = await TransferComplete(req, this);
-    this.log.info(`${fnTag}, complete processing, time: ${Date.now()}`);
+    this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     return transferComplete;
   }
   public async SendClientRequest(req: SendClientV1Request): Promise<void> {
     const fnTag = `${this.className}#sendClientRequest()`;
-    this.log.info(`${fnTag}, start processing, time: ${Date.now()}`);
+    this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
     const odapServerApiConfig = new Configuration({
       basePath: req.serverGatewayConfiguration.apiHost,
     });
@@ -522,6 +585,7 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     const sessionID = initializeReqAck.sessionID;
     const sessionData: SessionData = {};
     sessionData.step = 0;
+    sessionData.fabricAssetSize = "1";
     await this.odapLog(
       {
         phase: "initiateTransfer",
@@ -667,13 +731,19 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
           params: [this.fabricChannelName, lockRes.data.transactionId],
         } as FabricRunTransactionRequest,
       );
-      this.log.warn(receiptLockRes.data);
+      this.log.info(receiptLockRes.data);
       fabricLockAssetProof = JSON.stringify(receiptLockRes.data);
       if (sessionData == undefined) {
         await this.Revert(sessionID);
         throw new Error(`${fnTag}, session data undefined`);
       }
       sessionData.isFabricAssetLocked = true;
+      sessionData.fabricAssetID = this.fabricAssetID;
+      if (this.failAfterLock) {
+        this.fabricAssetLocked = true;
+        await this.Revert(sessionID);
+        return;
+      }
     }
     const lockEvidenceReq: LockEvidenceV1Request = {
       sessionID: sessionID,
@@ -882,9 +952,14 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
           params: [this.fabricChannelName, deleteRes.data.transactionId],
         } as FabricRunTransactionRequest,
       );
-      this.log.warn(receiptDeleteRes.data);
+      this.log.info(receiptDeleteRes.data);
       fabricDeleteAssetProof = JSON.stringify(receiptDeleteRes.data);
       sessionData.isFabricAssetDeleted = true;
+    }
+    if (this.failAfterDelete) {
+      this.fabricAssetDeleted = true;
+      await this.Revert(sessionID);
+      return;
     }
     const commitFinalReq: CommitFinalV1Request = {
       sessionID: sessionID,
@@ -997,6 +1072,6 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
     this.log.info(`${fnTag}, send transfer complete req, time: ${Date.now()}`);
     await odapServerApiClient.phase3TransferCompleteV1(transferCompleteReq);
     this.log.info(`${fnTag}, receive transfer complete, time: ${Date.now()}`);
-    this.log.info(`${fnTag}, complete processing, time: ${Date.now()}`);
+    this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
   }
 }

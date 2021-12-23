@@ -204,6 +204,11 @@ export async function CommitFinal(
   );
   sessionData.step++;
   odap.sessions.set(req.sessionID, sessionData);
+  if (odap.failAfterCreate) {
+    odap.besuAssetCreated = true;
+    odap.Revert(req.sessionID);
+    return ack;
+  }
   return ack;
 }
 async function checkValidCommitFinalRequest(

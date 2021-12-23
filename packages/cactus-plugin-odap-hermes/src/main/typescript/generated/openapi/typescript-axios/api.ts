@@ -1026,10 +1026,10 @@ export interface SessionData {
     fabricAssetID?: string;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof SessionData
      */
-    fabricAssetSize?: number;
+    fabricAssetSize?: string;
     /**
      * 
      * @type {string}

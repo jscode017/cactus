@@ -42,8 +42,6 @@ contract LockAsset {
       bool assetExsist = assets[id].size>0;
       require(assetExsist);
       //an asset could only be deleted if it is already locked
-      bool assetIsLocked = assets[id].isLock;
-      require(assetIsLocked);
       delete assets[id];
   }
 

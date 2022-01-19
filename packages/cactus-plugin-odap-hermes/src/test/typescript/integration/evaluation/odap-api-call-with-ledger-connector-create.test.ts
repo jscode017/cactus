@@ -649,6 +649,7 @@ test(testCase, async (t: Test) => {
     };
     const res = await apiClient.sendClientRequestV1(odapClientRequest);
     t.ok(res);
+    await new Promise((r) => setTimeout(r, 10000));
   }
   t.end();
 });

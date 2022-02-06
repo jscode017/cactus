@@ -472,60 +472,60 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
   public async initiateTransfer(
     req: TransferInitializationV1Request,
   ): Promise<TransferInitializationV1Response> {
-    const fnTag = `${this.className}#InitiateTransfer()`;
-    this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
+    //const fnTag = `${this.className}#InitiateTransfer()`;
+    //this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
     const initiateTransferResponse = await initiateTransfer(req, this);
-    this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
+    //this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     return initiateTransferResponse;
   }
   public async lockEvidenceTransferCommence(
     req: TransferCommenceV1Request,
   ): Promise<TransferCommenceV1Response> {
-    const fnTag = `${this.className}#TransferCommence()`;
-    this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
+    //const fnTag = `${this.className}#TransferCommence()`;
+    //this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
     const TransferCommenceResponse = await lockEvidenceTransferCommence(
       req,
       this,
     );
-    this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
+    //this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     return TransferCommenceResponse;
   }
   public async lockEvidence(
     req: LockEvidenceV1Request,
   ): Promise<LockEvidenceV1Response> {
-    const fnTag = `${this.className}#LockEvidence()`;
-    this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
+    //const fnTag = `${this.className}#LockEvidence()`;
+    //this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
     const lockEvidenceResponse = await lockEvidence(req, this);
-    this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
+    //this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     return lockEvidenceResponse;
   }
   public async CommitPrepare(
     req: CommitPreparationV1Request,
   ): Promise<CommitPreparationV1Response> {
-    const fnTag = `${this.className}#CommitPrepare()`;
-    this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
+    //const fnTag = `${this.className}#CommitPrepare()`;
+    //this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
     const commitPrepare = await CommitPrepare(req, this);
-    this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
+    //this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     return commitPrepare;
   }
 
   public async CommitFinal(
     req: CommitFinalV1Request,
   ): Promise<CommitFinalV1Response> {
-    const fnTag = `${this.className}#CommitFinal()`;
-    this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
+    //const fnTag = `${this.className}#CommitFinal()`;
+    //this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
     const commitFinal = await CommitFinal(req, this);
-    this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
+    //this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     return commitFinal;
   }
 
   public async TransferComplete(
     req: TransferCompleteV1Request,
   ): Promise<TransferCompleteV1Response> {
-    const fnTag = `${this.className}#transferCompleteRequest()`;
-    this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
+    //const fnTag = `${this.className}#transferCompleteRequest()`;
+    //this.log.warn(`${fnTag}, start processing, time: ${Date.now()}`);
     const transferComplete = await TransferComplete(req, this);
-    this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
+    //this.log.warn(`${fnTag}, complete processing, time: ${Date.now()}`);
     return transferComplete;
   }
   public async SendClientRequest(req: SendClientV1Request): Promise<void> {
@@ -558,6 +558,9 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       initializeReqSignature,
     );
     this.log.info(`${fnTag}, send initial transfer req, time: ${Date.now()}`);
+    this.log.warn(
+      `${fnTag}, OdapGateWay#InitiateTransfer(): start processing, time: ${Date.now()}`,
+    );
     const transferInitiationRes = await odapServerApiClient.phase1TransferInitiationV1(
       initializationRequestMessage,
     );
@@ -596,10 +599,15 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       `${sessionID}-${sessionData.step.toString()}`,
     );
     sessionData.step++;
+    this.log.warn(
+      `${fnTag}, OdapGateWay#InitiateTransfer(): complete processing, time: ${Date.now()}`,
+    );
     const hashAssetProfile = SHA256(
       JSON.stringify(req.assetProfile),
     ).toString();
-
+    this.log.warn(
+      `${fnTag}, OdapGateWay#TransferCommence((): start processing, time: ${Date.now()}`,
+    );
     const transferCommenceReq: TransferCommenceV1Request = {
       sessionID: sessionID,
       messageType: "urn:ietf:odap:msgtype:transfer-commence-msg",
@@ -707,10 +715,16 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       `${sessionID}-${sessionData.step.toString()}`,
     );
     sessionData.step++;
+    this.log.warn(
+      `${fnTag}, OdapGateWay#TransferCommence((): complete processing, time: ${Date.now()}`,
+    );
     const commenceAckHash = SHA256(
       JSON.stringify(transferCommenceAck),
     ).toString();
     this.sessions.set(sessionID, sessionData);
+    this.log.warn(
+      `${fnTag}, OdapGateWay#LockEvidence(): start processing, time: ${Date.now()}`,
+    );
     let fabricLockAssetProof = "";
     if (this.fabricApi != undefined) {
       const lockRes = await this.fabricApi.runTransactionV1({
@@ -839,7 +853,13 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       },
       `${sessionID}-${sessionData.step.toString()}`,
     );
+    this.log.warn(
+      `${fnTag}, OdapGateWay#LockEvidence(): complete processing, time: ${Date.now()}`,
+    );
     sessionData.step++;
+    this.log.warn(
+      `${fnTag}, OdapGateWay#CommitPrepare(): start processing, time: ${Date.now()}`,
+    );
     const commitPrepareReq: CommitPreparationV1Request = {
       sessionID: sessionID,
       messageType: "urn:ietf:odap:msgtype:commit-prepare-msg",
@@ -932,6 +952,12 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       `${sessionID}-${sessionData.step.toString()}`,
     );
     sessionData.step++;
+    this.log.warn(
+      `${fnTag}, OdapGateWay#CommitPrepare(): complete processing, time: ${Date.now()}`,
+    );
+    this.log.warn(
+      `${fnTag}, OdapGateWay#CommitFinal(): start processing, time: ${Date.now()}`,
+    );
     let fabricDeleteAssetProof = "";
     if (this.fabricApi != undefined) {
       const deleteRes = await this.fabricApi.runTransactionV1({
@@ -1042,7 +1068,13 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
       },
       `${sessionID}-${sessionData.step.toString()}`,
     );
+    this.log.warn(
+      `${fnTag}, OdapGateWay#CommitFinal(): complete processing, time: ${Date.now()}`,
+    );
     sessionData.step++;
+    this.log.warn(
+      `${fnTag}, OdapGateWay#TransferComplete(): start processing, time: ${Date.now()}`,
+    );
     const transferCompleteReq: TransferCompleteV1Request = {
       sessionID: sessionID,
       messageType: "urn:ietf:odap:msgtype:commit-transfer-complete-msg",
@@ -1066,6 +1098,9 @@ export class OdapGateway implements ICactusPlugin, IPluginWebService {
         nodes: `${this.pubKey}`,
       },
       `${sessionID}-${sessionData.step.toString()}`,
+    );
+    this.log.warn(
+      `${fnTag}, OdapGateWay#TransferComplete(): complete processing, time: ${Date.now()}`,
     );
     sessionData.step++;
     this.sessions.set(sessionID, sessionData);
